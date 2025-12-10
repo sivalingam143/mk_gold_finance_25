@@ -1,0 +1,123 @@
+.balance-table-wrapper .table {
+  width: 100%;
+  border-collapse: collapse;
+}
+  
+.balance-table-wrapper .table th,
+.balance-table-wrapper .table td {
+  text-align: center;
+  vertical-align: middle;
+  padding: 0px 8px !important;
+  border: 1px solid #dee2e6;
+  max-width: 150px;
+  font-size: 11px;
+}
+  
+.balance-table-wrapper .table thead th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+  white-space: normal;
+}
+.balance-table-wrapper .table thead th:nth-child(1){
+  padding: 0 30px !important;  
+}
+.balance-table-wrapper .table tbody td {
+  white-space: normal;
+}
+.balance-table-wrapper .dashboard span {
+  display: block;
+  margin: 0px 0;
+}
+  
+/* Text center utility inside balance table */
+.balance-table-wrapper .text-center {
+  text-align: center;
+}
+  
+/* Badge customizations scoped */
+.balance-table-wrapper .badge {
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 12px;
+}
+  
+.balance-table-wrapper .badge-status {
+  min-width: 20px;
+  min-height: 20px;
+  display: inline-block;
+}
+  
+@media (max-width: 768px) {
+  .balance-table-wrapper .table th,
+  .balance-table-wrapper .table td {
+    font-size: 12px;
+    padding: 8px 5px;
+  }
+}
+/* Highlight selected tab with corporate style */
+.nav-tabs .nav-link.active {
+  background-color: #4a90e2 !important; /* corporate blue */
+  color: #fff; /* white text */
+  font-weight: bold !important;
+  border-color: #4a90e2 #4a90e2 #fff !important; /* seamless tab border effect */
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+/* Non-active tabs default */
+.nav-tabs .nav-link {
+  color: #555;
+  background-color: white !important;
+  border-color: #555 #555 white !important; /* seamless tab border effect */
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border: 1px solid #555 !important;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+.nav-tabs .nav-link.active {
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+.notice-btn {
+  background: linear-gradient(45deg, #007bff, #00b4ff) !important;
+  color: #fff !important;
+  padding: 8px 14px !important;
+  border-radius: 8px;
+  border: none !important;
+  font-weight: bold !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  animation: pulse 1.5s infinite !important;
+}
+
+.notice-btn:hover {
+  background: linear-gradient(45deg, #0056b3, #007bff);
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
+  }
+  70% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+  }
+}
+.notice-btn.alert {
+  animation: pulse 1.5s infinite, shake 0.4s infinite;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-2px); }
+  40% { transform: translateX(2px); }
+  60% { transform: translateX(-2px); }
+  80% { transform: translateX(2px); }
+}
