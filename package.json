@@ -1,8 +1,8 @@
 {
-  "name": "minimercantilebankers",
+  "name": "mkgoldfinance",
   "version": "0.1.0",
   "private": true,
-  "description": "A billing application for MINI MERCANTILE BANKERS.",
+  "description": "A billing application for MINI MKGOLDFINANCE.",
   "author": "Zentexus Technologies",
   "dependencies": {
     "@mui/icons-material": "^6.1.5",
