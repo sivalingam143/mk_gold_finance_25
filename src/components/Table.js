@@ -344,6 +344,33 @@ const prevPage = () => {
       state: { type: "edit", rowData: rowData },
     });
   };
+  const handleSaleEditClick = (rowData) => {
+  navigate("/console/master/sale/create", {
+    state: { type: "edit", rowData: rowData },
+  });
+};
+
+const handleSaleDeleteClick = async (id) => {
+  setLoading(true);
+  try {
+    const response = await fetch(`${API_DOMAIN}/sale.php`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ delete_sale_id: id }),
+    });
+
+    const responseData = await response.json();
+    if (responseData.head.code === 200) {
+      // Refresh the page or update state to reflect deletion
+      window.location.reload();
+    } else {
+      setLoading(false);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    setLoading(false);
+  }
+};
   const handleJewelcustomerDeleteClick = async (id) => {
     setLoading(true);
     try {
@@ -1077,6 +1104,32 @@ const prevPage = () => {
                   </td>
                 </>
               )}
+              {type === "sale" && (
+  <>
+    <td>{rowIndex + 1}</td>
+    <td>{rowData.name}</td>
+    <td>{rowData.mobile_number}</td>
+    <td>
+      <Dropdown>
+        <Dropdown.Toggle>
+          <Button className="action">
+            <BiDotsVerticalRounded />
+          </Button>
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+          <Dropdown.Item onClick={() => handleSaleEditClick(rowData)}>
+            Edit
+          </Dropdown.Item>
+          <Dropdown.Item
+            onClick={() => handleSaleDeleteClick(rowData.sale_id)}
+          >
+            Delete
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
+    </td>
+  </>
+)}
               {type === "product" && (
                 <>
                   <td>{rowIndex + 1}</td>

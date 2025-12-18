@@ -61,6 +61,11 @@ const sidebarConfig = [
     text : "customer",
     icon : <FiUsers />,
   },
+   {
+    path: "/console/master/sale",
+    text : "sale",
+    icon : <FiUsers />,
+  },
   {
     path: "/console/pawn/jewelpawning",
     text: "Loan",
@@ -115,6 +120,10 @@ const sidebarConfig = [
       {
         path: "/console/report/bledge",
         text: "Bledge Report",
+      },
+       {
+        path: "/console/report/sale",
+        text: "Sale Report",
       },
     ],
   },

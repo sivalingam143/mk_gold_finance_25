@@ -9,6 +9,7 @@ import JewelEstimateCreation from "../pages/estimate/JewelEstimateCreation";
 import GroupCreation from "../pages/group/GroupCreation";
 import InterestCreation from "../pages/interst/InterestCreation";
 import CustomerCreations from "../pages/customer/CustomerCreations";
+import SaleCreations from "../pages/sale/SaleCreations";
 import PawnJewelryUpload from "../pages/jewelpawn/PawnJewelryUpload";
 ///////////////////// Pdf preview /////////////////////////////
 import JewelPawnPreview from "../pdf/JewelPawnPreview";
@@ -36,8 +37,10 @@ import JewelPawnG from "../pages/jewelpawng/JewelPawnG";
 import JewelEstimate from "../pages/estimate/JewelEstimate";
 import Interest from "../pages/interst/Interest";
 import Customer from "../pages/customer/Customer";
+import Sale from "../pages/sale/sale";
 import OldData from "../pages/oldrecord/OldData";
 import CustomerDetails from "../pages/customer/CustomerDetails";
+import SaleDetails from "../pages/sale/SaleDetails";
 import Products from "../pages/products/Products";
 import ProductsCreation from "../pages/products/ProductsCreation";
 import Street from "../pages/street/Street";
@@ -47,7 +50,7 @@ import ExpenseCreation from "../pages/expense/expenseCreation";
 import AdvanceReport from "../pages/advance_report";
 import JewelPawnofficePreview from "../pdf/jewelpawnofficepreview"
 import BankPledgeReport from "../pages/bledge_report";
-
+import SaleReport from "../pages/sale_report";
 const routes = [
   { path: "/console/dashboard", element: <DashBoard /> },
   { path: "/console/user", element: <User /> },
@@ -91,6 +94,8 @@ const routes = [
   { path: "/console/master/group/create", element: <GroupCreation /> },
   { path: "/console/master/customer", element: <Customer /> },
   { path: "/console/master/customerdetails", element: <CustomerDetails /> },
+    { path: "/console/master/sale", element: <Sale /> },
+  { path: "/console/master/saledetails", element: <SaleDetails /> },
   { path: "/console/report/overall", element: <OverallReport /> },
   { path: "/console/report/balancesheet", element: <BalanceSheet /> },
   { path: "/console/report/pawng", element: <PawnGReport /> },
@@ -105,12 +110,13 @@ const routes = [
   {path: "/console/transaction" ,element:<ExpenseEntry/>},
   {path: "/console/transaction/create" ,element:<ExpenseCreation/>},
   { path: "/console/master/customer/create", element: <CustomerCreations /> },
+    { path: "/console/master/sale/create", element: <SaleCreations /> },
   { path: "/console/master/products", element: <Products /> },
   { path: "/console/master/products/create", element: <ProductsCreation /> },
   { path: "/console/master/street", element: <Street /> },
   { path: "/console/master/street/create", element: <StreetCreation /> },
   {path: "/console/advancereport/pawn", element:<AdvanceReport/>},
-  {path: "/console/report/bledge",element:<BankPledgeReport/>}
+  {path: "/console/report/sale",element:<SaleReport/>}
 ];
 
 export default routes;

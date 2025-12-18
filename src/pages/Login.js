@@ -71,7 +71,7 @@ const Login = ({ onLogin }) => {
               <div className='text-center'>
               <img src={require("../components/sidebar/images/logo.png")} className="img-fluid logo" alt="Tirupathi Balaji" />
               </div>
-              <div className='text-center'> MINI MERCANTILE BANKERS </div>
+              <div className='text-center'> MK GOLD FINANCE</div>
               
               <div className='py-3'>
                 <TextInputForm

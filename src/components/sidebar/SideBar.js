@@ -63,7 +63,7 @@ const SideBar = ({ onLogout }) => {
                   alt=""
                 />
               </div>
-              <h6 className="logoname py-3"> MINI MERCANTILE BANKERS </h6>
+              <h6 className="logoname py-3"> MK GOLD FINANCE </h6>
             </li>
             {sidebarConfig.map((item, index) => (
               <li key={index}>
