@@ -9,7 +9,6 @@ import dayjs from 'dayjs';
 
 const SaleReport = () => {
   
-  
   const [reportData, setReportData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [fromDate, setFromDate] = useState('');
@@ -30,9 +29,8 @@ const SaleReport = () => {
       const responseData = await response.json();
 
       if (responseData.head.code === 200) {
-        const data = responseData.body.sales.map((item, index) => ({
-          sNo: index + 1,
-       date: item.sale_date ? item.sale_date : '-',
+        const data = responseData.body.sales.map((item) => ({
+          date: item.sale_date ? item.sale_date : '-',
           name: item.name || '-',
           place: item.place || '-',
           mobileNumber: item.mobile_number || '-',
@@ -54,7 +52,7 @@ const SaleReport = () => {
     }
   };
 
-  // Apply filters and sorting
+  // Apply filters and sorting + Recalculate S.No sequentially
   const applyFilters = (data, from, to, status) => {
     let filtered = [...data];
 
@@ -77,9 +75,18 @@ const SaleReport = () => {
         if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
         return 0;
       });
+    } else {
+      // Default sort by date ascending
+      filtered.sort((a, b) => new Date(a.date) - new Date(b.date));
     }
 
-    setFilteredData(filtered);
+    // Recalculate S.No starting from 1 for the filtered + sorted data
+    const filteredWithSNo = filtered.map((item, index) => ({
+      ...item,
+      sNo: index + 1,
+    }));
+
+    setFilteredData(filteredWithSNo);
     setCurrentPage(1);
   };
 
@@ -97,187 +104,171 @@ const SaleReport = () => {
   const handleFilterChange = () => {
     applyFilters(reportData, fromDate, toDate, statusFilter);
   };
+
   const handleClearFilters = () => {
-  setFromDate('');
-  setToDate('');
-  setStatusFilter('All'); // if you add status filter later
-  applyFilters(reportData, '', '', 'All');
-};
-const exportToCSV = () => {
-  const csvData = filteredData.map((row) => ({
-    'S.No': Number(row.sNo),
-    'Date': dayjs(row.date).format('YYYY-MM-DD'),
-
-    'Name': row.name,
-    'Place': row.place,
-
-    // Mobile number as number (Excel right-aligns)
-    'Mobile Number': row.mobileNumber ? Number(row.mobileNumber) : '',
-
-    'Bank Name': row.bankName,
-
-    // FORCE numeric columns
-    'Bank Loan Amount': Number(row.bankLoanAmount) || 0,
-    'Customer Receive Amount': Number(row.customerReceiveAmount) || 0,
-    'Total Jewel Weight': Number(row.totalJewelWeight) || 0,
-    'Total Loan Amount': Number(row.totalLoanAmount) || 0,
-
-    'Tharam': row.tharam,
-    'Staff Name': row.staffName,
-  }));
-
-  // TOTAL row
-  if (filteredData.length > 0) {
-    csvData.push({
-      'S.No': 'TOTAL',
-      'Date': '',
-      'Name': '',
-      'Place': '',
-      'Mobile Number': '',
-      'Bank Name': '',
-      'Bank Loan Amount': '',
-      'Customer Receive Amount': '',
-      'Total Jewel Weight': Number(totals.totalJewelWeight),
-      'Total Loan Amount': Number(totals.totalLoanAmount),
-      'Tharam': '',
-      'Staff Name': '',
-    });
-  }
-
-  const csv = Papa.unparse(csvData);
-  const blob = new Blob(['\uFEFF' + csv], {
-    type: 'text/csv;charset=utf-8;',
-  });
-
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = 'sale_report.csv';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
-
-const exportToPDF = () => {
-  const doc = new jsPDF({ orientation: 'landscape' });
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const margin = 14; // Matches the table margin
-
-  // Helper to center text (Title and Company Name)
-  const centerTextInMargins = (text, y, fontSize = 14, fontStyle = 'bold') => {
-    doc.setFontSize(fontSize);
-    doc.setFont(undefined, fontStyle);
-    const textWidth = doc.getTextWidth(text);
-    const x = margin + (pageWidth - 2 * margin - textWidth) / 2;
-    doc.text(text, x, y);
+    setFromDate('');
+    setToDate('');
+    setStatusFilter('All');
+    applyFilters(reportData, '', '', 'All');
   };
 
-  let currentY = 20;
+  const exportToCSV = () => {
+    const csvData = filteredData.map((row) => ({
+      'S.No': Number(row.sNo),
+      'Date': dayjs(row.date).format('YYYY-MM-DD'),
+      'Name': row.name,
+      'Place': row.place,
+      'Mobile Number': row.mobileNumber ? Number(row.mobileNumber) : '',
+      'Bank Name': row.bankName,
+      'Bank Loan Amount': Number(row.bankLoanAmount) || 0,
+      'Customer Receive Amount': Number(row.customerReceiveAmount) || 0,
+      'Total Jewel Weight': Number(row.totalJewelWeight) || 0,
+      'Total Loan Amount': Number(row.totalLoanAmount) || 0,
+      'Tharam': row.tharam,
+      'Staff Name': row.staffName,
+    }));
 
-  // Header Section
-  centerTextInMargins('Sale Report', currentY, 20, 'bold');
-  currentY += 10;
+    if (filteredData.length > 0) {
+      csvData.push({
+        'S.No': 'TOTAL',
+        'Date': '',
+        'Name': '',
+        'Place': '',
+        'Mobile Number': '',
+        'Bank Name': '',
+        'Bank Loan Amount': '',
+        'Customer Receive Amount': '',
+        'Total Jewel Weight': Number(totals.totalJewelWeight),
+        'Total Loan Amount': Number(totals.totalLoanAmount),
+        'Tharam': '',
+        'Staff Name': '',
+      });
+    }
 
-  centerTextInMargins('MK GOLD FINANCE', currentY, 16, 'bold');
-  currentY += 15;
+    const csv = Papa.unparse(csvData);
+    const blob = new Blob(['\uFEFF' + csv], {
+      type: 'text/csv;charset=utf-8;',
+    });
 
-  // Date Range Section
-  if (fromDate && toDate) {
-    const formattedFrom = dayjs(fromDate).format('DD-MM-YYYY');
-    const formattedTo = dayjs(toDate).format('DD-MM-YYYY');
-    doc.setFontSize(12);
-    doc.setTextColor(80, 80, 80);
-    centerTextInMargins(`From Date: ${formattedFrom}    To Date: ${formattedTo}`, currentY);
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'sale_report.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const exportToPDF = () => {
+    const doc = new jsPDF({ orientation: 'landscape' });
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 14;
+
+    const centerTextInMargins = (text, y, fontSize = 14, fontStyle = 'bold') => {
+      doc.setFontSize(fontSize);
+      doc.setFont(undefined, fontStyle);
+      const textWidth = doc.getTextWidth(text);
+      const x = margin + (pageWidth - 2 * margin - textWidth) / 2;
+      doc.text(text, x, y);
+    };
+
+    let currentY = 20;
+
+    centerTextInMargins('Sale Report', currentY, 20, 'bold');
+    currentY += 10;
+
+    centerTextInMargins('MK GOLD FINANCE', currentY, 16, 'bold');
     currentY += 15;
-  }
 
-  doc.setTextColor(33, 37, 41);
+    if (fromDate && toDate) {
+      const formattedFrom = dayjs(fromDate).format('DD-MM-YYYY');
+      const formattedTo = dayjs(toDate).format('DD-MM-YYYY');
+      doc.setFontSize(12);
+      doc.setTextColor(80, 80, 80);
+      centerTextInMargins(`From Date: ${formattedFrom}    To Date: ${formattedTo}`, currentY);
+      currentY += 15;
+    }
 
-  // Prepare Table Data
-  const tableData = filteredData.map((row) => [
-    row.sNo,
-    dayjs(row.date).isValid() ? dayjs(row.date).format('DD-MM-YYYY') : '-',
-    row.name,
-    row.place,
-    row.mobileNumber,
-    row.bankName,
-    row.bankLoanAmount,
-    row.customerReceiveAmount,
-    row.totalJewelWeight,
-    row.totalLoanAmount,
-    row.tharam,
-    row.staffName,
-  ]);
+    doc.setTextColor(33, 37, 41);
 
-  // Generate Table
-  doc.autoTable({
-    startY: currentY,
-    head: [[
-      'S.No', 'Date', 'Name', 'Place', 'Mobile Number',
-      'Bank Name', 'Bank Loan Amount', 'Customer Receive Amount',
-      'Total Jewel Weight', 'Total Loan Amount', 'Tharam', 'Staff Name'
-    ]],
-    body: tableData,
-    theme: 'grid',
-    styles: { fontSize: 10, cellPadding: 4 },
-    headStyles: {
-      fillColor: [52, 58, 64],
-      textColor: [255, 255, 255],
-      fontStyle: 'bold',
-      fontSize: 11,
-      halign: 'center',
-    },
-    columnStyles: {
-      6: { halign: 'right' }, // Bank Loan Amount
-      7: { halign: 'right' }, // Customer Receive Amount
-      8: { halign: 'right' }, // Total Jewel Weight
-      9: { halign: 'right' }, // Total Loan Amount
-    },
-    alternateRowStyles: { fillColor: [248, 249, 250] },
-    margin: { left: margin, right: margin },
-  });
+    const tableData = filteredData.map((row) => [
+      row.sNo,
+      dayjs(row.date).isValid() ? dayjs(row.date).format('DD-MM-YYYY') : '-',
+      row.name,
+      row.place,
+      row.mobileNumber,
+      row.bankName,
+      row.bankLoanAmount,
+      row.customerReceiveAmount,
+      row.totalJewelWeight,
+      row.totalLoanAmount,
+      row.tharam,
+      row.staffName,
+    ]);
 
-  // --- UPDATED TOTALS ALIGNMENT ---
-  const finalY = doc.lastAutoTable.finalY;
+    doc.autoTable({
+      startY: currentY,
+      head: [[
+        'S.No', 'Date', 'Name', 'Place', 'Mobile Number',
+        'Bank Name', 'Bank Loan Amount', 'Customer Receive Amount',
+        'Total Jewel Weight', 'Total Loan Amount', 'Tharam', 'Staff Name'
+      ]],
+      body: tableData,
+      theme: 'grid',
+      styles: { fontSize: 10, cellPadding: 4 },
+      headStyles: {
+        fillColor: [52, 58, 64],
+        textColor: [255, 255, 255],
+        fontStyle: 'bold',
+        fontSize: 11,
+        halign: 'center',
+      },
+      columnStyles: {
+        6: { halign: 'right' },
+        7: { halign: 'right' },
+        8: { halign: 'right' },
+        9: { halign: 'right' },
+      },
+      alternateRowStyles: { fillColor: [248, 249, 250] },
+      margin: { left: margin, right: margin },
+    });
 
-  if (filteredData.length > 0) {
-    let totalsY = finalY + 15; // Vertical spacing after table
+    const finalY = doc.lastAutoTable.finalY;
 
-    doc.setFontSize(13);
-    doc.setFont(undefined, 'bold');
-    doc.setTextColor(0, 0, 100); // Dark Blue
+    if (filteredData.length > 0) {
+      let totalsY = finalY + 15;
 
-    const weightText = `Total Jewel Weight: ${parseFloat(totals.totalJewelWeight).toFixed(2)} g`;
-    const loanText = `Total Loan Amount: ${parseFloat(totals.totalLoanAmount).toFixed(2)} `;
+      doc.setFontSize(13);
+      doc.setFont(undefined, 'bold');
+      doc.setTextColor(0, 0, 100);
 
-    // Calculate X to align text to the right margin
-    // Formula: Total Page Width - Right Margin - Text Width
-    const weightWidth = doc.getTextWidth(weightText);
-    const loanWidth = doc.getTextWidth(loanText);
+      const weightText = `Total Jewel Weight: ${parseFloat(totals.totalJewelWeight).toFixed(2)} g`;
+      const loanText = `Total Loan Amount: ${parseFloat(totals.totalLoanAmount).toFixed(2)} `;
 
-    const xWeight = pageWidth - margin - weightWidth;
-    const xLoan = pageWidth - margin - loanWidth;
+      const weightWidth = doc.getTextWidth(weightText);
+      const loanWidth = doc.getTextWidth(loanText);
 
-    // Draw the text
-    doc.text(weightText, xWeight, totalsY);
-    totalsY += 8; // Small gap between lines
-    doc.text(loanText, xLoan, totalsY);
-  }
+      const xWeight = pageWidth - margin - weightWidth;
+      const xLoan = pageWidth - margin - loanWidth;
 
-  // Footer: Page Numbers & Timestamp
-  const pageCount = doc.internal.getNumberOfPages();
-  for (let i = 1; i <= pageCount; i++) {
-    doc.setPage(i);
-    doc.setFontSize(10);
-    doc.setTextColor(150);
-    doc.text(
-      `Generated on: ${dayjs().format('DD-MM-YYYY HH:mm')}`, 
-      margin, 
-      doc.internal.pageSize.height - 10
-    );
-  }
+      doc.text(weightText, xWeight, totalsY);
+      totalsY += 8;
+      doc.text(loanText, xLoan, totalsY);
+    }
 
-  doc.save('sale_report.pdf');
-};
+    const pageCount = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+      doc.setFontSize(10);
+      doc.setTextColor(150);
+      doc.text(
+        `Generated on: ${dayjs().format('DD-MM-YYYY HH:mm')}`, 
+        margin, 
+        doc.internal.pageSize.height - 10
+      );
+    }
+
+    doc.save('sale_report.pdf');
+  };
 
   // Pagination logic
   const indexOfLastRecord = currentPage * recordsPerPage;
@@ -312,35 +303,35 @@ const exportToPDF = () => {
     <div className="container py-4">
       <h2 className="text-center mb-4 text-3xl font-bold text-dark">Sale Report</h2>
 
-{/* Filters */}
-<div className="filter-card mb-4 row g-3 align-items-end">
-  <div className="col-md-4">
-    <label className="form-label fw-semibold">From Date</label>
-    <input
-      type="date"
-      className="form-control"
-      value={fromDate}
-      onChange={(e) => setFromDate(e.target.value)}
-    />
-  </div>
-  <div className="col-md-4">
-    <label className="form-label fw-semibold">To Date</label>
-    <input
-      type="date"
-      className="form-control"
-      value={toDate}
-      onChange={(e) => setToDate(e.target.value)}
-    />
-  </div>
-  <div className="col-md-4 d-flex gap-2">
-    <button className="btn-cus" onClick={handleFilterChange}>
-      Apply Filters
-    </button>
-    <button className="btn-cus" onClick={handleClearFilters}>
-  Clear Filters
-</button>
-  </div>
-</div>
+      {/* Filters */}
+      <div className="filter-card mb-4 row g-3 align-items-end">
+        <div className="col-md-4">
+          <label className="form-label fw-semibold">From Date</label>
+          <input
+            type="date"
+            className="form-control"
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+          />
+        </div>
+        <div className="col-md-4">
+          <label className="form-label fw-semibold">To Date</label>
+          <input
+            type="date"
+            className="form-control"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+          />
+        </div>
+        <div className="col-md-4 d-flex gap-2">
+          <button className="btn-cus" onClick={handleFilterChange}>
+            Apply Filters
+          </button>
+          <button className="btn-cus" onClick={handleClearFilters}>
+            Clear Filters
+          </button>
+        </div>
+      </div>
 
       {/* Export Buttons */}
       <div className="mb-3 d-flex gap-2">
@@ -357,7 +348,7 @@ const exportToPDF = () => {
         <table className="table table-bordered table-hover table-striped">
           <thead className="table-dark">
             <tr>
-              {['sNo', 'date',  'name', 'place', 'mobileNumber', 'bankName', 'bankLoanAmount', 'customerReceiveAmount', 'totalJewelWeight', 'totalLoanAmount', 'tharam', 'staffName'].map((key) => (
+              {['sNo', 'date', 'name', 'place', 'mobileNumber', 'bankName', 'bankLoanAmount', 'customerReceiveAmount', 'totalJewelWeight', 'totalLoanAmount', 'tharam', 'staffName'].map((key) => (
                 <th
                   key={key}
                   onClick={() => handleSort(key)}
@@ -366,7 +357,6 @@ const exportToPDF = () => {
                 >
                   {key === 'sNo' ? 'S.No' :
                    key === 'date' ? 'Date' :
-                  
                    key === 'name' ? 'Name' :
                    key === 'place' ? 'Place' :
                    key === 'mobileNumber' ? 'Mobile Number' :
@@ -392,7 +382,6 @@ const exportToPDF = () => {
                 <tr key={row.sNo}>
                   <td className="p-3">{row.sNo}</td>
                   <td className="p-3">{dayjs(row.date).format('DD-MM-YYYY')}</td>
-                  
                   <td className="p-3">{row.name}</td>
                   <td className="p-3">{row.place}</td>
                   <td className="p-3">{row.mobileNumber}</td>
