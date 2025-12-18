@@ -65,63 +65,69 @@ const SideBar = ({ onLogout }) => {
               </div>
               <h6 className="logoname py-3"> MK GOLD FINANCE </h6>
             </li>
-            {sidebarConfig.map((item, index) => (
-              <li key={index}>
-                {item.subMenu ? (
-                  <>
-                    <div
-                      className="sub-menu nav-link"
-                      onClick={() => handleMenuClick(index)}
+            {/* Filter top-level items based on isAdminOnly property */}
+            {sidebarConfig
+              .filter((item) => !item.isAdminOnly || (item.isAdminOnly && user.role === "Admin"))
+              .map((item, index) => (
+                <li key={index}>
+                  {item.subMenu ? (
+                    <>
+                      <div
+                        className="sub-menu nav-link"
+                        onClick={() => handleMenuClick(index)}
+                      >
+                        <span className="list-icon">{item.icon}</span>
+                        <span className="list-text">{item.text}</span>
+                        <span
+                          className={`list-icon arrow ${
+                            openMenu[index] ? "rotate" : ""
+                          }`}
+                        >
+                          <MdOutlineKeyboardArrowRight />
+                        </span>
+                      </div>
+                      <Collapse in={openMenu[index]}>
+                        <ul className="submenu-list">
+                          {/* Filter submenu items based on isAdminOnly property */}
+                          {item.subMenu
+                            .filter((subItem) => !subItem.isAdminOnly || (subItem.isAdminOnly && user.role === "Admin"))
+                            .map((subItem, subIndex) => (
+                              <li key={subIndex}>
+                                <NavLink
+                                  to={subItem.path}
+                                  className="nav-link"
+                                  onClick={() => {
+                                    if (window.innerWidth <= 768) {
+                                      setIsSidebarOpen(false);
+                                    }
+                                  }}
+                                >
+                                  <span className="list-icon">
+                                    <LuDot />
+                                  </span>
+                                  <span className="list-text">{subItem.text}</span>
+                                </NavLink>
+                              </li>
+                            ))}
+                        </ul>
+                      </Collapse>
+                    </>
+                  ) : (
+                    <NavLink
+                      to={item.path}
+                      className="nav-link"
+                      onClick={() => {
+                        if (window.innerWidth <= 768) {
+                          setIsSidebarOpen(false);
+                        }
+                      }}
                     >
                       <span className="list-icon">{item.icon}</span>
                       <span className="list-text">{item.text}</span>
-                      <span
-                        className={`list-icon arrow ${
-                          openMenu[index] ? "rotate" : ""
-                        }`}
-                      >
-                        <MdOutlineKeyboardArrowRight />
-                      </span>
-                    </div>
-                    <Collapse in={openMenu[index]}>
-                      <ul className="submenu-list">
-                        {item.subMenu.map((subItem, subIndex) => (
-                          <li key={subIndex}>
-                            <NavLink
-                              to={subItem.path}
-                              className="nav-link"
-                              onClick={() => {
-                                if (window.innerWidth <= 768) {
-                                  setIsSidebarOpen(false);
-                                }
-                              }}
-                            >
-                              <span className="list-icon">
-                                <LuDot />
-                              </span>
-                              <span className="list-text">{subItem.text}</span>
-                            </NavLink>
-                          </li>
-                        ))}
-                      </ul>
-                    </Collapse>
-                  </>
-                ) : (
-                  <NavLink
-                    to={item.path}
-                    className="nav-link"
-                    onClick={() => {
-                      if (window.innerWidth <= 768) {
-                        setIsSidebarOpen(false);
-                      }
-                    }}
-                  >
-                    <span className="list-icon">{item.icon}</span>
-                    <span className="list-text">{item.text}</span>
-                  </NavLink>
-                )}
-              </li>
-            ))}
+                    </NavLink>
+                  )}
+                </li>
+              ))}
           </ul>
         </div>
       </div>

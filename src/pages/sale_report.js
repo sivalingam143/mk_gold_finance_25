@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import API_DOMAIN from '../config/config';
 import Papa from 'papaparse';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './BankPledgeReport.css';
+import './SaleReport.css';
 import dayjs from 'dayjs';
 
 const SaleReport = () => {
+  
+  
   const [reportData, setReportData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [fromDate, setFromDate] = useState('');
@@ -17,10 +19,10 @@ const SaleReport = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
 
-  // Fetch data from API
+  // Fetch data from sale.php
   const fetchReportData = async () => {
     try {
-      const response = await fetch(`${API_DOMAIN}/pawnjewelry.php`, {
+      const response = await fetch(`${API_DOMAIN}/sale.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ search_text: '' }),
@@ -28,20 +30,19 @@ const SaleReport = () => {
       const responseData = await response.json();
 
       if (responseData.head.code === 200) {
-        const data = responseData.body.pawnjewelry.map((item, index) => ({
+        const data = responseData.body.sales.map((item, index) => ({
           sNo: index + 1,
-          date: item.pawnjewelry_date ? item.pawnjewelry_date.split(' ')[0] : '-',
-          loanNo: item.receipt_no || '-',
-          name : item.name || '-',
-          bankPledgeDate: item.bank_pledge_date || '-',
-          bankAssessorName: item.bank_assessor_name || '-',
+       date: item.sale_date ? item.sale_date : '-',
+          name: item.name || '-',
+          place: item.place || '-',
+          mobileNumber: item.mobile_number || '-',
           bankName: item.bank_name || '-',
-          interest: item.bank_interest || '-',
-          loanAmount: item.bank_pawn_value || '-',
-          duedate: item.bank_duration ? item.bank_duration.split(' ')[0] : '-',
-          additionalCharges: item.bank_additional_charges || '-',
-          location:item.location || '-',
-          status: item.status || '-',
+          bankLoanAmount: item.bank_loan_amount || '-',
+          customerReceiveAmount: item.customer_receive_amount || '-',
+          totalJewelWeight: item.total_jewel_weight || '0',
+          totalLoanAmount: item.total_loan_amount || '0',
+          tharam: item.tharam || '-',
+          staffName: item.staff_name || '-',
         }));
         setReportData(data);
         applyFilters(data, fromDate, toDate, statusFilter);
@@ -67,15 +68,6 @@ const SaleReport = () => {
       });
     }
 
-    // Status filter
-    if (status !== 'All') {
-      filtered = filtered.filter((item) =>
-        status === 'Outstanding'
-          ? item.status === 'நகை மீட்கபடவில்லை'
-          : item.status === 'நகை மீட்கபட்டது'
-      );
-    }
-
     // Apply sorting
     if (sortConfig.key) {
       filtered.sort((a, b) => {
@@ -88,7 +80,7 @@ const SaleReport = () => {
     }
 
     setFilteredData(filtered);
-    setCurrentPage(1); // Reset to first page after filtering
+    setCurrentPage(1);
   };
 
   // Handle sorting
@@ -105,78 +97,162 @@ const SaleReport = () => {
   const handleFilterChange = () => {
     applyFilters(reportData, fromDate, toDate, statusFilter);
   };
+  const handleClearFilters = () => {
+  setFromDate('');
+  setToDate('');
+  setStatusFilter('All'); // if you add status filter later
+  applyFilters(reportData, '', '', 'All');
+};
+const exportToCSV = () => {
+  const csvData = filteredData.map((row) => ({
+    'S.No': Number(row.sNo),
+    'Date': dayjs(row.date).format('YYYY-MM-DD'),
 
-  // Export to CSV
-  const exportToCSV = () => {
-    const csvData = filteredData.map((row) => ({
-      'S.No': row.sNo,
-      Date: row.date,
-      'Loan No': row.loanNo,
-      'Name' : row.name,
-      'Bank Pledge Date': row.bankPledgeDate,
-      'Bank Assessor Name': row.bankAssessorName,
-      'Bank Name': row.bankName,
-      Interest: row.interest,
-      'Loan Amount': row.loanAmount,
-      duedate: row.duedate,
-      'Additional Charges': row.additionalCharges,
-      'Location' : row.location
-    }));
-    const csv = Papa.unparse(csvData);
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.setAttribute('download', 'bank_pledge_report.csv');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+    'Name': row.name,
+    'Place': row.place,
 
-  // Export to PDF
-  const exportToPDF = () => {
-  const doc = new jsPDF({ orientation: 'landscape' }); // Landscape orientation
-  doc.setFontSize(16);
-  doc.text('Bank Pledge Report', 14, 20);
+    // Mobile number as number (Excel right-aligns)
+    'Mobile Number': row.mobileNumber ? Number(row.mobileNumber) : '',
+
+    'Bank Name': row.bankName,
+
+    // FORCE numeric columns
+    'Bank Loan Amount': Number(row.bankLoanAmount) || 0,
+    'Customer Receive Amount': Number(row.customerReceiveAmount) || 0,
+    'Total Jewel Weight': Number(row.totalJewelWeight) || 0,
+    'Total Loan Amount': Number(row.totalLoanAmount) || 0,
+
+    'Tharam': row.tharam,
+    'Staff Name': row.staffName,
+  }));
+
+  // TOTAL row
+  if (filteredData.length > 0) {
+    csvData.push({
+      'S.No': 'TOTAL',
+      'Date': '',
+      'Name': '',
+      'Place': '',
+      'Mobile Number': '',
+      'Bank Name': '',
+      'Bank Loan Amount': '',
+      'Customer Receive Amount': '',
+      'Total Jewel Weight': Number(totals.totalJewelWeight),
+      'Total Loan Amount': Number(totals.totalLoanAmount),
+      'Tharam': '',
+      'Staff Name': '',
+    });
+  }
+
+  const csv = Papa.unparse(csvData);
+  const blob = new Blob(['\uFEFF' + csv], {
+    type: 'text/csv;charset=utf-8;',
+  });
+
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'sale_report.csv';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+// Export to PDF - Now includes footer row with totals
+const exportToPDF = () => {
+  const doc = new jsPDF({ orientation: 'landscape' });
+  doc.setFontSize(18);
+  doc.text('Sale Report', 14, 22);
+
+  const tableData = filteredData.map((row) => [
+    row.sNo,
+    dayjs(row.date).format('DD-MM-YYYY'),
+    row.name,
+    row.place,
+    row.mobileNumber,
+    row.bankName,
+    row.bankLoanAmount,
+    row.customerReceiveAmount,
+    row.totalJewelWeight,
+    row.totalLoanAmount,
+    row.tharam,
+    row.staffName,
+  ]);
+
   doc.autoTable({
-    startY: 30,
-    head: [['S.No', 'Date', 'Loan No','Name', 'Bank Pledge Date', 'Bank Assessor Name', 'Bank Name', 'Interest', 'Loan Amount', 'Due Date', 'Additional Charges','Location']],
-    body: filteredData.map((row) => [
-      row.sNo,
-      row.date,
-      row.loanNo,
-      row.name,
-      row.bankPledgeDate,
-      row.bankAssessorName,
-      row.bankName,
-      row.interest,
-      row.loanAmount,
-      row.duedate,
-      row.additionalCharges,
-      row.location
-    ]),
+    startY: 35,
+    head: [[
+      'S.No', 'Date', 'Name', 'Place', 'Mobile Number',
+      'Bank Name', 'Bank Loan Amount', 'Customer Receive Amount',
+      'Total Jewel Weight', 'Total Loan Amount', 'Tharam', 'Staff Name'
+    ]],
+    body: tableData,
+    foot: filteredData.length > 0 ? [[
+      '', '', '', '', '', '', '', '',           // Columns 1–8 empty
+      `Total: ${totals.totalJewelWeight} g`,    // Column 9: Total Jewel Weight
+      `Total: ₹ ${totals.totalLoanAmount}`,     // Column 10: Total Loan Amount
+      '',                                       // Column 11: Tharam
+      ''                                        // Column 12: Staff Name
+    ]] : [],
     theme: 'grid',
     styles: {
       fontSize: 10,
-      cellPadding: 3,
+      cellPadding: 4,
       textColor: [33, 37, 41],
-      lineColor: [200, 200, 200]
+      halign: 'left', // default
     },
     headStyles: {
-      fillColor: [108, 117, 125],
+      fillColor: [52, 58, 64],
       textColor: [255, 255, 255],
-      fontStyle: 'bold'
+      fontStyle: 'bold',
+      fontSize: 11,
+      halign: 'center',
+      valign: 'middle',
     },
-    alternateRowStyles: { fillColor: [245, 245, 245] },
+    footStyles: {
+      fillColor: [240, 245, 250],
+      textColor: [0, 0, 0],
+      fontStyle: 'bold',
+      fontSize: 12,
+      halign: 'right',         // Makes text inside footer cells right-aligned
+    },
+    columnStyles: {
+      // Right-align numeric columns in body
+      6: { halign: 'right' }, // Bank Loan Amount
+      7: { halign: 'right' }, // Customer Receive Amount
+      8: { halign: 'right' }, // Total Jewel Weight
+      9: { halign: 'right' }, // Total Loan Amount
+      // Footer totals will inherit footStyles.halign = right
+    },
+    alternateRowStyles: { fillColor: [248, 249, 250] },
+    margin: { left: 14, right: 14 },
   });
-  doc.save('bank_pledge_report.pdf');
-};
 
+  doc.save('sale_report.pdf');
+};
 
   // Pagination logic
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
   const currentRecords = filteredData.slice(indexOfFirstRecord, indexOfLastRecord);
   const totalPages = Math.ceil(filteredData.length / recordsPerPage);
+
+  // Calculate totals based on filtered data
+  const totals = useMemo(() => {
+    const totalWeight = filteredData.reduce((sum, item) => {
+      const weight = parseFloat(item.totalJewelWeight) || 0;
+      return sum + weight;
+    }, 0);
+
+    const totalLoan = filteredData.reduce((sum, item) => {
+      const loan = parseFloat(item.totalLoanAmount) || 0;
+      return sum + loan;
+    }, 0);
+
+    return {
+      totalJewelWeight: totalWeight.toFixed(2),
+      totalLoanAmount: totalLoan.toFixed(2),
+    };
+  }, [filteredData]);
 
   // Fetch data on mount
   useEffect(() => {
@@ -185,62 +261,44 @@ const SaleReport = () => {
 
   return (
     <div className="container py-4">
-      <h2 className="text-center mb-4 text-3xl font-bold text-dark">Bank Pledge Report</h2>
+      <h2 className="text-center mb-4 text-3xl font-bold text-dark">Sale Report</h2>
 
-      {/* Filters */}
-      <div className="filter-card mb-4 row g-3 align-items-end">
-        <div className="col-md-3">
-          <label className="form-label fw-semibold">From Date</label>
-          <input
-            type="date"
-            className="form-control"
-            value={fromDate}
-            onChange={(e) => setFromDate(e.target.value)}
-          />
-        </div>
-        <div className="col-md-3">
-          <label className="form-label fw-semibold">To Date</label>
-          <input
-            type="date"
-            className="form-control"
-            value={toDate}
-            onChange={(e) => setToDate(e.target.value)}
-          />
-        </div>
-        <div className="col-md-3">
-          <label className="form-label fw-semibold">Status</label>
-          <select
-            className="form-select"
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-          >
-            <option value="All">All</option>
-            <option value="Outstanding">Outstanding</option>
-            <option value="Closed">Closed</option>
-          </select>
-        </div>
-        <div className="col-md-3">
-          <button
-            className="btn-cus"
-            onClick={handleFilterChange}
-          >
-            Apply Filters
-          </button>
-        </div>
-      </div>
+{/* Filters */}
+<div className="filter-card mb-4 row g-3 align-items-end">
+  <div className="col-md-4">
+    <label className="form-label fw-semibold">From Date</label>
+    <input
+      type="date"
+      className="form-control"
+      value={fromDate}
+      onChange={(e) => setFromDate(e.target.value)}
+    />
+  </div>
+  <div className="col-md-4">
+    <label className="form-label fw-semibold">To Date</label>
+    <input
+      type="date"
+      className="form-control"
+      value={toDate}
+      onChange={(e) => setToDate(e.target.value)}
+    />
+  </div>
+  <div className="col-md-4 d-flex gap-2">
+    <button className="btn-cus" onClick={handleFilterChange}>
+      Apply Filters
+    </button>
+    <button className="btn-cus" onClick={handleClearFilters}>
+  Clear Filters
+</button>
+  </div>
+</div>
 
       {/* Export Buttons */}
       <div className="mb-3 d-flex gap-2">
-        <button
-          onClick={exportToCSV}
-          className="btn-cus"
-        >
+        <button onClick={exportToCSV} className="btn-cus">
           Export to CSV
         </button>
-        <button
-          onClick={exportToPDF}
-          className="btn-cus"
-        >
+        <button onClick={exportToPDF} className="btn-cus">
           Export to PDF
         </button>
       </div>
@@ -250,24 +308,26 @@ const SaleReport = () => {
         <table className="table table-bordered table-hover table-striped">
           <thead className="table-dark">
             <tr>
-              {['sNo', 'date', 'loanNo','name', 'bankPledgeDate', 'bankAssessorName', 'bankName', 'interest', 'loanAmount', 'duedate', 'additionalCharges','location'].map((key) => (
+              {['sNo', 'date',  'name', 'place', 'mobileNumber', 'bankName', 'bankLoanAmount', 'customerReceiveAmount', 'totalJewelWeight', 'totalLoanAmount', 'tharam', 'staffName'].map((key) => (
                 <th
                   key={key}
                   onClick={() => handleSort(key)}
                   className="p-3 text-left cursor-pointer sort-header"
+                  style={key === 'date' ? { minWidth: '140px' } : {}}
                 >
                   {key === 'sNo' ? 'S.No' :
                    key === 'date' ? 'Date' :
-                   key === 'loanNo' ? 'Loan No' :
+                  
                    key === 'name' ? 'Name' :
-                   key === 'bankPledgeDate' ? 'Bank Pledge Date' :
-                   key === 'bankAssessorName' ? 'Bank Assessor Name' :
+                   key === 'place' ? 'Place' :
+                   key === 'mobileNumber' ? 'Mobile Number' :
                    key === 'bankName' ? 'Bank Name' :
-                   key === 'interest' ? 'Interest' :
-                   key === 'loanAmount' ? 'Loan Amount' :
-                   key === 'duedate' ? 'Due date' :
-                  key === 'location' ?'Loan No': 'Additional Charges' 
-                   }
+                   key === 'bankLoanAmount' ? 'Bank Loan Amount' :
+                   key === 'customerReceiveAmount' ? 'Customer Receive Amount' :
+                   key === 'totalJewelWeight' ? 'Total Jewel Weight' :
+                   key === 'totalLoanAmount' ? 'Total Loan Amount' :
+                   key === 'tharam' ? 'Tharam' :
+                   'Staff Name'}
                   {sortConfig.key === key ? (
                     <span className="ms-2">
                       {sortConfig.direction === 'asc' ? '↑' : '↓'}
@@ -282,22 +342,23 @@ const SaleReport = () => {
               currentRecords.map((row) => (
                 <tr key={row.sNo}>
                   <td className="p-3">{row.sNo}</td>
-                  <td className="p-3">{row.date}</td>
-                  <td className="p-3">{row.loanNo}</td>
-                   <td className="p-3">{row.name}</td>
-                 <td className="p-3">{dayjs(row.bankPledgeDate).format('DD-MM-YYYY')}</td>
-                  <td className="p-3">{row.bankAssessorName}</td>
+                  <td className="p-3">{dayjs(row.date).format('DD-MM-YYYY')}</td>
+                  
+                  <td className="p-3">{row.name}</td>
+                  <td className="p-3">{row.place}</td>
+                  <td className="p-3">{row.mobileNumber}</td>
                   <td className="p-3">{row.bankName}</td>
-                  <td className="p-3">{row.interest}</td>
-                  <td className="p-3">{row.loanAmount}</td>
-                  <td className="p-3">{row.duedate}</td>
-                  <td className="p-3">{row.additionalCharges}</td>
-                  <td className="p-3">{row.location}</td>
+                  <td className="p-3">{row.bankLoanAmount}</td>
+                  <td className="p-3">{row.customerReceiveAmount}</td>
+                  <td className="p-3">{row.totalJewelWeight}</td>
+                  <td className="p-3">{row.totalLoanAmount}</td>
+                  <td className="p-3">{row.tharam}</td>
+                  <td className="p-3">{row.staffName}</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="10" className="p-3 text-center text-muted">
+                <td colSpan="13" className="p-3 text-center text-muted">
                   No data available
                 </td>
               </tr>
@@ -344,6 +405,26 @@ const SaleReport = () => {
             </li>
           </ul>
         </nav>
+      </div>
+
+      {/* Total Summary Cards */}
+      <div className="row mt-5">
+        <div className="col-md-6 mb-3">
+          <div className="card border-primary shadow-sm">
+            <div className="card-body text-center">
+              <h5 className="card-title text-primary fw-bold">Total Jewel Weight</h5>
+              <h3 className="text-dark fw-bold">{totals.totalJewelWeight} g</h3>
+            </div>
+          </div>
+        </div>
+        <div className="col-md-6 mb-3">
+          <div className="card border-success shadow-sm">
+            <div className="card-body text-center">
+              <h5 className="card-title text-success fw-bold">Total Loan Amount</h5>
+              <h3 className="text-dark fw-bold">₹ {totals.totalLoanAmount}</h3>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

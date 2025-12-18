@@ -51,6 +51,8 @@ import AdvanceReport from "../pages/advance_report";
 import JewelPawnofficePreview from "../pdf/jewelpawnofficepreview"
 import BankPledgeReport from "../pages/bledge_report";
 import SaleReport from "../pages/sale_report";
+
+
 const routes = [
   { path: "/console/dashboard", element: <DashBoard /> },
   { path: "/console/user", element: <User /> },

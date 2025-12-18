@@ -105,7 +105,7 @@ const sidebarConfig = [
     icon: <FaPersonCircleQuestion />,
     text: "Transaction",
   },
-  {
+ {
     text: "Reports",
     icon: <FaSquarePlus />,
     subMenu: [
@@ -121,10 +121,11 @@ const sidebarConfig = [
         path: "/console/report/bledge",
         text: "Bledge Report",
       },
-       {
-        path: "/console/report/sale",
-        text: "Sale Report",
-      },
+     {
+      path: "/console/report/sale",
+      text: "Sale Report",
+      isAdminOnly: true, // This is correct
+    },
     ],
   },
 ];

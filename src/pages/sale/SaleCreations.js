@@ -30,11 +30,13 @@ const SaleCreations = () => {
     { value: "22CD", label: "22CD" },
     { value: "916", label: "916" },
   ];
+  const getTodayDate = () => new Date().toISOString().split('T')[0];
 // Replace the initialState definition in SaleCreations.js
 const initialState =
   type === "edit" || type === "view"
     ? {
         ...rowData,
+        date: rowData.date || getTodayDate(),
         tharam: rowData.tharam || "",
         customer_pic: Array.isArray(rowData.customer_pic) 
           ? rowData.customer_pic.map((url) => ({
@@ -63,6 +65,7 @@ const initialState =
       }
     : {
         // ... (keep your create initialState as is)
+        date: getTodayDate(),
         sale_id: "",
         name: "",
         place: "",
@@ -193,6 +196,7 @@ const handleChange = (e, field) => {
     setLoading(true);
     try {
       const payload = {
+        sale_date: formData.date || getTodayDate(),
         name: formData.name,
         place: formData.place || "",
         mobile_number: formData.mobile_number,
@@ -244,6 +248,7 @@ const handleUpdateSubmit = async () => {
     const payload = {
       edit_sale_id: rowData.sale_id,
       ...formData,
+      sale_date: formData.date || getTodayDate(),
       customer_pic: prepareFiles(formData.customer_pic),
       id_pic: prepareFiles(formData.id_pic),
       jewel_pic: prepareFiles(formData.jewel_pic),
@@ -277,7 +282,16 @@ const handleUpdateSubmit = async () => {
           <Col lg="12" className="py-3">
             <PageNav pagetitle={`${type === "edit" ? "Edit" : type === "view" ? "View" : "Create"} Sale`} />
           </Col>
-
+<Col lg="3" className="py-3">
+  <label className="form-label">Date</label>
+  <input
+    type="date"
+    className="form-control"
+    value={formData.date}
+    onChange={(e) => handleChange(e, "date")}
+    disabled={type === "view"}
+  />
+</Col>
           <Col lg="3" className="py-3">
             <TextInputForm labelname="Name" value={formData.name} onChange={(e) => handleChange(e, "name")} disabled={type === "view"} />
           </Col>
@@ -297,14 +311,14 @@ const handleUpdateSubmit = async () => {
             <TextInputForm labelname="Customer Receive Amount" value={formData.customer_receive_amount} onChange={(e) => handleChange(e, "customer_receive_amount")} disabled={type === "view"} />
           </Col>
          <Col lg="3" className="py-3">
-  <label className="form-label">Tharam</label>
+  <label className="form-label">தரம்</label>
   <select 
     className="form-select"  // Changed from form-control to form-select
     value={formData.tharam} 
     onChange={(e) => handleChange(e, "tharam")}
     disabled={type === "view"}
   >
-    <option value="">Select Tharam</option>
+    <option value="">Select தரம்</option>
     {tharamOptions.map((opt) => (
       <option key={opt.value} value={opt.value}>{opt.label}</option>
     ))}
@@ -418,21 +432,39 @@ const handleUpdateSubmit = async () => {
             </div>
           </Col>
 
-          <Col lg="12" className="text-center py-5">
-            {type === "view" ? (
-              <ClickButton label="Back" onClick={() => navigate("/console/master/sale")} />
-            ) : type === "edit" ? (
-              <>
-                <ClickButton label={loading ? "Updating..." : "Update"} onClick={handleUpdateSubmit} disabled={loading} />
-                <ClickButton label="Cancel" onClick={() => navigate("/console/master/sale")} className="mx-2" />
-              </>
-            ) : (
-              <>
-                <ClickButton label={loading ? "Submitting..." : "Submit"} onClick={handleSubmit} disabled={loading} />
-                <ClickButton label="Cancel" onClick={() => navigate("/console/master/sale")} className="mx-2" />
-              </>
-            )}
-          </Col>
+         <Col lg="12" className="text-center py-5">
+  {type === "view" ? (
+    <ClickButton
+      label="Back"
+      onClick={() => navigate("/console/master/sale")}
+    />
+  ) : type === "edit" ? (
+    <div className="d-flex justify-content-center gap-3">
+      <ClickButton
+        label={loading ? "Updating..." : "Update"}
+        onClick={handleUpdateSubmit}
+        disabled={loading}
+      />
+      <ClickButton
+        label="Cancel"
+        onClick={() => navigate("/console/master/sale")}
+      />
+    </div>
+  ) : (
+    <div className="d-flex justify-content-center gap-3">
+      <ClickButton
+        label={loading ? "Submitting..." : "Submit"}
+        onClick={handleSubmit}
+        disabled={loading}
+      />
+      <ClickButton
+        label="Cancel"
+        onClick={() => navigate("/console/master/sale")}
+      />
+    </div>
+  )}
+</Col>
+
         </Row>
       </Container>
 
