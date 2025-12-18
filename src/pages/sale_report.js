@@ -157,15 +157,45 @@ const exportToCSV = () => {
   document.body.removeChild(link);
 };
 
-// Export to PDF - Now includes footer row with totals
 const exportToPDF = () => {
   const doc = new jsPDF({ orientation: 'landscape' });
-  doc.setFontSize(18);
-  doc.text('Sale Report', 14, 22);
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const margin = 14; // Matches the table margin
 
+  // Helper to center text (Title and Company Name)
+  const centerTextInMargins = (text, y, fontSize = 14, fontStyle = 'bold') => {
+    doc.setFontSize(fontSize);
+    doc.setFont(undefined, fontStyle);
+    const textWidth = doc.getTextWidth(text);
+    const x = margin + (pageWidth - 2 * margin - textWidth) / 2;
+    doc.text(text, x, y);
+  };
+
+  let currentY = 20;
+
+  // Header Section
+  centerTextInMargins('Sale Report', currentY, 20, 'bold');
+  currentY += 10;
+
+  centerTextInMargins('MK GOLD FINANCE', currentY, 16, 'bold');
+  currentY += 15;
+
+  // Date Range Section
+  if (fromDate && toDate) {
+    const formattedFrom = dayjs(fromDate).format('DD-MM-YYYY');
+    const formattedTo = dayjs(toDate).format('DD-MM-YYYY');
+    doc.setFontSize(12);
+    doc.setTextColor(80, 80, 80);
+    centerTextInMargins(`From Date: ${formattedFrom}    To Date: ${formattedTo}`, currentY);
+    currentY += 15;
+  }
+
+  doc.setTextColor(33, 37, 41);
+
+  // Prepare Table Data
   const tableData = filteredData.map((row) => [
     row.sNo,
-    dayjs(row.date).format('DD-MM-YYYY'),
+    dayjs(row.date).isValid() ? dayjs(row.date).format('DD-MM-YYYY') : '-',
     row.name,
     row.place,
     row.mobileNumber,
@@ -178,54 +208,73 @@ const exportToPDF = () => {
     row.staffName,
   ]);
 
+  // Generate Table
   doc.autoTable({
-    startY: 35,
+    startY: currentY,
     head: [[
       'S.No', 'Date', 'Name', 'Place', 'Mobile Number',
       'Bank Name', 'Bank Loan Amount', 'Customer Receive Amount',
       'Total Jewel Weight', 'Total Loan Amount', 'Tharam', 'Staff Name'
     ]],
     body: tableData,
-    foot: filteredData.length > 0 ? [[
-      '', '', '', '', '', '', '', '',           // Columns 1–8 empty
-      `Total: ${totals.totalJewelWeight} g`,    // Column 9: Total Jewel Weight
-      `Total: ₹ ${totals.totalLoanAmount}`,     // Column 10: Total Loan Amount
-      '',                                       // Column 11: Tharam
-      ''                                        // Column 12: Staff Name
-    ]] : [],
     theme: 'grid',
-    styles: {
-      fontSize: 10,
-      cellPadding: 4,
-      textColor: [33, 37, 41],
-      halign: 'left', // default
-    },
+    styles: { fontSize: 10, cellPadding: 4 },
     headStyles: {
       fillColor: [52, 58, 64],
       textColor: [255, 255, 255],
       fontStyle: 'bold',
       fontSize: 11,
       halign: 'center',
-      valign: 'middle',
-    },
-    footStyles: {
-      fillColor: [240, 245, 250],
-      textColor: [0, 0, 0],
-      fontStyle: 'bold',
-      fontSize: 12,
-      halign: 'right',         // Makes text inside footer cells right-aligned
     },
     columnStyles: {
-      // Right-align numeric columns in body
       6: { halign: 'right' }, // Bank Loan Amount
       7: { halign: 'right' }, // Customer Receive Amount
       8: { halign: 'right' }, // Total Jewel Weight
       9: { halign: 'right' }, // Total Loan Amount
-      // Footer totals will inherit footStyles.halign = right
     },
     alternateRowStyles: { fillColor: [248, 249, 250] },
-    margin: { left: 14, right: 14 },
+    margin: { left: margin, right: margin },
   });
+
+  // --- UPDATED TOTALS ALIGNMENT ---
+  const finalY = doc.lastAutoTable.finalY;
+
+  if (filteredData.length > 0) {
+    let totalsY = finalY + 15; // Vertical spacing after table
+
+    doc.setFontSize(13);
+    doc.setFont(undefined, 'bold');
+    doc.setTextColor(0, 0, 100); // Dark Blue
+
+    const weightText = `Total Jewel Weight: ${parseFloat(totals.totalJewelWeight).toFixed(2)} g`;
+    const loanText = `Total Loan Amount: ${parseFloat(totals.totalLoanAmount).toFixed(2)} `;
+
+    // Calculate X to align text to the right margin
+    // Formula: Total Page Width - Right Margin - Text Width
+    const weightWidth = doc.getTextWidth(weightText);
+    const loanWidth = doc.getTextWidth(loanText);
+
+    const xWeight = pageWidth - margin - weightWidth;
+    const xLoan = pageWidth - margin - loanWidth;
+
+    // Draw the text
+    doc.text(weightText, xWeight, totalsY);
+    totalsY += 8; // Small gap between lines
+    doc.text(loanText, xLoan, totalsY);
+  }
+
+  // Footer: Page Numbers & Timestamp
+  const pageCount = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= pageCount; i++) {
+    doc.setPage(i);
+    doc.setFontSize(10);
+    doc.setTextColor(150);
+    doc.text(
+      `Generated on: ${dayjs().format('DD-MM-YYYY HH:mm')}`, 
+      margin, 
+      doc.internal.pageSize.height - 10
+    );
+  }
 
   doc.save('sale_report.pdf');
 };
