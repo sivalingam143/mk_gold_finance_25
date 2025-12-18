@@ -118,6 +118,7 @@ const routes = [
   { path: "/console/master/street", element: <Street /> },
   { path: "/console/master/street/create", element: <StreetCreation /> },
   {path: "/console/advancereport/pawn", element:<AdvanceReport/>},
+   {path: "/console/report/bledge", element:<BankPledgeReport/>},
   {path: "/console/report/sale",element:<SaleReport/>}
 ];
 
