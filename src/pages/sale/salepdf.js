@@ -14,16 +14,20 @@ Font.register({
 });
 
 const styles = StyleSheet.create({
-    headerBox: {
-    border: '1pt solid black',      // Encloses the finance name in a box
-    padding: 10,
-    marginBottom: 0,                // Remove margin to let the double line sit flush
+   headerBox: {
+    border: '1pt solid black',
+    borderRadius: 9,
+    // Use symmetric padding for top and bottom to ensure even spacing
+    padding:0,
+    paddingBottom:0,
     alignItems: 'center',
+   
+    marginBottom: 0,
   },
   doubleLineContainer: {
-    marginTop: 10,
-    marginBottom: 35,  
-    marginLeft: -35, 
+    marginTop: 0,
+    marginBottom: 20,  
+    marginLeft: -20, 
     marginRight: -35,
   },
   lineThick: {
@@ -51,18 +55,30 @@ const styles = StyleSheet.create({
     padding: 4,
     flexGrow: 1,
   },
-  innerBorder: {
+  // innerBorder: {
+  //   border: '1pt solid black',
+  //   padding: 35,
+  //   paddingTop: 25,
+  //   height: '100%',
+  //   flexDirection: 'column',
+  // },
+innerBorder: {
     border: '1pt solid black',
-    padding: 35,
+    // Change from padding: 35 to specific values
     paddingTop: 25,
+    paddingBottom: 15,
+    paddingRight: 35,
+    paddingLeft: 20, // Reduced from 35 to 20 to move content left
     height: '100%',
     flexDirection: 'column',
   },
-
   topRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     fontSize: 11,
+    marginLeft:-10,
+     marginTop:-20,
+     marginRight:-20,
     marginBottom: 10,
   },
 
@@ -70,7 +86,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 8,
+    // marginBottom: 8,
   },
 
   address: {
@@ -84,6 +100,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
     marginBottom: 20,
+    marginLeft: -10,
   },
   label: {
     width: 80,
@@ -91,16 +108,39 @@ const styles = StyleSheet.create({
   },
   dottedLine: {
     borderBottom: '1pt dotted black',
-    flex: 1,
+    flex: 2,
     marginLeft: 10,
     marginRight: 10,
     height: 18,
   },
-
-  nameRow: {
+leftSection: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'flex-end',
-    marginBottom: 20,
+  },
+  rightSection: {
+    width: 150, 
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+  },
+  rightValueBox: {
+    borderBottom: '1pt dotted black',
+    width: 100,
+    textAlign: 'center',
+    marginLeft: 5,
+  },
+  leftDottedLine: {
+    borderBottom: '1pt dotted black',
+    flex: 1,
+    marginLeft: 5,
+    marginRight: 20,
+  },
+ nameRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    marginBottom: 15,
+    marginLeft:-10,
   },
   nameLabel: {
     width: 70,
@@ -144,24 +184,35 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
+  // body: {
+  //   fontSize: 13,
+  //   lineHeight: 1.9,
+  //   textAlign: 'justify',
+  //   marginBottom: 50,
+  // },
   body: {
     fontSize: 13,
-    lineHeight: 1.9,
+    lineHeight: 2.5,
     textAlign: 'justify',
-    marginBottom: 50,
+    marginBottom: 20,
+    // Pull the text to the left
+    marginLeft: -10, 
+    // Ensure it doesn't hit the right border by adding right margin
+    marginRight: 0,   
   },
 
   footer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 30,
+    marginTop: 'auto',
+    marginBottom:5,
   },
   witnessSection: {
     width: 200,
   },
   witnessLabel: {
     fontWeight: 'bold',
-    marginBottom: 40,
+    marginBottom: 10,
   },
   witnessLine1: {
     borderTop: '1pt solid black',
@@ -231,66 +282,83 @@ const SalePDF = ({ data }) => {
               <View style={styles.lineThin} />
             </View>
             {/* Dynamic Name and ID Row */}
-            <View style={styles.nameRow}>
-              <Text style={styles.nameLabel}>பெயர் :</Text>
-              <View style={styles.nameDotted}>
-                <Text style={{ marginLeft: 2 }}>{name}</Text>
-              </View>
-              <Text style={styles.numberLabel}>எண்:</Text>
-              <Text style={styles.numberValueBox}>{saleId}</Text>
-            </View>
+           <View style={styles.nameRow}>
+  <View style={styles.leftSection}>
+    <Text style={styles.nameLabel}>பெயர் :</Text>
+    <View>
+      <Text>{name}</Text>
+    
+     </View>
+  </View>
+  
+  <View style={styles.rightSection}>
+    <Text style={styles.numberLabel}>எண்:</Text>
+    <View style={styles.rightValueBox}>
+      
+    </View>
+  </View>
+</View>
 
-          
-            {/* Dynamic Place (ஊர்) */}
-            <View style={styles.nameRow}>
-              <Text style={styles.label}>ஊர் :</Text>
-              <View style={styles.dottedLine}>
-                <Text style={{ marginLeft: 2 }}>{place}</Text>
-              </View>
-              <Text style={styles.dateLabel}>தேதி:</Text>
-              <View style={styles.dottedLine}>
-                <Text style={{ marginLeft: 2 }}>{formattedDate}</Text>
-              </View>
-            </View>
+{/* Row 2: முகவரி and தேதி */}
+<View style={styles.nameRow}>
+  <View style={styles.leftSection}>
+    <Text style={styles.label}>முகவரி :</Text>
+    <View >
+      <Text>{place}</Text>
+    </View>
+  </View>
 
-            {/* Dynamic Mobile (தொலைபேசி) */}
-            <View style={styles.row}>
+  <View style={styles.rightSection}>
+    <Text style={styles.numberLabel}>தேதி:</Text>
+    <View style={styles.rightValueBox}>
+      <Text>{formattedDate}</Text>
+    </View>
+  </View>
+</View>
+
+     <View style={styles.row}>
               <Text style={styles.label}>தொலைபேசி:</Text>
-              <View style={styles.dottedLine}>
-                <Text style={{ marginLeft: 55 }}>{mobile}</Text>
+              <View >
+                <Text style={{ marginLeft: 30 }}>{mobile}</Text>
               </View>
             </View>
 
+
+            
 
             {/* Main body paragraph with Dynamic Total Amount */}
             <View style={styles.body}>
               <Text>
                 நான் ....................................தேதியில் ..........................யில் அடகு வைத்த நகை/அளவு ............................................................................................................{"\n"}
                 M.K.கோல்டு நிறுவனத்தில் அசல் .................................... வட்டி ....................................
-                தொகைகளை வாங்கி பொருட்களை திருப்பி, என்னுடைய அவசர நிமித்த செலவிற்காக நகைகளை விற்பனை செய்து,{"\n"}
+                தொகைகளை வாங்கி பொருட்களை திருப்பி, {""}என்னுடைய அவசர நிமித்த செலவிற்காக நகைகளை விற்பனை செய்து,
                  மீதமுள்ள தொகை ரூபாய்
                
-                பணத்தை M.K.கோல்டு நிறுவனத்திலிருந்து பெற்றுக் கொண்டேன். இதில் எதுவும் வில்லங்கம் வந்தால், அதை நானே என் {"\n"}
-                 சொந்த பொறுப்பில் சரி செய்து கொள்கிறேன். 
-                இதைப் படித்துப் பார்த்தும், படிக்கக் கேட்டும் முழுமையாகத் தெரிந்து கொண்டேன்.
+                பணத்தை M.K.கோல்டு நிறுவனத்திலிருந்து பெற்றுக் கொண்டேன்.{""} இதில் எதுவும் வில்லங்கம் வந்தால், அதை நானே {""}என் 
+                 சொந்த {""} பொறுப்பில் சரி {""}செய்து கொள்கிறேன். 
+                இதைப் படித்துப் {""}பார்த்தும், படிக்கக் கேட்டும் முழுமையாகத் தெரிந்து{""} கொண்டேன்.
               </Text>
             </View>
 
             {/* Footer Section */}
             <View style={styles.footer}>
               <View style={styles.witnessSection}>
+                <View style={styles.row}>
+              <Text style={styles.dateLabel}>தேதி:</Text>
+              </View>
+              
                 <Text style={styles.witnessLabel}>சாட்சி</Text>
                
                 <Text>1.</Text>
-                 <View style={styles.witnessLine1} />
+               
              
                 <Text>2.</Text>
-                   <View style={styles.witnessLine2} />
+                   
               </View>
 
               <View style={styles.signatureSection}>
                 <Text style={styles.signatureLabel}>இப்படிக்கு</Text>
-                <View style={styles.signatureLine} />
+                
               </View>
             </View>
           </View>
