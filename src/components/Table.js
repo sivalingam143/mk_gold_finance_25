@@ -8,6 +8,7 @@ import { MdChevronRight, MdChevronLeft } from "react-icons/md";
 import JewelPawnPdfG from "../pdf/JewelPawnPdfg";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import LoadingOverlay from "./LoadingOverlay";
+import SalePDF, { handleSaleDownload } from "../pages/sale/salepdf";
 
 
 const TableUI = ({
@@ -1119,6 +1120,9 @@ const handleSaleDeleteClick = async (id) => {
         <Dropdown.Menu>
           <Dropdown.Item onClick={() => handleSaleEditClick(rowData)}>
             Edit
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => handleSaleDownload(rowData, setLoading)}>
+            Download PDF
           </Dropdown.Item>
           <Dropdown.Item
             onClick={() => handleSaleDeleteClick(rowData.sale_id)}
