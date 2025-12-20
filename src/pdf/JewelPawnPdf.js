@@ -311,10 +311,9 @@ import {
   Font,
   Image
 } from '@react-pdf/renderer';
-import logo from '.././components/sidebar/images/logo.png';
-import watermark from '.././components/sidebar/images/logo.png';
-import customerPhoto from './images/customer.png';
-import jewelPhoto from './images/jewel.png';
+import logo from '../logo1.png';
+import watermark from './images/back.jpg'; 
+
 import tamilRegular from './fonts/NotoSansTamil-Regular.ttf';
 import tamilBold from './fonts/NotoSansTamil-Bold.ttf';
 
@@ -329,23 +328,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#F9FAFB',
     position: 'relative',
   },
-  watermark: {
+    watermark: {
     position: 'absolute',
-    top: '20%',
-    left: '6%',
-    width: 550,
-    opacity: 0.08,
+    top: '25%',
+    left: '10%',
+    width: 500,
+    opacity: 0.06,
   },
   header: {
     alignItems: 'center',
     fontFamily :'NotoTamil-Bold'
 
   },
-  headerLogo: {
-    width: 250,
-    height: 100,
+ headerLogo: {
+        width: 100,
+        height: 100,
 
-  },
+    },
   title: {
     fontSize: 16,
     fontFamily: 'NotoTamil-Bold',
@@ -575,7 +574,8 @@ const LoanReceiptPDF = ({ data }) => {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        <Image src={watermark} style={styles.watermark} />
+            {/* <Image src={watermark} style={styles.watermark} /> */}
+            <Image src={watermark} style={styles.watermark} fixed />
         <Text style={styles.officeCopy}>CUSTOMER COPY</Text>
 
         <View style={styles.header}>

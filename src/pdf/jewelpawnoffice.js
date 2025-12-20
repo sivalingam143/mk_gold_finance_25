@@ -8,8 +8,8 @@ import {
     Font,
     Image
 } from '@react-pdf/renderer';
-import logo from '.././components/sidebar/images/logo.png';
-import watermark from '.././components/sidebar/images/logo.png';
+import logo from '../logo1.png';
+import watermark from './images/back.jpg'; 
 import customerPhoto from './images/customer.png';
 import jewelPhoto from './images/jewel.png';
 import tamilRegular from './fonts/NotoSansTamil-Regular.ttf';
@@ -26,20 +26,20 @@ const styles = StyleSheet.create({
         backgroundColor: '#F9FAFB',
         position: 'relative',
     },
-    watermark: {
-        position: 'absolute',
-        top: '20%',
-        left: '6%',
-        width: 550,
-        opacity: 0.08,
-    },
+   watermark: {
+    position: 'absolute',
+    top: '25%',
+    left: '10%',
+    width: 500,
+    opacity: 0.06,
+  },
     header: {
         alignItems: 'center',
          fontFamily: 'NotoTamil-Bold',
 
     },
     headerLogo: {
-        width: 250,
+        width: 100,
         height: 100,
 
     },

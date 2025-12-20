@@ -1117,13 +1117,15 @@ const handleSaleDeleteClick = async (id) => {
             <BiDotsVerticalRounded />
           </Button>
         </Dropdown.Toggle>
+        
         <Dropdown.Menu>
+           <Dropdown.Item onClick={() => handleSaleDownload(rowData, setLoading)}>
+            Download PDF
+          </Dropdown.Item>
           <Dropdown.Item onClick={() => handleSaleEditClick(rowData)}>
             Edit
           </Dropdown.Item>
-          <Dropdown.Item onClick={() => handleSaleDownload(rowData, setLoading)}>
-            Download PDF
-          </Dropdown.Item>
+         
           <Dropdown.Item
             onClick={() => handleSaleDeleteClick(rowData.sale_id)}
           >
