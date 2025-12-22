@@ -764,19 +764,6 @@ const SaleCreations = () => {
                   className="btn btn-secondary btn-sm"
                 />
               </div>
-              {formData.customer_sign_pic.length > 0 && (
-                <div className="mt-2">
-                  <img
-                    src={formData.customer_sign_pic[0].data}
-                    alt="Customer Signature Preview"
-                    style={{
-                      width: "100%",
-                      maxHeight: "100px",
-                      objectFit: "contain",
-                    }}
-                  />
-                </div>
-              )}
             </div>
           </Col>
 
@@ -803,19 +790,6 @@ const SaleCreations = () => {
                   className="btn btn-secondary btn-sm"
                 />
               </div>
-              {formData.staff_sign_pic.length > 0 && (
-                <div className="mt-2">
-                  <img
-                    src={formData.staff_sign_pic[0].data}
-                    alt="Staff Signature Preview"
-                    style={{
-                      width: "100%",
-                      maxHeight: "100px",
-                      objectFit: "contain",
-                    }}
-                  />
-                </div>
-              )}
             </div>
           </Col>
           <Col lg="12" className="text-center py-5">
