@@ -6,6 +6,7 @@ import PageNav from "../../components/PageNav";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import API_DOMAIN from "../../config/config";
+import { SignatureCanvas } from "react-signature-canvas";
 import "react-toastify/dist/ReactToastify.css";
 
 const SaleCreations = () => {
@@ -16,6 +17,9 @@ const SaleCreations = () => {
   const customerPicInputRef = useRef(null);
   const idPicInputRef = useRef(null);
   const jewelPicInputRef = useRef(null);
+  const proofPicInputRef = useRef(null);
+  const sigCustomerRef = useRef();
+  const sigStaffRef = useRef();
 
   const [previewFile, setPreviewFile] = useState(null);
 
@@ -57,6 +61,30 @@ const SaleCreations = () => {
                 isExisting: true,
               }))
             : [],
+          proof_pic: Array.isArray(rowData.proof_pic)
+            ? rowData.proof_pic.map((url) => ({
+                name: url.split("/").pop(),
+                data: url,
+                type: /\.(pdf)$/i.test(url) ? "pdf" : "image",
+                isExisting: true,
+              }))
+            : [],
+          staff_sign_pic: Array.isArray(rowData.staff_sign_pic)
+            ? rowData.staff_sign_pic.map((url) => ({
+                name: url.split("/").pop(),
+                data: url,
+                type: /\.(pdf)$/i.test(url) ? "pdf" : "image",
+                isExisting: true,
+              }))
+            : [],
+          customer_sign_pic: Array.isArray(rowData.customer_sign_pic)
+            ? rowData.customer_sign_pic.map((url) => ({
+                name: url.split("/").pop(),
+                data: url,
+                type: /\.(pdf)$/i.test(url) ? "pdf" : "image",
+                isExisting: true,
+              }))
+            : [],
         }
       : {
           // ... (keep your create initialState as is)
@@ -75,9 +103,28 @@ const SaleCreations = () => {
           customer_pic: [],
           id_pic: [],
           jewel_pic: [],
+          proof_pic: [],
+          staff_sign_pic: [],
+          customer_sign_pic: [],
         };
   const [formData, setFormData] = useState(initialState);
+  console.log(formData);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (type === "edit" && formData.customer_sign_pic.length > 0) {
+      // Load existing customer signature into canvas
+      if (sigCustomerRef.current) {
+        sigCustomerRef.current.fromDataURL(formData.customer_sign_pic[0].data);
+      }
+    }
+    if (type === "edit" && formData.staff_sign_pic.length > 0) {
+      // Load existing staff signature into canvas
+      if (sigStaffRef.current) {
+        sigStaffRef.current.fromDataURL(formData.staff_sign_pic[0].data);
+      }
+    }
+  }, [type, formData.customer_sign_pic, formData.staff_sign_pic]);
 
   useEffect(() => {
     if (type !== "edit" && type !== "view") {
@@ -180,6 +227,68 @@ const SaleCreations = () => {
     setPreviewFile(file);
   };
 
+  const handleSaveCustomerSign = () => {
+    if (sigCustomerRef.current.isEmpty()) {
+      toast.error("Please provide customer signature first!");
+      return;
+    }
+    const dataUrl = sigCustomerRef.current.toDataURL("image/png");
+    setFormData((prev) => ({
+      ...prev,
+      customer_sign_pic: [
+        {
+          name: "customer_sign.png",
+          data: dataUrl,
+          type: "image",
+          isExisting: false,
+        },
+      ],
+    }));
+    toast.success("Customer signature saved!");
+  };
+
+  const handleClearCustomerSign = () => {
+    if (sigCustomerRef.current) {
+      sigCustomerRef.current.clear();
+    }
+    setFormData((prev) => ({
+      ...prev,
+      customer_sign_pic: [],
+    }));
+    toast.info("Customer signature cleared");
+  };
+
+  const handleSaveStaffSign = () => {
+    if (sigStaffRef.current.isEmpty()) {
+      toast.error("Please provide staff signature first!");
+      return;
+    }
+    const dataUrl = sigStaffRef.current.toDataURL("image/png");
+    setFormData((prev) => ({
+      ...prev,
+      staff_sign_pic: [
+        {
+          name: "staff_sign.png",
+          data: dataUrl,
+          type: "image",
+          isExisting: false,
+        },
+      ],
+    }));
+    toast.success("Staff signature saved!");
+  };
+
+  const handleClearStaffSign = () => {
+    if (sigStaffRef.current) {
+      sigStaffRef.current.clear();
+    }
+    setFormData((prev) => ({
+      ...prev,
+      staff_sign_pic: [],
+    }));
+    toast.info("Staff signature cleared");
+  };
+
   const handleSubmit = async () => {
     const required = ["name", "mobile_number", "bank_name", "staff_name"];
     for (const key of required) {
@@ -187,6 +296,14 @@ const SaleCreations = () => {
         toast.error(`${key.replace(/_/g, " ")} is required!`);
         return;
       }
+    }
+
+    if (
+      formData.customer_sign_pic.length === 0 ||
+      formData.staff_sign_pic.length === 0
+    ) {
+      toast.error("Both customer and staff signatures are required!");
+      return;
     }
 
     setLoading(true);
@@ -206,6 +323,11 @@ const SaleCreations = () => {
         customer_pic: formData.customer_pic.map((f) => ({ data: f.data })),
         id_pic: formData.id_pic.map((f) => ({ data: f.data })),
         jewel_pic: formData.jewel_pic.map((f) => ({ data: f.data })),
+        proof_pic: formData.proof_pic.map((f) => ({ data: f.data })),
+        staff_sign_pic: formData.staff_sign_pic.map((f) => ({ data: f.data })),
+        customer_sign_pic: formData.customer_sign_pic.map((f) => ({
+          data: f.data,
+        })),
       };
 
       const response = await fetch(`${API_DOMAIN}/sale.php`, {
@@ -240,14 +362,37 @@ const SaleCreations = () => {
         return { data: file.data, isExisting: false };
       });
 
+    // For signatures, if they were cleared or re-signed, handle accordingly
+    const prepareSignatures = (files) => {
+      if (files.length === 0) {
+        return []; // Empty if cleared
+      }
+      return files.map((file) => ({
+        data: file.data,
+        isExisting: file.isExisting || false,
+      }));
+    };
+
     try {
       const payload = {
         edit_sale_id: rowData.sale_id,
-        ...formData,
         sale_date: formData.date || getTodayDate(),
+        name: formData.name,
+        place: formData.place || "",
+        mobile_number: formData.mobile_number,
+        bank_name: formData.bank_name,
+        bank_loan_amount: formData.bank_loan_amount || "0",
+        customer_receive_amount: formData.customer_receive_amount || "0",
+        total_jewel_weight: formData.total_jewel_weight || "0",
+        total_loan_amount: formData.total_loan_amount || "0",
+        tharam: formData.tharam || "",
+        staff_name: formData.staff_name,
         customer_pic: prepareFiles(formData.customer_pic),
         id_pic: prepareFiles(formData.id_pic),
         jewel_pic: prepareFiles(formData.jewel_pic),
+        proof_pic: prepareFiles(formData.proof_pic),
+        staff_sign_pic: prepareSignatures(formData.staff_sign_pic),
+        customer_sign_pic: prepareSignatures(formData.customer_sign_pic),
       };
 
       const response = await fetch(`${API_DOMAIN}/sale.php`, {
@@ -533,6 +678,150 @@ const SaleCreations = () => {
               onChange={(e) => handleChange(e, "staff_name")}
               disabled={type === "view"}
             />
+          </Col>
+
+          {/* Proof Pic */}
+          <Col lg="12" className="py-5">
+            <div className="file-upload">
+              <label>Proof Pic</label>
+              <input
+                type="file"
+                accept="image/*,application/pdf"
+                multiple
+                ref={proofPicInputRef}
+                style={{ display: "none" }}
+                onChange={(e) => handleFileChange(e.target.files, "proof_pic")}
+              />
+              <ChooseButton
+                label="Choose File"
+                onClick={() => proofPicInputRef.current?.click()}
+              />
+              {formData.proof_pic.map((file, i) => (
+                <div
+                  key={i}
+                  className="file-item d-flex align-items-center mb-2 mt-2"
+                >
+                  {file.type === "image" ? (
+                    <img
+                      src={file.data}
+                      alt="preview"
+                      style={{
+                        width: 100,
+                        height: 100,
+                        objectFit: "cover",
+                        marginRight: 10,
+                        borderRadius: 5,
+                      }}
+                    />
+                  ) : (
+                    <span style={{ marginRight: 10 }}>{file.name}</span>
+                  )}
+                  <ChooseButton
+                    label="Preview"
+                    className="btn btn-primary btn-sm me-2"
+                    onClick={() => handlePreview(file)}
+                  />
+                  <ChooseButton
+                    label="Delete"
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleImageDelete(i, "proof_pic")}
+                  />
+                </div>
+              ))}
+            </div>
+          </Col>
+
+          {/* Signs Heading */}
+          <Col lg="12" className="py-3">
+            <h5>Customer Sign and Staff Sign</h5>
+          </Col>
+
+          {/* Customer Sign */}
+          <Col lg="6" className="py-5">
+            <div className="file-upload">
+              <label>Customer Sign</label>
+              <SignatureCanvas
+                ref={sigCustomerRef}
+                canvasProps={{
+                  className: "sigCanvas border rounded",
+                  style: { width: "100%", height: "200px" },
+                }}
+              />
+              <div className="d-flex justify-content-center gap-2 mt-2">
+                <ClickButton
+                  label="Submit Signature"
+                  onClick={handleSaveCustomerSign}
+                  className="btn btn-success btn-sm"
+                />
+                <ClickButton
+                  label="Clear"
+                  onClick={handleClearCustomerSign}
+                  className="btn btn-secondary btn-sm"
+                />
+              </div>
+              {formData.customer_sign_pic.length > 0 && (
+                <div className="mt-2">
+                  <img
+                    src={formData.customer_sign_pic[0].data}
+                    alt="Customer Signature Preview"
+                    style={{
+                      width: "100%",
+                      maxHeight: "100px",
+                      objectFit: "contain",
+                    }}
+                  />
+                  <ChooseButton
+                    label="Preview"
+                    className="btn btn-primary btn-sm mt-1"
+                    onClick={() => handlePreview(formData.customer_sign_pic[0])}
+                  />
+                </div>
+              )}
+            </div>
+          </Col>
+
+          {/* Staff Sign */}
+          <Col lg="6" className="py-5">
+            <div className="file-upload">
+              <label>Staff Sign</label>
+              <SignatureCanvas
+                ref={sigStaffRef}
+                canvasProps={{
+                  className: "sigCanvas border rounded",
+                  style: { width: "100%", height: "200px" },
+                }}
+              />
+              <div className="d-flex justify-content-center gap-2 mt-2">
+                <ClickButton
+                  label="Submit Signature"
+                  onClick={handleSaveStaffSign}
+                  className="btn btn-success btn-sm"
+                />
+                <ClickButton
+                  label="Clear"
+                  onClick={handleClearStaffSign}
+                  className="btn btn-secondary btn-sm"
+                />
+              </div>
+              {formData.staff_sign_pic.length > 0 && (
+                <div className="mt-2">
+                  <img
+                    src={formData.staff_sign_pic[0].data}
+                    alt="Staff Signature Preview"
+                    style={{
+                      width: "100%",
+                      maxHeight: "100px",
+                      objectFit: "contain",
+                    }}
+                  />
+                  <ChooseButton
+                    label="Preview"
+                    className="btn btn-primary btn-sm mt-1"
+                    onClick={() => handlePreview(formData.staff_sign_pic[0])}
+                  />
+                </div>
+              )}
+            </div>
           </Col>
           <Col lg="12" className="text-center py-5">
             {type === "view" ? (
