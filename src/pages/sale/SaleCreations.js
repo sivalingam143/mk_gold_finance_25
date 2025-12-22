@@ -112,21 +112,6 @@ const SaleCreations = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (type === "edit" && formData.customer_sign_pic.length > 0) {
-      // Load existing customer signature into canvas
-      if (sigCustomerRef.current) {
-        sigCustomerRef.current.fromDataURL(formData.customer_sign_pic[0].data);
-      }
-    }
-    if (type === "edit" && formData.staff_sign_pic.length > 0) {
-      // Load existing staff signature into canvas
-      if (sigStaffRef.current) {
-        sigStaffRef.current.fromDataURL(formData.staff_sign_pic[0].data);
-      }
-    }
-  }, [type, formData.customer_sign_pic, formData.staff_sign_pic]);
-
-  useEffect(() => {
     if (type !== "edit" && type !== "view") {
       const fetchSales = async () => {
         try {
@@ -751,13 +736,30 @@ const SaleCreations = () => {
                 checked={formData.customer_sign_pic.length > 0}
                 disabled
               />
-              <SignatureCanvas
-                ref={sigCustomerRef}
-                canvasProps={{
-                  className: "sigCanvas border rounded",
-                  style: { width: "100%", height: "200px" },
-                }}
-              />
+              {(type === "edit" || type === "view") &&
+              formData.customer_sign_pic.length > 0 ? (
+                <img
+                  src={formData.customer_sign_pic[0].data}
+                  alt="Customer Signature"
+                  style={{
+                    width: "100%",
+                    height: "200px",
+                    objectFit: "contain",
+                    border: "1px solid #ccc",
+                    borderRadius: 5,
+                    background: "#fff",
+                  }}
+                />
+              ) : (
+                <SignatureCanvas
+                  ref={sigCustomerRef}
+                  canvasProps={{
+                    className: "sigCanvas border rounded",
+                    style: { width: "100%", height: "200px" },
+                  }}
+                />
+              )}
+
               <div className="d-flex justify-content-center gap-2 mt-2">
                 <ClickButton
                   label="Submit Signature"
@@ -785,13 +787,30 @@ const SaleCreations = () => {
                 checked={formData.staff_sign_pic.length > 0}
                 disabled
               />
-              <SignatureCanvas
-                ref={sigStaffRef}
-                canvasProps={{
-                  className: "sigCanvas border rounded",
-                  style: { width: "100%", height: "200px" },
-                }}
-              />
+              {(type === "edit" || type === "view") &&
+              formData.staff_sign_pic.length > 0 ? (
+                <img
+                  src={formData.staff_sign_pic[0].data}
+                  alt="Staff Signature"
+                  style={{
+                    width: "100%",
+                    height: "200px",
+                    objectFit: "contain",
+                    border: "1px solid #ccc",
+                    borderRadius: 5,
+                    background: "#fff",
+                  }}
+                />
+              ) : (
+                <SignatureCanvas
+                  ref={sigStaffRef}
+                  canvasProps={{
+                    className: "sigCanvas border rounded",
+                    style: { width: "100%", height: "200px" },
+                  }}
+                />
+              )}
+
               <div className="d-flex justify-content-center gap-2 mt-2">
                 <ClickButton
                   label="Submit Signature"
