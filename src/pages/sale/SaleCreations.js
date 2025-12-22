@@ -20,67 +20,62 @@ const SaleCreations = () => {
   const [previewFile, setPreviewFile] = useState(null);
 
   const tharamOptions = [
-    { value: "16", label: "16" },
-    { value: "17", label: "17" },
-    { value: "18", label: "18" },
-    { value: "19", label: "19" },
+    { value: "18", label: "18k" },
     { value: "20", label: "20" },
-    { value: "21", label: "21" },
-    { value: "22", label: "22" },
-    { value: "22CD", label: "22CD" },
-    { value: "916", label: "916" },
+    { value: "22", label: "22k" },
+    { value: "24k", label: "24k" },
   ];
-  const getTodayDate = () => new Date().toISOString().split('T')[0];
-// Replace the initialState definition in SaleCreations.js
-const initialState =
-  type === "edit" || type === "view"
-    ? {
-        ...rowData,
-        date: rowData.date || getTodayDate(),
-        tharam: rowData.tharam || "",
-        customer_pic: Array.isArray(rowData.customer_pic) 
-          ? rowData.customer_pic.map((url) => ({
-              name: url.split('/').pop(),
-              data: url, // Use the full URL directly
-              type: /\.(pdf)$/i.test(url) ? "pdf" : "image",
-              isExisting: true
-            })) 
-          : [],
-        id_pic: Array.isArray(rowData.id_pic) 
-          ? rowData.id_pic.map((url) => ({
-              name: url.split('/').pop(),
-              data: url,
-              type: /\.(pdf)$/i.test(url) ? "pdf" : "image",
-              isExisting: true
-            })) 
-          : [],
-        jewel_pic: Array.isArray(rowData.jewel_pic) 
-          ? rowData.jewel_pic.map((url) => ({
-              name: url.split('/').pop(),
-              data: url,
-              type: /\.(pdf)$/i.test(url) ? "pdf" : "image",
-              isExisting: true
-            })) 
-          : [],
-      }
-    : {
-        // ... (keep your create initialState as is)
-        date: getTodayDate(),
-        sale_id: "",
-        name: "",
-        place: "",
-        mobile_number: "",
-        bank_name: "",
-        bank_loan_amount: "",
-        customer_receive_amount: "",
-        total_jewel_weight: "",
-        total_loan_amount: "",
-        tharam: "",
-        staff_name: "",
-        customer_pic: [],
-        id_pic: [],
-        jewel_pic: [],
-      };
+  const getTodayDate = () => new Date().toISOString().split("T")[0];
+  // Replace the initialState definition in SaleCreations.js
+  const initialState =
+    type === "edit" || type === "view"
+      ? {
+          ...rowData,
+          date: rowData.date || getTodayDate(),
+          tharam: rowData.tharam || "",
+          customer_pic: Array.isArray(rowData.customer_pic)
+            ? rowData.customer_pic.map((url) => ({
+                name: url.split("/").pop(),
+                data: url, // Use the full URL directly
+                type: /\.(pdf)$/i.test(url) ? "pdf" : "image",
+                isExisting: true,
+              }))
+            : [],
+          id_pic: Array.isArray(rowData.id_pic)
+            ? rowData.id_pic.map((url) => ({
+                name: url.split("/").pop(),
+                data: url,
+                type: /\.(pdf)$/i.test(url) ? "pdf" : "image",
+                isExisting: true,
+              }))
+            : [],
+          jewel_pic: Array.isArray(rowData.jewel_pic)
+            ? rowData.jewel_pic.map((url) => ({
+                name: url.split("/").pop(),
+                data: url,
+                type: /\.(pdf)$/i.test(url) ? "pdf" : "image",
+                isExisting: true,
+              }))
+            : [],
+        }
+      : {
+          // ... (keep your create initialState as is)
+          date: getTodayDate(),
+          sale_id: "",
+          name: "",
+          place: "",
+          mobile_number: "",
+          bank_name: "",
+          bank_loan_amount: "",
+          customer_receive_amount: "",
+          total_jewel_weight: "",
+          total_loan_amount: "",
+          tharam: "",
+          staff_name: "",
+          customer_pic: [],
+          id_pic: [],
+          jewel_pic: [],
+        };
   const [formData, setFormData] = useState(initialState);
   const [loading, setLoading] = useState(false);
 
@@ -114,7 +109,7 @@ const initialState =
     }
   }, [type]);
 
-const handleChange = (e, field) => {
+  const handleChange = (e, field) => {
     const value = e.target ? e.target.value : e.value;
 
     setFormData((prev) => {
@@ -125,8 +120,9 @@ const handleChange = (e, field) => {
       if (field === "bank_loan_amount" || field === "customer_receive_amount") {
         // Parse values as numbers, defaulting to 0 if empty or invalid
         const bankAmt = parseFloat(updatedData.bank_loan_amount) || 0;
-        const customerAmt = parseFloat(updatedData.customer_receive_amount) || 0;
-        
+        const customerAmt =
+          parseFloat(updatedData.customer_receive_amount) || 0;
+
         // Update the total field automatically
         updatedData.total_loan_amount = (bankAmt + customerAmt).toString();
       }
@@ -232,111 +228,148 @@ const handleChange = (e, field) => {
     }
   };
 
-const handleUpdateSubmit = async () => {
-  setLoading(true);
+  const handleUpdateSubmit = async () => {
+    setLoading(true);
 
-  const prepareFiles = (files) =>
-    files.map((file) => {
-      if (file.isExisting) {
-        // Just send the path back to keep it in the DB
-        return { data: file.data, isExisting: true };
+    const prepareFiles = (files) =>
+      files.map((file) => {
+        if (file.isExisting) {
+          // Just send the path back to keep it in the DB
+          return { data: file.data, isExisting: true };
+        }
+        return { data: file.data, isExisting: false };
+      });
+
+    try {
+      const payload = {
+        edit_sale_id: rowData.sale_id,
+        ...formData,
+        sale_date: formData.date || getTodayDate(),
+        customer_pic: prepareFiles(formData.customer_pic),
+        id_pic: prepareFiles(formData.id_pic),
+        jewel_pic: prepareFiles(formData.jewel_pic),
+      };
+
+      const response = await fetch(`${API_DOMAIN}/sale.php`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+      if (result.head.code === 200) {
+        toast.success("Updated successfully");
+        setTimeout(() => {
+          navigate("/console/master/sale");
+        }, 1200);
       }
-      return { data: file.data, isExisting: false };
-    });
-
-  try {
-    const payload = {
-      edit_sale_id: rowData.sale_id,
-      ...formData,
-      sale_date: formData.date || getTodayDate(),
-      customer_pic: prepareFiles(formData.customer_pic),
-      id_pic: prepareFiles(formData.id_pic),
-      jewel_pic: prepareFiles(formData.jewel_pic),
-    };
-
-    const response = await fetch(`${API_DOMAIN}/sale.php`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    const result = await response.json();
-    if (result.head.code === 200) {
-      toast.success("Updated successfully");
-      setTimeout(() => {
-        navigate("/console/master/sale");
-      }, 1200);
-    
+    } catch (error) {
+      toast.error("Update failed");
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    toast.error("Update failed");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <div>
       <Container>
         <Row className="regular">
           <Col lg="12" className="py-3">
-            <PageNav pagetitle={`${type === "edit" ? "Edit" : type === "view" ? "View" : "Create"} Sale`} />
-          </Col>
-<Col lg="3" className="py-3">
-  <label className="form-label">Date</label>
-  <input
-    type="date"
-    className="form-control"
-    value={formData.date}
-    onChange={(e) => handleChange(e, "date")}
-    disabled={type === "view"}
-  />
-</Col>
-          <Col lg="3" className="py-3">
-            <TextInputForm labelname="Name" value={formData.name} onChange={(e) => handleChange(e, "name")} disabled={type === "view"} />
+            <PageNav
+              pagetitle={`${
+                type === "edit" ? "Edit" : type === "view" ? "View" : "Create"
+              } Sale`}
+            />
           </Col>
           <Col lg="3" className="py-3">
-            <TextInputForm labelname="Place" value={formData.place} onChange={(e) => handleChange(e, "place")} disabled={type === "view"} />
+            <label className="form-label">Date</label>
+            <input
+              type="date"
+              className="form-control"
+              value={formData.date}
+              onChange={(e) => handleChange(e, "date")}
+              disabled={type === "view"}
+            />
           </Col>
           <Col lg="3" className="py-3">
-            <TextInputForm labelname="Mobile Number" value={formData.mobile_number} onChange={(e) => handleChange(e, "mobile_number")} disabled={type === "view"} />
+            <TextInputForm
+              labelname="Name"
+              value={formData.name}
+              onChange={(e) => handleChange(e, "name")}
+              disabled={type === "view"}
+            />
           </Col>
           <Col lg="3" className="py-3">
-            <TextInputForm labelname="Bank Name" value={formData.bank_name} onChange={(e) => handleChange(e, "bank_name")} disabled={type === "view"} />
+            <TextInputForm
+              labelname="Place"
+              value={formData.place}
+              onChange={(e) => handleChange(e, "place")}
+              disabled={type === "view"}
+            />
           </Col>
           <Col lg="3" className="py-3">
-            <TextInputForm labelname="Bank Loan Amount" value={formData.bank_loan_amount} onChange={(e) => handleChange(e, "bank_loan_amount")} disabled={type === "view"} />
+            <TextInputForm
+              labelname="Mobile Number"
+              value={formData.mobile_number}
+              onChange={(e) => handleChange(e, "mobile_number")}
+              disabled={type === "view"}
+            />
           </Col>
           <Col lg="3" className="py-3">
-            <TextInputForm labelname="Customer Receive Amount" value={formData.customer_receive_amount} onChange={(e) => handleChange(e, "customer_receive_amount")} disabled={type === "view"} />
+            <TextInputForm
+              labelname="Bank Name"
+              value={formData.bank_name}
+              onChange={(e) => handleChange(e, "bank_name")}
+              disabled={type === "view"}
+            />
           </Col>
-         <Col lg="3" className="py-3">
-  <label className="form-label">தரம்</label>
-  <select 
-    className="form-select"  // Changed from form-control to form-select
-    value={formData.tharam} 
-    onChange={(e) => handleChange(e, "tharam")}
-    disabled={type === "view"}
-  >
-    <option value="">Select தரம்</option>
-    {tharamOptions.map((opt) => (
-      <option key={opt.value} value={opt.value}>{opt.label}</option>
-    ))}
-  </select>
-</Col>
-           <Col lg="3" className="py-3">
-            <TextInputForm labelname="Total Jewel Weight" value={formData.total_jewel_weight} onChange={(e) => handleChange(e, "total_jewel_weight")} disabled={type === "view"} />
-          </Col>
-           <Col lg="3" className="py-3">
-  <TextInputForm 
-    labelname="Total Loan Amount" 
-    value={formData.total_loan_amount} 
-    onChange={(e) => handleChange(e, "total_loan_amount")} 
-    disabled={true} // Set to true since it's auto-calculated
-  />
-</Col>
           <Col lg="3" className="py-3">
-            <TextInputForm labelname="Staff Name" value={formData.staff_name} onChange={(e) => handleChange(e, "staff_name")} disabled={type === "view"} />
+            <TextInputForm
+              labelname="Bank Loan Amount"
+              value={formData.bank_loan_amount}
+              onChange={(e) => handleChange(e, "bank_loan_amount")}
+              disabled={type === "view"}
+            />
+          </Col>
+          <Col lg="3" className="py-3">
+            <TextInputForm
+              labelname="Customer Receive Amount"
+              value={formData.customer_receive_amount}
+              onChange={(e) => handleChange(e, "customer_receive_amount")}
+              disabled={type === "view"}
+            />
+          </Col>
+          <Col lg="3" className="py-3">
+            <label className="form-label">தரம்</label>
+            <select
+              className="form-select" // Changed from form-control to form-select
+              value={formData.tharam}
+              onChange={(e) => handleChange(e, "tharam")}
+              disabled={type === "view"}
+            >
+              <option value="">Select தரம்</option>
+              {tharamOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </Col>
+          <Col lg="3" className="py-3">
+            <TextInputForm
+              labelname="Total Jewel Weight"
+              value={formData.total_jewel_weight}
+              onChange={(e) => handleChange(e, "total_jewel_weight")}
+              disabled={type === "view"}
+            />
+          </Col>
+          <Col lg="3" className="py-3">
+            <TextInputForm
+              labelname="Total Loan Amount"
+              value={formData.total_loan_amount}
+              onChange={(e) => handleChange(e, "total_loan_amount")}
+              disabled={true} // Set to true since it's auto-calculated
+            />
           </Col>
 
           {/* Customer Photo */}
@@ -349,22 +382,44 @@ const handleUpdateSubmit = async () => {
                 multiple
                 ref={customerPicInputRef}
                 style={{ display: "none" }}
-                onChange={(e) => handleFileChange(e.target.files, "customer_pic")}
+                onChange={(e) =>
+                  handleFileChange(e.target.files, "customer_pic")
+                }
               />
-              <ChooseButton label="Choose File" onClick={() => customerPicInputRef.current?.click()} />
+              <ChooseButton
+                label="Choose File"
+                onClick={() => customerPicInputRef.current?.click()}
+              />
               {formData.customer_pic.map((file, i) => (
-                <div key={i} className="file-item d-flex align-items-center mb-2 mt-2">
+                <div
+                  key={i}
+                  className="file-item d-flex align-items-center mb-2 mt-2"
+                >
                   {file.type === "image" ? (
                     <img
                       src={file.data}
                       alt="preview"
-                      style={{ width: 100, height: 100, objectFit: "cover", marginRight: 10, borderRadius: 5 }}
+                      style={{
+                        width: 100,
+                        height: 100,
+                        objectFit: "cover",
+                        marginRight: 10,
+                        borderRadius: 5,
+                      }}
                     />
                   ) : (
                     <span style={{ marginRight: 10 }}>{file.name}</span>
                   )}
-                  <ChooseButton label="Preview" className="btn btn-primary btn-sm me-2" onClick={() => handlePreview(file)} />
-                  <ChooseButton label="Delete" className="btn btn-danger btn-sm" onClick={() => handleImageDelete(i, "customer_pic")} />
+                  <ChooseButton
+                    label="Preview"
+                    className="btn btn-primary btn-sm me-2"
+                    onClick={() => handlePreview(file)}
+                  />
+                  <ChooseButton
+                    label="Delete"
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleImageDelete(i, "customer_pic")}
+                  />
                 </div>
               ))}
             </div>
@@ -382,20 +437,40 @@ const handleUpdateSubmit = async () => {
                 style={{ display: "none" }}
                 onChange={(e) => handleFileChange(e.target.files, "id_pic")}
               />
-              <ChooseButton label="Choose File" onClick={() => idPicInputRef.current?.click()} />
+              <ChooseButton
+                label="Choose File"
+                onClick={() => idPicInputRef.current?.click()}
+              />
               {formData.id_pic.map((file, i) => (
-                <div key={i} className="file-item d-flex align-items-center mb-2 mt-2">
+                <div
+                  key={i}
+                  className="file-item d-flex align-items-center mb-2 mt-2"
+                >
                   {file.type === "image" ? (
                     <img
                       src={file.data}
                       alt="preview"
-                      style={{ width: 100, height: 100, objectFit: "cover", marginRight: 10, borderRadius: 5 }}
+                      style={{
+                        width: 100,
+                        height: 100,
+                        objectFit: "cover",
+                        marginRight: 10,
+                        borderRadius: 5,
+                      }}
                     />
                   ) : (
                     <span style={{ marginRight: 10 }}>{file.name}</span>
                   )}
-                  <ChooseButton label="Preview" className="btn btn-primary btn-sm me-2" onClick={() => handlePreview(file)} />
-                  <ChooseButton label="Delete" className="btn btn-danger btn-sm" onClick={() => handleImageDelete(i, "id_pic")} />
+                  <ChooseButton
+                    label="Preview"
+                    className="btn btn-primary btn-sm me-2"
+                    onClick={() => handlePreview(file)}
+                  />
+                  <ChooseButton
+                    label="Delete"
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleImageDelete(i, "id_pic")}
+                  />
                 </div>
               ))}
             </div>
@@ -413,58 +488,84 @@ const handleUpdateSubmit = async () => {
                 style={{ display: "none" }}
                 onChange={(e) => handleFileChange(e.target.files, "jewel_pic")}
               />
-              <ChooseButton label="Choose File" onClick={() => jewelPicInputRef.current?.click()} />
+              <ChooseButton
+                label="Choose File"
+                onClick={() => jewelPicInputRef.current?.click()}
+              />
               {formData.jewel_pic.map((file, i) => (
-                <div key={i} className="file-item d-flex align-items-center mb-2 mt-2">
+                <div
+                  key={i}
+                  className="file-item d-flex align-items-center mb-2 mt-2"
+                >
                   {file.type === "image" ? (
                     <img
                       src={file.data}
                       alt="preview"
-                      style={{ width: 100, height: 100, objectFit: "cover", marginRight: 10, borderRadius: 5 }}
+                      style={{
+                        width: 100,
+                        height: 100,
+                        objectFit: "cover",
+                        marginRight: 10,
+                        borderRadius: 5,
+                      }}
                     />
                   ) : (
                     <span style={{ marginRight: 10 }}>{file.name}</span>
                   )}
-                  <ChooseButton label="Preview" className="btn btn-primary btn-sm me-2" onClick={() => handlePreview(file)} />
-                  <ChooseButton label="Delete" className="btn btn-danger btn-sm" onClick={() => handleImageDelete(i, "jewel_pic")} />
+                  <ChooseButton
+                    label="Preview"
+                    className="btn btn-primary btn-sm me-2"
+                    onClick={() => handlePreview(file)}
+                  />
+                  <ChooseButton
+                    label="Delete"
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleImageDelete(i, "jewel_pic")}
+                  />
                 </div>
               ))}
             </div>
           </Col>
-
-         <Col lg="12" className="text-center py-5">
-  {type === "view" ? (
-    <ClickButton
-      label="Back"
-      onClick={() => navigate("/console/master/sale")}
-    />
-  ) : type === "edit" ? (
-    <div className="d-flex justify-content-center gap-3">
-      <ClickButton
-        label={loading ? "Updating..." : "Update"}
-        onClick={handleUpdateSubmit}
-        disabled={loading}
-      />
-      <ClickButton
-        label="Cancel"
-        onClick={() => navigate("/console/master/sale")}
-      />
-    </div>
-  ) : (
-    <div className="d-flex justify-content-center gap-3">
-      <ClickButton
-        label={loading ? "Submitting..." : "Submit"}
-        onClick={handleSubmit}
-        disabled={loading}
-      />
-      <ClickButton
-        label="Cancel"
-        onClick={() => navigate("/console/master/sale")}
-      />
-    </div>
-  )}
-</Col>
-
+          <Col lg="3" className="py-3">
+            <TextInputForm
+              labelname="Staff Name"
+              value={formData.staff_name}
+              onChange={(e) => handleChange(e, "staff_name")}
+              disabled={type === "view"}
+            />
+          </Col>
+          <Col lg="12" className="text-center py-5">
+            {type === "view" ? (
+              <ClickButton
+                label="Back"
+                onClick={() => navigate("/console/master/sale")}
+              />
+            ) : type === "edit" ? (
+              <div className="d-flex justify-content-center gap-3">
+                <ClickButton
+                  label={loading ? "Updating..." : "Update"}
+                  onClick={handleUpdateSubmit}
+                  disabled={loading}
+                />
+                <ClickButton
+                  label="Cancel"
+                  onClick={() => navigate("/console/master/sale")}
+                />
+              </div>
+            ) : (
+              <div className="d-flex justify-content-center gap-3">
+                <ClickButton
+                  label={loading ? "Submitting..." : "Submit"}
+                  onClick={handleSubmit}
+                  disabled={loading}
+                />
+                <ClickButton
+                  label="Cancel"
+                  onClick={() => navigate("/console/master/sale")}
+                />
+              </div>
+            )}
+          </Col>
         </Row>
       </Container>
 
@@ -483,17 +584,44 @@ const handleUpdateSubmit = async () => {
             zIndex: 9999,
           }}
         >
-          <div style={{ position: "relative", background: "#fff", padding: 20, borderRadius: 8 }}>
+          <div
+            style={{
+              position: "relative",
+              background: "#fff",
+              padding: 20,
+              borderRadius: 8,
+            }}
+          >
             <button
               onClick={() => setPreviewFile(null)}
-              style={{ position: "absolute", top: 5, right: 10, fontSize: 24, background: "none", border: "none", cursor: "pointer" }}
+              style={{
+                position: "absolute",
+                top: 5,
+                right: 10,
+                fontSize: 24,
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+              }}
             >
               ×
             </button>
             {previewFile.type === "image" ? (
-              <img src={previewFile.data} alt="Preview" style={{ maxWidth: "90vw", maxHeight: "90vh", objectFit: "contain" }} />
+              <img
+                src={previewFile.data}
+                alt="Preview"
+                style={{
+                  maxWidth: "90vw",
+                  maxHeight: "90vh",
+                  objectFit: "contain",
+                }}
+              />
             ) : (
-              <iframe src={previewFile.data} style={{ width: "80vw", height: "80vh" }} title="PDF Preview" />
+              <iframe
+                src={previewFile.data}
+                style={{ width: "80vw", height: "80vh" }}
+                title="PDF Preview"
+              />
             )}
           </div>
         </div>
