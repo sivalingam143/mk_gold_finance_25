@@ -1070,7 +1070,7 @@ const UserCreation = () => {
               disabled={true}
             />
           </Col>
-          {/* <Col lg="3" md="4" xs="12" className="py-3">
+          <Col lg="3" md="4" xs="12" className="py-3">
             <div className="mb-3">
               <label htmlFor="upload_type" className="form-label">
                 Select Proof Type
@@ -1097,8 +1097,8 @@ const UserCreation = () => {
 
               </select>
             </div>
-          </Col> */}
-          {/* <Col lg="3" md="4" xs="12" className="py-3">
+          </Col>
+          <Col lg="3" md="4" xs="12" className="py-3">
             <TextInputForm
               placeholder={"Proof Number"}
               labelname={"Proof Number"}
@@ -1107,7 +1107,7 @@ const UserCreation = () => {
               onChange={(e) => handleChange(e, "proof_number")}
               disabled={type === "view" || type === "edit"}
             />
-          </Col> */}
+          </Col>
           <Col lg="3" md="4" xs="12" className="py-3">
             <TextInputForm
               placeholder={"principal amount"}
@@ -1275,13 +1275,27 @@ const UserCreation = () => {
               ))}
             </div>
           </Col>
-          {/* <Col lg="4" md="4" xs="12" className="py-5">
+          <Col lg="4" md="4" xs="12" className="py-5">
             <div className="file-upload">
               <label>
                 {type === "edit"
                   ? `Preview ${formData.upload_type?.toLocaleLowerCase() ?? ""} Files`
                   : `Upload ${formData.upload_type?.toLocaleLowerCase() ?? ""} Proof`}
               </label>
+               <input
+                type="file"
+                id="aadharproof"
+                accept=".pdf,image/*"
+                ref={fileInputRef}
+                multiple
+                onChange={(e) => handleFileChange(e.target.files, "aadharproof")}
+                style={{ display: "none" }}
+              />
+              <ChooseButton
+                label="Choose File"
+                onClick={startWebcam}
+                className="choosefilebtn"
+              />
               {formData.aadharproof && formData.aadharproof.length > 0 && (
                 <div className="file-preview mt-2">
                   {formData.aadharproof.map((file, index) => (
@@ -1331,12 +1345,17 @@ const UserCreation = () => {
                         className="btn btn-primary btn-sm me-2"
                         onClick={() => handlePreview(file)}
                       />
+                      <ChooseButton
+                    label="Delete"
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleImageDelete(index, "aadharproof")}
+                  />
                     </div>
                   ))}
                 </div>
               )}
             </div>
-          </Col> */}
+          </Col>
 
           <Col lg="12" md="6" xs="12">
   <table className="table table-bordered mx-auto">
