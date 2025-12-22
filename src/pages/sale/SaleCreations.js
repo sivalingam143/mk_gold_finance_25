@@ -743,8 +743,14 @@ const SaleCreations = () => {
 
           {/* Customer Sign */}
           <Col lg="6" className="py-5">
-            <div className="file-upload">
+            <div className="file-upload position-relative">
               <label>Customer Sign</label>
+              <input
+                type="checkbox"
+                className="position-absolute top-0 end-0 mt-1 me-1 form-check-input"
+                checked={formData.customer_sign_pic.length > 0}
+                disabled
+              />
               <SignatureCanvas
                 ref={sigCustomerRef}
                 canvasProps={{
@@ -757,11 +763,13 @@ const SaleCreations = () => {
                   label="Submit Signature"
                   onClick={handleSaveCustomerSign}
                   className="btn btn-success btn-sm"
+                  disabled={type === "view"}
                 />
                 <ClickButton
                   label="Clear"
                   onClick={handleClearCustomerSign}
                   className="btn btn-secondary btn-sm"
+                  disabled={type === "view"}
                 />
               </div>
             </div>
@@ -769,8 +777,14 @@ const SaleCreations = () => {
 
           {/* Staff Sign */}
           <Col lg="6" className="py-5">
-            <div className="file-upload">
+            <div className="file-upload position-relative">
               <label>Staff Sign</label>
+              <input
+                type="checkbox"
+                className="position-absolute top-0 end-0 mt-1 me-1 form-check-input"
+                checked={formData.staff_sign_pic.length > 0}
+                disabled
+              />
               <SignatureCanvas
                 ref={sigStaffRef}
                 canvasProps={{
@@ -783,11 +797,13 @@ const SaleCreations = () => {
                   label="Submit Signature"
                   onClick={handleSaveStaffSign}
                   className="btn btn-success btn-sm"
+                  disabled={type === "view"}
                 />
                 <ClickButton
                   label="Clear"
                   onClick={handleClearStaffSign}
                   className="btn btn-secondary btn-sm"
+                  disabled={type === "view"}
                 />
               </div>
             </div>
