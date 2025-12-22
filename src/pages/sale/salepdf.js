@@ -1,5 +1,6 @@
 import React from 'react';
-import { Page, Text, View, Document, StyleSheet, Font, pdf, Image } from '@react-pdf/renderer';
+import { Page, Text, View, Document, StyleSheet, Font, pdf, Image,PDFViewer } from '@react-pdf/renderer';
+import { useLocation } from 'react-router-dom';
 import image from "../../mklogo.png";
 import fontBold from "../../pdf/fonts/NotoSansTamil-Bold.ttf";
 import fontRegular from "../../pdf/fonts/NotoSansTamil-Regular.ttf";
@@ -125,6 +126,13 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginLeft: -10,
   },
+   body1: {
+    fontSize: 11,
+    lineHeight: 1.5, // Slightly tighter line height
+    // textAlign: 'justify',
+    marginTop: 8,
+    marginLeft: -10,
+  },
   phoneContainer: {
     flexDirection: 'row',
    
@@ -161,7 +169,7 @@ const phoneIcon = "https://cdn-icons-png.flaticon.com/512/455/455705.png";
   const name = data?.name || "";
   const place = data?.place || "";
   const mobile = data?.mobile_number || "";
-
+const customerImage = data?.customer_pic?.[0]?.data || null;
   return (
     <Document>
       <Page size="A5" style={styles.page}>
@@ -179,7 +187,7 @@ const phoneIcon = "https://cdn-icons-png.flaticon.com/512/455/455705.png";
             </View>
 
             <View style={styles.headerBox}>
-              <Text style={styles.title}>M.K கோல்டு பைனான்ஸ் </Text>
+              <Text style={styles.title}>நிதி கோல்டு பைனான்ஸ் </Text>
             </View>
 
             <Text style={styles.address}>
@@ -226,7 +234,7 @@ const phoneIcon = "https://cdn-icons-png.flaticon.com/512/455/455705.png";
 
             <View style={styles.body}>
               <Text>
-                நான்  {formattedDate}{""} தேதியில் ................................................... {""} யில் அடகு வைத்த நகை/அளவு{""} ........................................................{"\n"}
+                நான்  {formattedDate}{""} தேதியில் {data?.bank_name} {""} யில் அடகு வைத்த நகை/அளவு{""} ........................................................{"\n"}
                 M.K.கோல்டு நிறுவனத்தில் அசல் ................................ வட்டி ................................ {""}தொகைகளை வாங்கி {""} பொருட்களை திருப்பி, என்னுடைய {""} அவசர நிமித்த {""} செலவிற்காக நகைகளை விற்பனை செய்து, மீதமுள்ள தொகை ரூபாய் ..........................பணத்தை M.K.கோல்டு நிறுவனத்திலிருந்து பெற்றுக் {""} கொண்டேன். இதில் ஏதேனும் வில்லங்கம் வந்தால், அதை நானே என்னுடைய சொந்த {""}பொறுப்பில் சரி செய்து கொடுக்கின்றேன்.{""} இதை படித்துப் பார்த்தும், படிக்கக் கேட்டும் {""} தெரிந்து {""} கொண்டேன்.
               </Text>
             </View>
@@ -245,27 +253,70 @@ const phoneIcon = "https://cdn-icons-png.flaticon.com/512/455/455705.png";
           </View>
         </View>
       </Page>
+
+      <Page size="A5" style={styles.page}>
+        <Image src={image} style={styles.backgroundImage} />
+        <View style={styles.outerBorder}>
+          <View style={styles.innerBorder}>
+            <View style={styles.headerBox}>
+              <Text style={styles.title}>நிதி கோல்டு பைனான்ஸ்</Text>
+            </View>
+            <Text style={[styles.address, { textDecoration: 'underline' }]}>உறுதிமொழி படிவம்</Text>
+            
+            {/* Customer photo placeholder from SaleCreations data */}
+            {customerImage && <Image src={customerImage} style={styles.customerPhoto} />}
+
+            <View style={[styles.body, { marginTop: 10 }]}>
+              
+              <Text>எடை : {data?.total_jewel_weight} கிராம்</Text>
+              <Text>பொருளின் விபரம் : தரம் {data?.tharam}</Text>
+              <Text>அடகு தேதி : {formattedDate}</Text>
+              <Text>கடன் தொகை : {data?.total_loan_amount}/-</Text>
+            </View>
+
+            <View style={[styles.body1, { marginTop: 15 }]}>
+              <Text>ஐயா / அம்மா,</Text>
+              <Text style={{ marginTop: 5, textAlign: 'justify' }}>
+                நான் {data?.name}, {data?.place} என்ற முகவரியில் வசித்து வருகிறேன். மேலும் என்னுடைய சொந்த தேவைகளுக்காக இன்று {formattedDate} தேதியில் {data?.bank_name} வங்கியில் அடகு வைத்த நகைகளைத் திருப்ப தங்களது நிறுவனத்திடம் இருந்து கடன் தொகை ரூ. {data?.bank_loan_amount} பெற்றுக் கொண்டேன்.
+              </Text>
+              <Text style={{ marginTop: 10, textAlign: 'justify' }}>
+                இந்த நகை எனக்கு மட்டுமே உரிமையானது. என் குடும்பத்தினருக்கோ அல்லது என்னை சார்ந்தவர்களுக்கோ இதில் எவ்வித உரிமையும் இல்லை. இதில் ஏதேனும் வில்லங்கம் வந்தால் அதை நானே பொறுப்பேற்று சரி செய்து தருவேன் என உறுதி அளிக்கிறேன். 
+              </Text>
+              <Text style={{ marginTop: 10, textAlign: 'justify' }}>
+                இதில் கண்ட அனைத்தும் நான் தெரிந்து கொண்டும் புரிந்து கொண்டும் இதற்கு முழு மனதுடன் சம்மதிக்கிறேன் என இதன் மூலம் தெரிவித்துக் கொள்கிறேன்.
+              </Text>
+              <Text style={{ marginTop: 10, textAlign: 'center' }}>நன்றி.</Text>
+            </View>
+
+            <View style={styles.footer}>
+              <View>
+                <Text>நாள் : {formattedDate}</Text>
+                <Text>இடம் : {data?.place}</Text>
+              </View>
+              <View style={styles.signatureSection}>
+                <Text style={{ fontWeight: 'bold' }}>இப்படிக்கு</Text>
+                <Text style={{ marginTop: 25 }}>(ஒப்பம்)</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      </Page>
     </Document>
   );
 };
 
-export const handleSaleDownload = async (rowData, setLoading) => {
-  if (setLoading) setLoading(true);
-  try {
-    const blob = await pdf(<SalePDF data={rowData} />).toBlob();
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `Sale_${rowData?.name || 'Receipt'}.pdf`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  } catch (error) {
-    console.error("PDF Error:", error);
-  } finally {
-    if (setLoading) setLoading(false);
-  }
+
+export const SalePDFView = ({ copyType }) => {
+  const location = useLocation();
+  const { rowData } = location.state || {};
+
+  return (
+    <div style={{ height: '100vh', width: '100%' }}>
+      <PDFViewer style={{ width: '100%', height: '100%' }}>
+        <SalePDF data={rowData} copyType={copyType} />
+      </PDFViewer>
+    </div>
+  );
 };
 
 export default SalePDF;

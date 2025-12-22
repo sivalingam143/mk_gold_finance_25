@@ -63,7 +63,7 @@ const SideBar = ({ onLogout }) => {
                   alt=""
                 />
               </div>
-              <h6 className="logoname py-3"> MK GOLD FINANCE </h6>
+              <h6 className="logoname py-3"> NITHI GOLD FINANCE </h6>
             </li>
             {/* Filter top-level items based on isAdminOnly property */}
             {sidebarConfig
