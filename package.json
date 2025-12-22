@@ -1,8 +1,8 @@
 {
-  "name": "mkgoldfinance",
+  "name": "nithigoldloan",
   "version": "0.1.0",
   "private": true,
-  "description": "A billing application for MINI MKGOLDFINANCE.",
+  "description": "A billing application for NITHI GOLD LOAN.",
   "author": "Zentexus Technologies",
   "dependencies": {
     "@mui/icons-material": "^6.1.5",

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState,useEffect } from 'react';
 import { Page, Text, View, Document, StyleSheet, Font, pdf, Image,PDFViewer } from '@react-pdf/renderer';
 import { useLocation } from 'react-router-dom';
 import image from "../../mklogo.png";
@@ -188,9 +189,22 @@ const phoneIcon = "https://cdn-icons-png.flaticon.com/512/455/455705.png";
   const name = data?.name || "";
   const place = data?.place || "";
   const mobile = data?.mobile_number || "";
-const customerImage = data?.customer_pic?.[0]
-  ? data.customer_pic[0].replace(/\\/g, '/').trim()
-  : null;
+const customerImageBase64 = data?.customer_pic_base64code?.[0];
+  const customerImageUrl = data?.customer_pic?.[0];
+
+  // Construct the source: prioritize Base64, then fall back to URL
+  let imageSource = null;
+  if (customerImageBase64 && customerImageBase64.startsWith('http')) {
+      // If the base64 field accidentally contains a URL, we still have a CORS issue
+      imageSource = customerImageBase64; 
+  } else if (customerImageBase64) {
+      // Ensure the string has the correct data URI prefix
+      imageSource = customerImageBase64.startsWith('data:image') 
+        ? customerImageBase64 
+        : `data:image/jpeg;base64,${customerImageBase64}`;
+  } else {
+      imageSource = customerImageUrl;
+  }
 
   return (
     <Document>
@@ -294,15 +308,15 @@ const customerImage = data?.customer_pic?.[0]
       <Text>விற்பனை தேதி : {formattedDate}</Text>
     </View>
 
- {customerImage ? (
-  <Image src={customerImage} style={styles.customerPhoto} />
-) : (
-  <View style={styles.customerPhoto}>
-    <Text style={{ fontSize: 10, textAlign: 'center', marginTop: 40 }}>
-      No Photo Uploaded
-    </Text>
-  </View>
-)}
+{imageSource ? (
+          <Image src={imageSource} style={styles.customerPhoto} />
+        ) : (
+          <View style={styles.customerPhoto}>
+            <Text style={{ fontSize: 10, textAlign: 'center', marginTop: 40 }}>
+              No Photo Found
+            </Text>
+          </View>
+        )}
   </View>
               <View style={[styles.body1, { marginTop: 10 }]}>
                 <Text style={{ textAlign: 'justify' }}>
@@ -347,7 +361,22 @@ const customerImage = data?.customer_pic?.[0]
 export const SalePDFView = ({ copyType }) => {
   const location = useLocation();
   const { rowData } = location.state || {};
-
+const [imageUrl, setImageUrl] = useState(null);
+useEffect(() => {
+  const fetchImage = async () => {
+    if (rowData?.customer_pic?.[0]) {
+      try {
+        const response = await fetch(rowData.customer_pic[0]);
+        const blob = await response.blob();
+        const localUrl = URL.createObjectURL(blob);
+        setImageUrl(localUrl);
+      } catch (err) {
+        console.error("Image fetch failed", err);
+      }
+    }
+  };
+  fetchImage();
+}, [rowData]);
   return (
     <div style={{ height: '100vh', width: '100%' }}>
       <PDFViewer style={{ width: '100%', height: '100%' }}>
