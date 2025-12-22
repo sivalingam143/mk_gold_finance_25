@@ -1280,7 +1280,7 @@ const UserCreation = () => {
               <label>
                 {type === "edit"
                   ? `Preview ${formData.upload_type?.toLocaleLowerCase() ?? ""} Files`
-                  : `Upload ${formData.upload_type?.toLocaleLowerCase() ?? ""} Proof`}
+                  : `Upload ${formData.upload_type?.toLocaleLowerCase() ?? ""} aadharproof`}
               </label>
                <input
                 type="file"
