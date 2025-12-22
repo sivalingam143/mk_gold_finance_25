@@ -516,6 +516,9 @@ const SaleCreations = () => {
               disabled={true} // Set to true since it's auto-calculated
             />
           </Col>
+          <Col lg="12" className="py-3">
+            <h5>Customer, ID Proof and Jewel Images</h5>
+          </Col>
 
           {/* Customer Photo */}
           <Col lg="4" className="py-5">
@@ -671,6 +674,8 @@ const SaleCreations = () => {
               ))}
             </div>
           </Col>
+
+          {/* Staff Name - Moved and aligned to full width */}
           <Col lg="3" className="py-3">
             <TextInputForm
               labelname="Staff Name"
@@ -770,11 +775,6 @@ const SaleCreations = () => {
                       objectFit: "contain",
                     }}
                   />
-                  <ChooseButton
-                    label="Preview"
-                    className="btn btn-primary btn-sm mt-1"
-                    onClick={() => handlePreview(formData.customer_sign_pic[0])}
-                  />
                 </div>
               )}
             </div>
@@ -813,11 +813,6 @@ const SaleCreations = () => {
                       maxHeight: "100px",
                       objectFit: "contain",
                     }}
-                  />
-                  <ChooseButton
-                    label="Preview"
-                    className="btn btn-primary btn-sm mt-1"
-                    onClick={() => handlePreview(formData.staff_sign_pic[0])}
                   />
                 </div>
               )}
