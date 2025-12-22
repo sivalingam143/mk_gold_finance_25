@@ -526,12 +526,13 @@ const SaleCreations = () => {
               {formData.customer_pic.map((file, i) => (
                 <div
                   key={i}
-                  className="file-item d-flex align-items-center mb-2 mt-2"
+                  className="file-item d-flex flex-column flex-md-row align-items-md-center mb-2 mt-2 gap-2"
                 >
                   {file.type === "image" ? (
                     <img
                       src={file.data}
                       alt="preview"
+                      className="img-fluid"
                       style={{
                         width: 100,
                         height: 100,
@@ -541,18 +542,25 @@ const SaleCreations = () => {
                       }}
                     />
                   ) : (
-                    <span style={{ marginRight: 10 }}>{file.name}</span>
+                    <span
+                      className="text-truncate"
+                      style={{ maxWidth: "100%" }}
+                    >
+                      {file.name}
+                    </span>
                   )}
-                  <ChooseButton
-                    label="Preview"
-                    className="btn btn-primary btn-sm me-2"
-                    onClick={() => handlePreview(file)}
-                  />
-                  <ChooseButton
-                    label="Delete"
-                    className="btn btn-danger btn-sm"
-                    onClick={() => handleImageDelete(i, "customer_pic")}
-                  />
+                  <div className="d-flex flex-column flex-md-row gap-2 w-100 w-md-auto">
+                    <ChooseButton
+                      label="Preview"
+                      className="btn btn-primary btn-sm w-100 w-md-auto"
+                      onClick={() => handlePreview(file)}
+                    />
+                    <ChooseButton
+                      label="Delete"
+                      className="btn btn-danger btn-sm w-100 w-md-auto"
+                      onClick={() => handleImageDelete(i, "customer_pic")}
+                    />
+                  </div>
                 </div>
               ))}
             </div>
@@ -577,12 +585,13 @@ const SaleCreations = () => {
               {formData.id_pic.map((file, i) => (
                 <div
                   key={i}
-                  className="file-item d-flex align-items-center mb-2 mt-2"
+                  className="file-item d-flex flex-column flex-md-row align-items-md-center mb-2 mt-2 gap-2"
                 >
                   {file.type === "image" ? (
                     <img
                       src={file.data}
                       alt="preview"
+                      className="img-fluid"
                       style={{
                         width: 100,
                         height: 100,
@@ -592,18 +601,25 @@ const SaleCreations = () => {
                       }}
                     />
                   ) : (
-                    <span style={{ marginRight: 10 }}>{file.name}</span>
+                    <span
+                      className="text-truncate"
+                      style={{ maxWidth: "100%" }}
+                    >
+                      {file.name}
+                    </span>
                   )}
-                  <ChooseButton
-                    label="Preview"
-                    className="btn btn-primary btn-sm me-2"
-                    onClick={() => handlePreview(file)}
-                  />
-                  <ChooseButton
-                    label="Delete"
-                    className="btn btn-danger btn-sm"
-                    onClick={() => handleImageDelete(i, "id_pic")}
-                  />
+                  <div className="d-flex flex-column flex-md-row gap-2 w-100 w-md-auto">
+                    <ChooseButton
+                      label="Preview"
+                      className="btn btn-primary btn-sm w-100 w-md-auto"
+                      onClick={() => handlePreview(file)}
+                    />
+                    <ChooseButton
+                      label="Delete"
+                      className="btn btn-danger btn-sm w-100 w-md-auto"
+                      onClick={() => handleImageDelete(i, "id_pic")}
+                    />
+                  </div>
                 </div>
               ))}
             </div>
@@ -628,12 +644,13 @@ const SaleCreations = () => {
               {formData.jewel_pic.map((file, i) => (
                 <div
                   key={i}
-                  className="file-item d-flex align-items-center mb-2 mt-2"
+                  className="file-item d-flex flex-column flex-md-row align-items-md-center mb-2 mt-2 gap-2"
                 >
                   {file.type === "image" ? (
                     <img
                       src={file.data}
                       alt="preview"
+                      className="img-fluid"
                       style={{
                         width: 100,
                         height: 100,
@@ -643,18 +660,25 @@ const SaleCreations = () => {
                       }}
                     />
                   ) : (
-                    <span style={{ marginRight: 10 }}>{file.name}</span>
+                    <span
+                      className="text-truncate"
+                      style={{ maxWidth: "100%" }}
+                    >
+                      {file.name}
+                    </span>
                   )}
-                  <ChooseButton
-                    label="Preview"
-                    className="btn btn-primary btn-sm me-2"
-                    onClick={() => handlePreview(file)}
-                  />
-                  <ChooseButton
-                    label="Delete"
-                    className="btn btn-danger btn-sm"
-                    onClick={() => handleImageDelete(i, "jewel_pic")}
-                  />
+                  <div className="d-flex flex-column flex-md-row gap-2 w-100 w-md-auto">
+                    <ChooseButton
+                      label="Preview"
+                      className="btn btn-primary btn-sm w-100 w-md-auto"
+                      onClick={() => handlePreview(file)}
+                    />
+                    <ChooseButton
+                      label="Delete"
+                      className="btn btn-danger btn-sm w-100 w-md-auto"
+                      onClick={() => handleImageDelete(i, "jewel_pic")}
+                    />
+                  </div>
                 </div>
               ))}
             </div>
@@ -678,12 +702,13 @@ const SaleCreations = () => {
               {formData.proof_pic.map((file, i) => (
                 <div
                   key={i}
-                  className="file-item d-flex align-items-center mb-2 mt-2"
+                  className="file-item d-flex flex-column flex-md-row align-items-md-center mb-2 mt-2 gap-2"
                 >
                   {file.type === "image" ? (
                     <img
                       src={file.data}
                       alt="preview"
+                      className="img-fluid"
                       style={{
                         width: 100,
                         height: 100,
@@ -693,18 +718,25 @@ const SaleCreations = () => {
                       }}
                     />
                   ) : (
-                    <span style={{ marginRight: 10 }}>{file.name}</span>
+                    <span
+                      className="text-truncate"
+                      style={{ maxWidth: "100%" }}
+                    >
+                      {file.name}
+                    </span>
                   )}
-                  <ChooseButton
-                    label="Preview"
-                    className="btn btn-primary btn-sm me-2"
-                    onClick={() => handlePreview(file)}
-                  />
-                  <ChooseButton
-                    label="Delete"
-                    className="btn btn-danger btn-sm"
-                    onClick={() => handleImageDelete(i, "proof_pic")}
-                  />
+                  <div className="d-flex flex-column flex-md-row gap-2 w-100 w-md-auto">
+                    <ChooseButton
+                      label="Preview"
+                      className="btn btn-primary btn-sm w-100 w-md-auto"
+                      onClick={() => handlePreview(file)}
+                    />
+                    <ChooseButton
+                      label="Delete"
+                      className="btn btn-danger btn-sm w-100 w-md-auto"
+                      onClick={() => handleImageDelete(i, "proof_pic")}
+                    />
+                  </div>
                 </div>
               ))}
             </div>
@@ -739,8 +771,8 @@ const SaleCreations = () => {
                 <img
                   src={formData.customer_sign_pic[0].data}
                   alt="Customer Signature"
+                  className="img-fluid w-100"
                   style={{
-                    width: "100%",
                     height: "200px",
                     objectFit: "contain",
                     border: "1px solid #ccc",
@@ -752,7 +784,7 @@ const SaleCreations = () => {
                 <SignatureCanvas
                   ref={sigCustomerRef}
                   canvasProps={{
-                    className: "sigCanvas border rounded",
+                    className: "sigCanvas border rounded w-100",
                     style: { width: "100%", height: "200px" },
                   }}
                 />
@@ -790,8 +822,8 @@ const SaleCreations = () => {
                 <img
                   src={formData.staff_sign_pic[0].data}
                   alt="Staff Signature"
+                  className="img-fluid w-100"
                   style={{
-                    width: "100%",
                     height: "200px",
                     objectFit: "contain",
                     border: "1px solid #ccc",
@@ -803,7 +835,7 @@ const SaleCreations = () => {
                 <SignatureCanvas
                   ref={sigStaffRef}
                   canvasProps={{
-                    className: "sigCanvas border rounded",
+                    className: "sigCanvas border rounded w-100",
                     style: { width: "100%", height: "200px" },
                   }}
                 />
