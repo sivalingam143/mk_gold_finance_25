@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     fontSize: 20, // Slightly reduced for A5
     fontWeight: 'bold',
     textAlign: 'center',
-    color:"red",
+    color:'red',
   },
   address: {
     fontSize: 10,
@@ -169,12 +169,44 @@ customerPhoto: {
   objectFit: 'cover',
   backgroundColor: '#ffffff', // Force white background if image is transparent/dark
 },
+imageGallery: {
+    padding: 20,
+    flexDirection: 'column',
+  },
+sectionTitle: {
+  fontSize: 11, // Reduced size for side-by-side layout
+  fontWeight: 'bold',
+  marginBottom: 5,
+  marginTop: 10,
+
+  padding: 3,
+},
+  imageRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    marginBottom: 10,
+  },
+documentImage: {
+  width: '100%',     // Fills its half-width column
+  height: 140,       // Fixed height for all images
+  objectFit: 'cover', // Crops image to fill the box without stretching
+  border: '1pt solid #ccc',
+  borderRadius: 4,
+},
+documentImage1: {
+  width: '50%',     // Fills its half-width column
+  height: 140,       // Fixed height for all images
+  objectFit: 'cover', // Crops image to fill the box without stretching
+  border: '1pt solid #ccc',
+  borderRadius: 4,
+},
   witnessLabel: { fontWeight: 'bold', marginBottom: 5 },
 
   signatureSection: { alignItems: 'flex-end' },
 });
 
-const SalePDF = ({ data }) => {
+const SaleOfficePDF = ({ data }) => {
   const formatDate = (dateStr) => {
     if (!dateStr) return "";
     const date = new Date(dateStr);
@@ -194,7 +226,7 @@ const phoneIcon = "https://cdn-icons-png.flaticon.com/512/455/455705.png";
 
   return (
     <Document>
-      <Page size="A5" style={styles.page}>
+      <Page size="A4" style={styles.page}>
         <Image src={image} style={styles.backgroundImage} />
 
         <View style={styles.outerBorder}>
@@ -209,7 +241,7 @@ const phoneIcon = "https://cdn-icons-png.flaticon.com/512/455/455705.png";
             </View>
 
             <View style={styles.headerBox}>
-              <Text style={styles.title}>நிதி கோல்டு லோ{""}ன் </Text>
+              <Text style={styles.title}>நிதி கோல்டு லோ{""}ன்</Text>
             </View>
 
             <Text style={styles.address}>
@@ -277,19 +309,74 @@ const phoneIcon = "https://cdn-icons-png.flaticon.com/512/455/455705.png";
       </Page>
 
 
-        <Page size="A5" style={styles.page}>
+    <Page size="A4" style={styles.page}>
+  {/* Removed background image as requested */}
+  <View style={styles.outerBorder}>
+    <View style={[styles.innerBorder, styles.imageGallery]}>
+      <Text style={{ textAlign: 'center', fontSize: 16, fontWeight: 'bold', marginBottom: 10 }}>
+        ஆவணங்கள் மற்றும் புகைப்படங்கள்
+      </Text>
+
+      {/* Row 1: Customer Photo and ID Proof */}
+      <View style={{ flexDirection: 'row', gap: 10 }}>
+        
+        {/* Customer Pictures */}
+        <View style={{ flex: 1 }}>
+          <Text style={styles.sectionTitle}>CUSTOMER PHOTO</Text>
+          <View style={styles.imageRow}>
+            {data?.customer_pic?.map((pic, index) => {
+              const imgSrc = pic?.data || pic; // Handle both object and string formats
+              return imgSrc ? <Image key={index} src={imgSrc} style={styles.documentImage} /> : null;
+            })}
+          </View>
+        </View>
+
+        {/* ID Proof */}
+        <View style={{ flex: 1 }}>
+          <Text style={styles.sectionTitle}>ID PROOF</Text>
+          <View style={styles.imageRow}>
+            {data?.id_pic?.map((pic, index) => {
+              const imgSrc = pic?.data || pic;
+              return imgSrc ? <Image key={index} src={imgSrc} style={styles.documentImage} /> : null;
+            })}
+          </View>
+        </View>
+      </View>
+
+      {/* Row 2: Jewel Photo */}
+      <View style={{ marginTop: 10 }}>
+        <Text style={styles.sectionTitle}>JEWEL PHOTO</Text>
+        <View style={styles.imageRow}>
+          {data?.jewel_pic?.map((pic, index) => {
+            const imgSrc = pic?.data || pic;
+            return imgSrc ? <Image key={index} src={imgSrc} style={styles.documentImage1} /> : null;
+          })}
+        </View>
+      </View>
+    </View>
+  </View>
+</Page>
+    
+    
+     
+
+        <Page size="A4" style={styles.page}>
           <Image src={image} style={styles.backgroundImage} />
           <View style={styles.outerBorder}>
             <View style={styles.innerBorder}>
               <View style={styles.headerBox}>
                 <Text style={styles.title}>நிதி கோல்டு லோ{""}ன்</Text>
+                
               </View>
+               <Text style={styles.address}>
+              H/O:182, இரண்டாவது மாடி, AKS தியேட்டர் ரோடு, கோவில்பட்{""}டி 
+            </Text>
               <Text style={[styles.address, { textDecoration: 'underline' }]}>உறுதிமொழி படிவ{""}ம்</Text>
               
 
   <View style={styles.photoContainer}>
-    <View style={[styles.body, styles.jewelDetails, { marginTop: 10 }]}>
-               <Text style={[styles.label, { marginBottom: 2 }]}>அடகு விபரம்</Text>
+    <View style={[styles.body, styles.jewelDetails, { marginTop: 8 }]}>
+         <Text style={[styles.label, { marginBottom: 2 }]}>அடகு விபரம்</Text>
       <Text>எடை : {data?.total_jewel_weight} கிராம்</Text>
       <Text>பொருளின் விபரம் : தரம் {data?.tharam}</Text>
       <Text>விற்பனை தேதி : {formattedDate}</Text>
@@ -307,7 +394,7 @@ const phoneIcon = "https://cdn-icons-png.flaticon.com/512/455/455705.png";
                 </Text>
 
                 <Text style={{ marginTop: 5, textAlign: 'justify' }}>
-                  எனவே, அடகு வைத்திருந்த என் தங்க நகைகளை, அந்நிறுவன விதிமுறைகளின்படி, அசல் தொகை மற்றும் அதற்குரிய வட்டி தொகையை சரிசெய்து, நிதி கோல்டு லோ{""}ன் நிறுவனம் விற்பனை செய்து கொள்ள நான் {""}முழுமனதுடன் ஒப்புக்கொள்கிறேன்.
+                  எனவே, அடகு வைத்திருந்த என் தங்க நகைகளை, அந்நிறுவன விதிமுறைகளின்படி, அசல் தொகை மற்றும் அதற்குரிய வட்டி தொகையை சரிசெய்து, நிதி கோல்டு {""}பைனான்ஸ் நிறுவனம் விற்பனை செய்து கொள்ள நான் {""}முழுமனதுடன் ஒப்புக்கொள்கிறேன்.
                 </Text>
 
                 <Text style={{ marginTop: 5, textAlign: 'justify' }}>
@@ -337,17 +424,17 @@ const phoneIcon = "https://cdn-icons-png.flaticon.com/512/455/455705.png";
 };
 
 
-export const SalePDFView = ({ copyType }) => {
+export const SaleOfficePDFView = ({ copyType }) => {
   const location = useLocation();
   const { rowData } = location.state || {};
 
   return (
     <div style={{ height: '100vh', width: '100%' }}>
       <PDFViewer style={{ width: '100%', height: '100%' }}>
-        <SalePDF data={rowData} copyType={copyType} />
+        <SaleOfficePDF data={rowData} copyType={copyType} />
       </PDFViewer>
     </div>
   );
 };
 
-export default SalePDF;
+export default SaleOfficePDF;

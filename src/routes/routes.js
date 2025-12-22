@@ -52,6 +52,10 @@ import JewelPawnofficePreview from "../pdf/jewelpawnofficepreview"
 import BankPledgeReport from "../pages/bledge_report";
 import SaleReport from "../pages/sale_report";
 import { SalePDFView } from "../pages/sale/salepdf";
+// Import your new component
+import {SaleOfficePDFView} from '../pages/sale/SaleOfficePdf'; 
+
+
 
 const routes = [
   { path: "/console/dashboard", element: <DashBoard /> },
@@ -121,7 +125,7 @@ const routes = [
    {path: "/console/report/bledge", element:<BankPledgeReport/>},
   {path: "/console/report/sale",element:<SaleReport/>},
   { path: "/console/salecustomer", element: <SalePDFView copyType="customer" /> },
-  { path: "/console/saleoffice", element: <SalePDFView copyType="office" /> },
+  { path: "/console/saleoffice", element: <SaleOfficePDFView copyType="office" /> },
 ];
 
 export default routes;

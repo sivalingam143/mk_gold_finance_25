@@ -921,7 +921,7 @@ const LoanReceiptPDF = ({ data }) => {
   {/* Header Section */}
   <View style={styles.header}>
 
-    <Text style={[styles.title, { fontSize: 20 }]}>நிதி கோல்டு பைனான்{""}ஸ்</Text>
+    <Text style={[styles.title, { fontSize: 20,color:"red" }]}>நிதி கோல்டு லோ{""}ன்</Text>
     <Text style={styles.subText}> H/O:182, இரண்டாவது மாடி, AKS தியேட்டர் ரோடு, கோவில்பட்{""}டி </Text>
     <View style={{ borderBottom: '1px solid black', width: '100%', marginTop: 5, marginBottom: 5 }} />
     <Text style={[styles.centerText, { textDecoration: 'underline' }]}>உறுதிமொழி {""} படிவம்</Text>
