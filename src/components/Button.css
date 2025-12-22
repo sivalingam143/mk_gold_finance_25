@@ -17,7 +17,7 @@ button {
 
 .create-btn {
   border: 1px solid#0757df !important;
-  width: 120px;
+  width: auto;
   height: 46px;
   color: #ffffff !important;
   border-radius: 6px !important;
