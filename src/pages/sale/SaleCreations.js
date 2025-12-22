@@ -25,9 +25,9 @@ const SaleCreations = () => {
 
   const tharamOptions = [
     { value: "18", label: "18k" },
-    { value: "20", label: "20" },
+    { value: "20", label: "20k" },
     { value: "22", label: "22k" },
-    { value: "24k", label: "24k" },
+    { value: "24", label: "24k" },
   ];
   const getTodayDate = () => new Date().toISOString().split("T")[0];
   // Replace the initialState definition in SaleCreations.js
