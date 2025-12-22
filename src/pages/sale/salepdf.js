@@ -148,6 +148,25 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 15, // Changed from auto to fixed margin
   },
+  // Add these to your StyleSheet.create({})
+ photoContainer: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'flex-start',
+  marginTop: 10,
+}
+,
+  jewelDetails: {
+    flex: 1,
+  },
+customerPhoto: {
+  width: 90,        // Slightly larger
+  height: 110,
+  border: '2pt solid black',  // Thicker border
+  marginLeft: 15,
+  objectFit: 'cover',
+  backgroundColor: '#ffffff', // Force white background if image is transparent/dark
+},
   witnessLabel: { fontWeight: 'bold', marginBottom: 5 },
 
   signatureSection: { alignItems: 'flex-end' },
@@ -169,7 +188,10 @@ const phoneIcon = "https://cdn-icons-png.flaticon.com/512/455/455705.png";
   const name = data?.name || "";
   const place = data?.place || "";
   const mobile = data?.mobile_number || "";
-const customerImage = data?.customer_pic?.[0]?.data || null;
+const customerImage = data?.customer_pic?.[0]
+  ? data.customer_pic[0].replace(/\\/g, '/').trim()
+  : null;
+
   return (
     <Document>
       <Page size="A5" style={styles.page}>
@@ -254,53 +276,69 @@ const customerImage = data?.customer_pic?.[0]?.data || null;
         </View>
       </Page>
 
-      <Page size="A5" style={styles.page}>
-        <Image src={image} style={styles.backgroundImage} />
-        <View style={styles.outerBorder}>
-          <View style={styles.innerBorder}>
-            <View style={styles.headerBox}>
-              <Text style={styles.title}>நிதி கோல்டு பைனான்ஸ்</Text>
-            </View>
-            <Text style={[styles.address, { textDecoration: 'underline' }]}>உறுதிமொழி படிவம்</Text>
-            
-            {/* Customer photo placeholder from SaleCreations data */}
-            {customerImage && <Image src={customerImage} style={styles.customerPhoto} />}
 
-            <View style={[styles.body, { marginTop: 10 }]}>
-              
-              <Text>எடை : {data?.total_jewel_weight} கிராம்</Text>
-              <Text>பொருளின் விபரம் : தரம் {data?.tharam}</Text>
-              <Text>அடகு தேதி : {formattedDate}</Text>
-              <Text>கடன் தொகை : {data?.total_loan_amount}/-</Text>
-            </View>
-
-            <View style={[styles.body1, { marginTop: 15 }]}>
-              <Text>ஐயா / அம்மா,</Text>
-              <Text style={{ marginTop: 5, textAlign: 'justify' }}>
-                நான் {data?.name}, {data?.place} என்ற முகவரியில் வசித்து வருகிறேன். மேலும் என்னுடைய சொந்த தேவைகளுக்காக இன்று {formattedDate} தேதியில் {data?.bank_name} வங்கியில் அடகு வைத்த நகைகளைத் திருப்ப தங்களது நிறுவனத்திடம் இருந்து கடன் தொகை ரூ. {data?.bank_loan_amount} பெற்றுக் கொண்டேன்.
-              </Text>
-              <Text style={{ marginTop: 10, textAlign: 'justify' }}>
-                இந்த நகை எனக்கு மட்டுமே உரிமையானது. என் குடும்பத்தினருக்கோ அல்லது என்னை சார்ந்தவர்களுக்கோ இதில் எவ்வித உரிமையும் இல்லை. இதில் ஏதேனும் வில்லங்கம் வந்தால் அதை நானே பொறுப்பேற்று சரி செய்து தருவேன் என உறுதி அளிக்கிறேன். 
-              </Text>
-              <Text style={{ marginTop: 10, textAlign: 'justify' }}>
-                இதில் கண்ட அனைத்தும் நான் தெரிந்து கொண்டும் புரிந்து கொண்டும் இதற்கு முழு மனதுடன் சம்மதிக்கிறேன் என இதன் மூலம் தெரிவித்துக் கொள்கிறேன்.
-              </Text>
-              <Text style={{ marginTop: 10, textAlign: 'center' }}>நன்றி.</Text>
-            </View>
-
-            <View style={styles.footer}>
-              <View>
-                <Text>நாள் : {formattedDate}</Text>
-                <Text>இடம் : {data?.place}</Text>
+        <Page size="A5" style={styles.page}>
+          <Image src={image} style={styles.backgroundImage} />
+          <View style={styles.outerBorder}>
+            <View style={styles.innerBorder}>
+              <View style={styles.headerBox}>
+                <Text style={styles.title}>நிதி கோல்டு பைனான்{""}ஸ்</Text>
               </View>
-              <View style={styles.signatureSection}>
-                <Text style={{ fontWeight: 'bold' }}>இப்படிக்கு</Text>
-                <Text style={{ marginTop: 25 }}>(ஒப்பம்)</Text>
+              <Text style={[styles.address, { textDecoration: 'underline' }]}>உறுதிமொழி படிவ{""}ம்</Text>
+              
+
+  <View style={styles.photoContainer}>
+    <View style={[styles.body, styles.jewelDetails, { marginTop: 10 }]}>
+      <Text>எடை : {data?.total_jewel_weight} கிராம்</Text>
+      <Text>பொருளின் விபரம் : தரம் {data?.tharam}</Text>
+      <Text>விற்பனை தேதி : {formattedDate}</Text>
+    </View>
+
+ {customerImage ? (
+  <Image src={customerImage} style={styles.customerPhoto} />
+) : (
+  <View style={styles.customerPhoto}>
+    <Text style={{ fontSize: 10, textAlign: 'center', marginTop: 40 }}>
+      No Photo Uploaded
+    </Text>
+  </View>
+)}
+  </View>
+              <View style={[styles.body1, { marginTop: 10 }]}>
+                <Text style={{ textAlign: 'justify' }}>
+                  நான் {data?.name}, மேலே குறிப்பிட்ட நிதி நிறுவனத்தில் என் சொந்தமான தங்க நகைகளை அடகு வைத்திருந்தேன். 
+                </Text>
+                
+                <Text style={{ marginTop: 5, textAlign: 'justify' }}>
+                  அடகு காலம் முடிவடைந்த போதிலும், நிதி குறைவு காரணமாக அல்லது தனிப்பட்ட காரணங்களால் அடகு வைத்திருந்த நகைகளை மீட்க நான் இயலாத நிலை ஏற்பட்டுள்ளது. 
+                </Text>
+
+                <Text style={{ marginTop: 5, textAlign: 'justify' }}>
+                  எனவே, அடகு வைத்திருந்த என் தங்க நகைகளை, அந்நிறுவன விதிமுறைகளின்படி, அசல் தொகை மற்றும் அதற்குரிய வட்டி தொகையை சரிசெய்து, நிதி கோல்டு {""}பைனான்ஸ் நிறுவனம் விற்பனை செய்து கொள்ள நான் {""}முழுமனதுடன் ஒப்புக்கொள்கிறேன்.
+                </Text>
+
+                <Text style={{ marginTop: 5, textAlign: 'justify' }}>
+                  இந்த நகை விற்பனை தொடர்பாக, எதிர்காலத்தில் நான் அல்லது என் வாரிசுகள் எவரும் அந்நிறுவனத்தின் மீது எந்தவிதமான உரிமை, கோரிக்கை அல்லது சட்ட நடவடிக்கையும் {""} மேற்கொள்ள மாட்டோம் என்று உறுதியாக அறிவிக்கிறேன்.
+                </Text>
+
+                <Text style={{ marginTop: 5, textAlign: 'justify' }}>
+                  இந்த உறுதிமொழி, எந்தவித கட்டாயமுமின்றி, என் {""} சொந்த விருப்பத்தின் பேரில் எழுதிக் கொடுக்கப்பட்டது. இதற்கு {""}நான் முழுப்{""} பொறுப்பேற்கிறேன்.
+                </Text>
+              </View>
+
+              <View style={styles.footer}>
+                <View>
+                  <Text>நாள் : {formattedDate}</Text>
+                  <Text>இடம் : {data?.place}</Text>
+                </View>
+                <View style={styles.signatureSection}>
+                  <Text style={{ fontWeight: 'bold' }}>இப்படிக்கு</Text>
+
+                </View>
               </View>
             </View>
           </View>
-        </View>
-      </Page>
+        </Page>
     </Document>
   );
 };

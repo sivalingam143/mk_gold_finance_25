@@ -920,10 +920,11 @@ const LoanReceiptPDF = ({ data }) => {
   <Page size="A4" style={styles.page}>
   {/* Header Section */}
   <View style={styles.header}>
-    <Text style={[styles.title, { fontSize: 20 }]}>நிதி கோல்டு பைனான்ஸ்</Text>
+
+    <Text style={[styles.title, { fontSize: 20 }]}>நிதி கோல்டு பைனான்{""}ஸ்</Text>
     <Text style={styles.subText}> H/O:182, இரண்டாவது மாடி, AKS தியேட்டர் ரோடு, கோவில்பட்{""}டி </Text>
     <View style={{ borderBottom: '1px solid black', width: '100%', marginTop: 5, marginBottom: 5 }} />
-    <Text style={[styles.centerText, { textDecoration: 'underline' }]}>உறுதிமொழி படிவம்</Text>
+    <Text style={[styles.centerText, { textDecoration: 'underline' }]}>உறுதிமொழி {""} படிவம்</Text>
   </View>
 
   {/* Details and Photo Row */}
@@ -954,11 +955,11 @@ const LoanReceiptPDF = ({ data }) => {
   {/* Declaration Paragraph */}
   <View style={{ lineHeight: 1.8 }}>
     <Text style={styles.loan1Paragraph}>
-      நான் <Text style={styles.sectionTitle}>{data.name}</Text> s/o முத்துராஜ், {data.customer_details}, {data.place} என்ற முகவரியில் வசித்து வருகிறேன். மேலும் என்னுடைய சொந்த தேவைக்காக இன்று {formatDate(data.pawnjewelry_date)} தங்களது பைனான்ஸ்-ல் என்னுடைய சொந்த நகையை மட்டுமே அடமானம் வைக்கின்றேன் என்பதை தெரிவித்து கொள்கிறேன்.
+      நான் <Text style={styles.sectionTitle}>{data.name}</Text> s/o முத்துராஜ், {data.customer_details}, {data.place} என்ற முகவரியில் வசித்து வருகிறேன். மேலும் என்னுடைய சொந்த தேவைக்காக இன்று {formatDate(data.pawnjewelry_date)} தங்களது பைனான்ஸ்-ல் என்னுடைய சொந்த நகையை மட்டுமே அடமானம் வைக்கின்றேன் என்பதை தெரிவித்து {""}கொள்கிறேன்.
     </Text>
     
     <Text style={[styles.loan1Paragraph, { marginTop: 8 }]}>
-      இந்த நகை எனக்கு மட்டுமே உரிமையானது. என் குடும்பத்தினற்க்கோ அல்லது என்னை சார்ந்தவர்களுக்கோ நான் இல்லாமல் நகையை திருப்பவோ அல்லது மாற்றி வைக்கவோ இயலாது என்பதை நான் அறிவேன்.
+      இந்த நகை எனக்கு மட்டுமே உரிமையானது. என் குடும்பத்தினற்க்கோ அல்லது என்னை சார்ந்தவர்களுக்கோ நான் இல்லாமல் {""}நகையை திருப்பவோ அல்லது மாற்றி வைக்கவோ இயலாது என்பதை நான் {""}அறிவேன்.
     </Text>
 
     <Text style={[styles.loan1Paragraph, { marginTop: 8 }]}>
@@ -966,7 +967,7 @@ const LoanReceiptPDF = ({ data }) => {
     </Text>
 
     <Text style={[styles.loan1Paragraph, { marginTop: 8 }]}>
-      இதில் கண்ட அனைத்தையும் நான் தெரிந்து கொண்டும் புரிந்து கொண்டும் இதற்கு முழு மனதுடன் சம்மதிக்கிறேன் என்பதை இதன் மூலம் தெரிவித்துக்கொள்கிறேன்.
+      இதில் கண்ட அனைத்தையும் நான் தெரிந்து கொண்டும் புரிந்து கொண்டும் இதற்கு முழு மனதுடன் சம்மதிக்கிறேன் என்பதை {""} இதன் மூலம் தெரிவித்துக்கொள்கிறேன்.
     </Text>
   </View>
 

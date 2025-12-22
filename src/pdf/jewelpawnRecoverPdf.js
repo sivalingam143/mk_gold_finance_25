@@ -319,24 +319,30 @@ const Receipt = ({ data }) => {
 const RecoveryConfirmationPage = ({ data }) => {
   const recoveryDate = formatDate(data.pawnjewelry_recovery_date);
   const pawnDate = formatDate(data.pawnjewelry_date);
+// 1. Check if it's already an object; if not, parse it.
+const jewels = typeof data.jewel_product === 'string' 
+  ? JSON.parse(data.jewel_product) 
+  : (data.jewel_product || []);
 
+// 2. Sum the weight (checking for both 'weight' and 'Weight')
+const totalWeight = jewels.reduce((sum, item) => sum + parseFloat(item.weight || item.Weight || 0), 0);
   return (
     <View style={{ padding: 40, fontFamily: "fontRegular", color: "#000" }}>
       <View style={{ textAlign: "center", marginBottom: 20 }}>
-        <Text style={{ fontSize: 22, fontFamily: "fontBold" }}>நிதி கோல்டு பைனான்ஸ்</Text>
+        <Text style={{ fontSize: 22, fontFamily: "fontBold" }}>நிதி கோல்டு பைனான்{""}ஸ்</Text>
         <Text style={{ fontSize: 10, marginTop: 5 }}>H/O:182, இரண்டாவது மாடி, AKS தியேட்டர் ரோடு, கோவில்பட்{""}டி </Text>
         <View style={{ borderBottomWidth: 1, marginTop: 10, borderColor: "#000" }} />
       </View>
 
       <Text style={{ textAlign: "center", fontSize: 14, fontFamily: "fontBold", marginBottom: 15 }}>
-        நகை மீட்பு உறுதிமொழி படிவம்
+        நகை மீட்பு உறுதிமொழி படிவ{""}ம்
       </Text>
 
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <View style={{ width: "60%", fontSize: 10, lineHeight: 1.8 }}>
           <Text>அடகு விபரம் :</Text>
           <Text>அடகு நம்பர் - {data.receipt_no}</Text>
-          <Text>எடை - {data.jewel_product_weight} கிராம்</Text>
+        <Text>எடை - {totalWeight} கிராம்</Text>
           <Text>பொருளின் விவரம் - {data.item_description || "செயின் ஒன்று"}</Text>
           <Text>அடகு தேதி - {pawnDate}</Text>
           <Text>கடன் தொகை - {data.refund_amount}/-</Text>
@@ -353,7 +359,7 @@ const RecoveryConfirmationPage = ({ data }) => {
         <Text>ஐயா / அம்மா ,</Text>
         <Text style={{ marginTop: 10, textIndent: 30, textAlign: "justify" }}>
           வணக்கம், நான் நிதி கோல்டு பைனான்ஸ் மற்றும் பேரையூர் சக்தி பைனான்ஸ் என்ற
-          நிறுவனத்தில் எனது சொந்த நகையான {data.weight} கிராம் நகையை {pawnDate} தேதியன்று PAWN NO 
+          நிறுவனத்தில் எனது சொந்த நகையான {totalWeight} கிராம் நகையை {pawnDate} தேதியன்று PAWN NO 
           {data.receipt_no} ல் அடகு வைத்தேன் அதற்கு இன்று {recoveryDate} அதற்கான அசலையும்
           வட்டியையும் செலுத்தி எனது நகையை நல்ல நிலையில் பெறுகிறேன் என்பதை
           தெரிவித்துக்கொள்கிறேன்.
@@ -363,11 +369,11 @@ const RecoveryConfirmationPage = ({ data }) => {
 
       <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 50, fontSize: 10 }}>
         <View>
-          <Text>நாள் : {recoveryDate}</Text>
-          <Text>இடம் : {data.place || "-"}</Text>
+          <Text style={{  fontFamily: "fontBold" }}>நாள் : {recoveryDate}</Text>
+          <Text style={{  fontFamily: "fontBold" }}>இடம் : {data.place || "-"}</Text>
         </View>
         <View>
-          <Text>இப்படிக்கு,</Text>
+          <Text style={{  fontFamily: "fontBold" }}>இப்படிக்கு,</Text>
         </View>
       </View>
     </View>
