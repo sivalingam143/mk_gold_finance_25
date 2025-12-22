@@ -659,17 +659,6 @@ const SaleCreations = () => {
               ))}
             </div>
           </Col>
-
-          {/* Staff Name - Moved and aligned to full width */}
-          <Col lg="3" className="py-3">
-            <TextInputForm
-              labelname="Staff Name"
-              value={formData.staff_name}
-              onChange={(e) => handleChange(e, "staff_name")}
-              disabled={type === "view"}
-            />
-          </Col>
-
           {/* Proof Pic */}
           <Col lg="12" className="py-5">
             <div className="file-upload">
@@ -719,6 +708,15 @@ const SaleCreations = () => {
                 </div>
               ))}
             </div>
+          </Col>
+          {/* Staff Name - Moved and aligned to full width */}
+          <Col lg="3" className="py-3">
+            <TextInputForm
+              labelname="Staff Name"
+              value={formData.staff_name}
+              onChange={(e) => handleChange(e, "staff_name")}
+              disabled={type === "view"}
+            />
           </Col>
 
           {/* Signs Heading */}
