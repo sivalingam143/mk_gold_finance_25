@@ -768,12 +768,7 @@ const UserCreation = () => {
                     </div>
 
                     <div className="flex-grow-1">
-                      <small
-                        className="text-muted d-block text-truncate"
-                        style={{ maxWidth: "200px" }}
-                      >
-                        {file.name}
-                      </small>
+                    
                     </div>
                     <ChooseButton
                       label="Preview"
