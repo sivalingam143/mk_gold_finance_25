@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useRef } from "react";
 import { Col, Container, Row, Alert, Modal, Form } from "react-bootstrap";
 import { TextInputForm, Calender } from "../../components/Forms";
-import { ClickButton, Delete } from "../../components/ClickButton";
+import { ClickButton, Delete,ChooseButton } from "../../components/ClickButton";
 import PageNav from "../../components/PageNav";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -22,21 +22,32 @@ const UserCreation = () => {
   const [error, setError] = useState("");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [productList, setProductList] = useState([]);
-
+const [previewFile, setPreviewFile] = useState(null);
   const redirectModal = () => {
     navigate("/console/master/jewelrecovery");
   };
+const [isLoadingImage, setIsLoadingImage] = useState(false);
 
+const customerPicInputRef = useRef(null);
   const initialState =
     type === "edit"
       ? {
         ...rowData,
-        pawnjewelry_date: rowData.pawnjewelry_date,
-        pawnjewelry_recovery_date: rowData.pawnjewelry_recovery_date,
+    pawnjewelry_date: rowData.pawnjewelry_date && rowData.pawnjewelry_date !== "0000-00-00" ? rowData.pawnjewelry_date : new Date().toISOString().substr(0, 10),
+pawnjewelry_recovery_date: rowData.pawnjewelry_recovery_date && rowData.pawnjewelry_recovery_date !== "0000-00-00" ? rowData.pawnjewelry_recovery_date : new Date().toISOString().substr(0, 10),
         jewel_product: Array.isArray(rowData.jewel_product)
           ? rowData.jewel_product
           : JSON.parse(rowData.jewel_product || "[]"),
+          customer_pic: Array.isArray(rowData.customer_pic)
+          ? rowData.customer_pic.map((url) => ({
+              name: url.split("/").pop(),
+              data: url,
+              type: "image",
+              isExisting: true,
+            }))
+          : [],
       }
+      
       : {
         receipt_no: "",
         pawnjewelry_date: "",
@@ -50,6 +61,7 @@ const UserCreation = () => {
         interest_payment_periods: "",
         refund_amount: "",
         other_amount: "",
+        customer_pic: [],
         pawnjewelry_recovery_date: new Date().toISOString().substr(0, 10),
         jewel_product: [
           { JewelName: "", count: "", weight: "", net: "", remark: "",carrat:"" },
@@ -57,6 +69,52 @@ const UserCreation = () => {
       };
 
   const [formData, setFormData] = useState(initialState);
+
+ const handleFileChange = (files, field) => {
+  setIsLoadingImage(true);
+  const fileArray = Array.from(files);
+  const newImages = [];
+
+  fileArray.forEach((file) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      newImages.push({
+        name: file.name || `capture_${Date.now()}.jpg`,
+        data: reader.result,
+        type: "image",
+        isExisting: false,
+      });
+
+      if (newImages.length === fileArray.length) {
+        setFormData((prev) => ({
+          ...prev,
+          [field]: [...prev[field], ...newImages],
+        }));
+        setIsLoadingImage(false);
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+};
+
+const handleImageDelete = (index, field) => {
+  setFormData((prev) => ({
+    ...prev,
+    [field]: prev[field].filter((_, i) => i !== index),
+  }));
+};
+ const handlePreview = (file) => {
+    setPreviewFile(file);
+  };
+
+  const closePreview = () => {
+    setPreviewFile(null);
+  };
+
+
+
+
+  
   console.log("formData", formData);
   const handleChange = (e, fieldName, rowIndex) => {
     const value = e.target ? e.target.value : e.value;
@@ -284,72 +342,78 @@ const fetchDataproduct = async () => {
     // }
   }, [searchText]);
 
-  const handleSubmit = async () => {
-    const refundAmount = parseFloat(formData.refund_amount) || 0;
-    const outstandingInterest = parseFloat(formData.outstanding_amount) || 0;
-    const interestIncome = parseFloat(formData.interest_income) || 0;
+ const handleSubmit = async () => {
+  setLoading(true);
 
-    try {
-      // If refund is entered AND interest is pending
-      if (refundAmount > 0 && outstandingInterest > 0) {
-        // Ensure interest to be paid covers the pending
-        // if (interestIncome < outstandingInterest) {
-        //   toast.error("Please pay full interest amount before closing.");
-        //   return;
-        // }
-        const currentDate = new Date().toISOString().split("T")[0];
-        // Step 1: Submit interest
-        const interestRes = await fetch(`${API_DOMAIN}/interest.php`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            edit_interest_id: "",
-            receipt_no: formData.receipt_no,
-            interest_receive_date: currentDate,
-            name: formData.name,
-            customer_details: formData.customer_details,
-            place: formData.place,
-            mobile_number: formData.mobile_number,
-            original_amount: formData.original_amount,
-            interest_rate: formData.interest_rate,
-            jewel_product: formData.jewel_product,
-            interest_income: outstandingInterest ?? 0,
-            outstanding_period: formData.outstanding_period,
-            outstanding_amount: formData.outstanding_amount,
-            topup_amount: 0,
-            deduction_amount: 0,
-          }),
-        });
+  const refundAmount = parseFloat(formData.refund_amount) || 0;
+  const outstandingInterest = parseFloat(formData.outstanding_amount) || 0;
 
-        const interestData = await interestRes.json();
-        if (interestData.head.code !== 200) {
-          toast.error("Interest entry failed: " + interestData.head.msg);
-          return;
-        }
-      }
+  try {
+    // Step 1: If refund > 0 and there is outstanding interest, submit it first
+    if (refundAmount > 0 && outstandingInterest > 0) {
+      const currentDate = new Date().toISOString().split("T")[0];
 
-      // Step 2: Submit recovery
-      const recoveryRes = await fetch(`${API_DOMAIN}/pawnrecovery.php`, {
+      const interestRes = await fetch(`${API_DOMAIN}/interest.php`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, edit_pawnrecovery_id: "" }),
+        body: JSON.stringify({
+          edit_interest_id: "",
+          receipt_no: formData.receipt_no,
+          interest_receive_date: currentDate,
+          name: formData.name,
+          customer_details: formData.customer_details,
+          place: formData.place,
+          mobile_number: formData.mobile_number,
+          original_amount: formData.original_amount,
+          interest_rate: formData.interest_rate,
+          jewel_product: formData.jewel_product,
+          interest_income: outstandingInterest,
+          outstanding_period: formData.outstanding_period,
+          outstanding_amount: formData.outstanding_amount,
+          topup_amount: 0,
+          deduction_amount: 0,
+        }),
       });
 
-      const recoveryData = await recoveryRes.json();
-
-      if (recoveryData.head.code === 200) {
-        toast.success(recoveryData.head.msg);
-        setTimeout(() => navigate("/console/master/jewelrecovery"), 1000);
-      } else {
-        toast.error(recoveryData.head.msg);
+      const interestData = await interestRes.json();
+      if (interestData.head.code !== 200) {
+        toast.error("Interest entry failed: " + interestData.head.msg);
+        setLoading(false);
+        return;
       }
-
-    } catch (error) {
-      console.error("Error:", error);
-      toast.error("Unexpected error occurred.");
     }
-  };
 
+    // Step 2: Submit the recovery record (with customer_pic properly formatted)
+    const payload = {
+      ...formData,
+      edit_pawnrecovery_id: type === "edit" ? rowData.pawnjewelry_recovery_id : "",
+      customer_pic: formData.customer_pic.map((img) => ({
+        data: img.data,
+        isExisting: img.isExisting || false,
+      })),
+    };
+
+    const recoveryRes = await fetch(`${API_DOMAIN}/pawnrecovery.php`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const recoveryData = await recoveryRes.json();
+
+    if (recoveryData.head.code === 200) {
+      toast.success(recoveryData.head.msg || "Recovery submitted successfully");
+      setTimeout(() => navigate("/console/master/jewelrecovery"), 1500);
+    } else {
+      toast.error(recoveryData.head.msg || "Recovery submission failed");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    toast.error("Network error. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleUpdateSubmit = async () => {
     setLoading(true);
@@ -573,13 +637,91 @@ const fetchDataproduct = async () => {
           <Col lg="3" md="6" xs="12" className="py-3">
             <Calender
               setLabel={(date) => setLabel(date, "pawnjewelry_recovery_date")}
-              initialDate={
-                type === "edit" ? formData.pawnjewelry_recovery_date : undefined
-              }
+             initialDate={formData.pawnjewelry_recovery_date || new Date().toISOString().substr(0, 10)}
               calenderlabel="Jewelry pawn redemption date"
               disabled={type === "view" || type === "edit"}
             />
           </Col>
+          <Col lg="4" md="6" xs="12" className="py-4">
+  <div className="file-upload">
+    <label className="form-label">
+      {type === "edit" ? " Update Customer Photo" : "Upload Customer Photo"}
+    </label>
+
+    <input
+      type="file"
+      id="customer_pic"
+      accept="image/*"
+      ref={customerPicInputRef}
+      multiple
+      onChange={(e) => handleFileChange(e.target.files, "customer_pic")}
+      style={{ display: "none" }}
+    />
+
+   <ChooseButton
+  label="Choose Photo"
+  onClick={() => customerPicInputRef.current?.click()}
+  className="choosefilebtn me-4"
+ 
+/>
+
+    {/* <ChooseButton
+      label="Take Photo"
+      onClick={() => startWebcam("customer_pic")}
+      className="choosefilebtn"
+    /> */}
+
+    <div className="mt-3">
+      {formData.customer_pic.map((file, index) => (
+        <div
+          key={index}
+          className="file-item d-flex align-items-center mb-3 border p-2 rounded"
+        >
+          <div style={{ position: "relative", width: "100px", height: "100px", marginRight: "15px" }}>
+            {isLoadingImage && index === formData.customer_pic.length - 1 && (
+              <div style={{
+                position: "absolute", inset: 0, display: "flex",
+                justifyContent: "center", alignItems: "center",
+                background: "rgba(255,255,255,0.8)", borderRadius: "8px", zIndex: 10
+              }}>
+                <div className="spinner-border text-primary" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            )}
+
+            <img
+              src={file.data}
+              alt={file.name}
+              style={{
+                width: "100px", height: "100px", objectFit: "cover",
+                borderRadius: "8px", border: "1px solid #ddd"
+              }}
+            />
+          </div>
+
+          <div className="flex-grow-1">
+            <small className="text-muted d-block text-truncate" style={{ maxWidth: "200px" }}>
+              {file.name}
+            </small>
+          </div>
+ <ChooseButton
+                                  label="Preview"
+                                  className="btn btn-primary btn-sm me-2"
+                                  onClick={() => handlePreview(file)}
+                                />
+          <ChooseButton
+            label="Delete"
+            className="btn btn-danger btn-sm"
+            onClick={() => handleImageDelete(index, "customer_pic")}
+          />
+        </div>
+      ))}
+
+    
+    </div>
+  </div>
+</Col>
           <Col lg="12" md="6" xs="12">
            <table className="table table-bordered mx-auto">
              <thead>
@@ -802,6 +944,79 @@ const fetchDataproduct = async () => {
           />
         </Modal.Footer>
       </Modal>
+
+      {previewFile && (
+              <div
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  backgroundColor: "rgba(0, 0, 0, 0.7)",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  zIndex: 1000,
+                }}
+              >
+                <div
+                  style={{
+                    position: "relative",
+                    backgroundColor: "#fff",
+                    padding: "20px",
+                    borderRadius: "8px",
+                    maxWidth: "100%",
+                    maxHeight: "100%",
+                    overflow: "auto",
+                  }}
+                >
+                  <button
+                    onClick={closePreview}
+                    style={{
+                      position: "absolute",
+                      top: "1px",
+                      right: "1px",
+                      background: "black",
+                      border: "none",
+                      fontSize: "24px",
+                      cursor: "pointer",
+                      color: "#333",
+                    }}
+                  >
+                    ×
+                  </button>
+                  {previewFile.type === "image" ? (
+                    <img
+                      src={previewFile.data}
+                      alt={`Preview ${previewFile.name}`}
+                      style={{
+                        maxWidth: "100%",
+                        maxHeight: "80vh",
+                        objectFit: "contain",
+                      }}
+                      onError={() =>
+                        toast.error(`Failed to load image: ${previewFile.name}`, {
+                          position: "top-center",
+                          autoClose: 2000,
+                          theme: "colored",
+                        })
+                      }
+                    />
+                  ) : (
+                    <iframe
+                      src={previewFile.data}
+                      title={`Preview ${previewFile.name}`}
+                      style={{
+                        width: "100%",
+                        height: "80vh",
+                        border: "none",
+                      }}
+                    />
+                  )}
+                </div>
+              </div>
+            )}
     </div>
   );
 };
