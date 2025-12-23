@@ -134,6 +134,7 @@ const UserCreation = () => {
   console.log("formData", formData);
   const handleChange = (e, fieldName, rowIndex) => {
     const value = e.target ? e.target.value : e.value;
+<<<<<<< HEAD
 
     let updatedFormData = { ...formData };
 
@@ -156,6 +157,22 @@ const UserCreation = () => {
     });
   };
 
+=======
+
+    setFormData((prev) => {
+      if (rowIndex !== undefined) {
+        // Correctly update nested jewel_product array
+        const updatedProducts = prev.jewel_product.map((row, index) =>
+          index === rowIndex ? { ...row, [fieldName]: value } : row
+        );
+        return { ...prev, jewel_product: updatedProducts };
+      } else {
+        // Correctly update top-level fields without redundant overwrites
+        return { ...prev, [fieldName]: value };
+      }
+    });
+  };
+>>>>>>> e7759e7c7e8a18e9c5d3bd1fbf17ff491ca45dac
   const setLabel = (date, label) => {
     const formattedDate = dayjs(date).format("YYYY-MM-DD");
     setFormData((prevData) => ({
@@ -259,7 +276,11 @@ console.log("matchedPawnData", matchedPawnData);
         interest_payment_periods: formattedPeriod,
         outstanding_amount: matchedPawnData.interest_payment_amount,
         outstanding_period: matchedPawnData.interest_payment_period,
+<<<<<<< HEAD
          customer_pic:matchedPawnData.proof.map((url, index) => {
+=======
+        customer_pic:matchedPawnData.proof.map((url, index) => {
+>>>>>>> e7759e7c7e8a18e9c5d3bd1fbf17ff491ca45dac
               const extension = url.split(".").pop()?.toLowerCase();
               const isImage = /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(url);
               return {
@@ -285,6 +306,12 @@ console.log("matchedPawnData", matchedPawnData);
         interest_rate: "",
         jewel_product: [],
         pawnjewelry_date: new Date().toISOString().substr(0, 10),
+<<<<<<< HEAD
+=======
+        pawnjewelry_recovery_date:
+          formData.pawnjewelry_recovery_date ||
+          new Date().toISOString().substr(0, 10),
+>>>>>>> e7759e7c7e8a18e9c5d3bd1fbf17ff491ca45dac
         interest_income: 0,
         interest_payment_periods: "",
       });
@@ -353,7 +380,11 @@ console.log("matchedPawnData", matchedPawnData);
       setLoading(false);
 
       if (responseData.head.code === 200) {
+<<<<<<< HEAD
         setProductList(responseData.body.product); // <- Jewel names
+=======
+        setProductList(responseData.body.product);
+>>>>>>> e7759e7c7e8a18e9c5d3bd1fbf17ff491ca45dac
       } else {
         throw new Error(responseData.head.msg);
       }
@@ -414,6 +445,12 @@ console.log("matchedPawnData", matchedPawnData);
       // Step 2: Submit the recovery record (with customer_pic properly formatted)
       const payload = {
         ...formData,
+<<<<<<< HEAD
+=======
+        pawnjewelry_recovery_date:
+          formData.pawnjewelry_recovery_date ||
+          new Date().toISOString().split("T")[0],
+>>>>>>> e7759e7c7e8a18e9c5d3bd1fbf17ff491ca45dac
         edit_pawnrecovery_id:
           type === "edit" ? rowData.pawnjewelry_recovery_id : "",
         customer_pic: formData.customer_pic.map((img) => ({
@@ -660,8 +697,8 @@ console.log("matchedPawnData", matchedPawnData);
           </Col>
           <Col lg="3" md="4" xs="12" className="py-3">
             <TextInputForm
-              placeholder={"loan closeing Amount"}
-              labelname={"loan closeing Amount"}
+              placeholder={"Loan closing Amount"}
+              labelname={"Loan closing Amount"}
               name="refund_amount"
               value={formData.refund_amount}
               onChange={(e) => handleChange(e, "refund_amount")}
@@ -772,7 +809,16 @@ console.log("matchedPawnData", matchedPawnData);
                     </div>
 
                     <div className="flex-grow-1">
+<<<<<<< HEAD
                    
+=======
+                      <small
+                        className="text-muted d-block text-truncate"
+                        style={{ maxWidth: "200px" }}
+                      >
+                        {file.name}
+                      </small>
+>>>>>>> e7759e7c7e8a18e9c5d3bd1fbf17ff491ca45dac
                     </div>
                     <ChooseButton
                       label="Preview"
@@ -789,8 +835,13 @@ console.log("matchedPawnData", matchedPawnData);
               </div>
             </div>
           </Col>
+<<<<<<< HEAD
           <Col lg="12" md="12" xs="12">
             <table className="table table-bordered responsive">
+=======
+          <Col lg="12" md="6" xs="12">
+            <table className="table table-bordered mx-auto">
+>>>>>>> e7759e7c7e8a18e9c5d3bd1fbf17ff491ca45dac
               <thead>
                 <tr>
                   <th style={{ width: "5%" }}>S.No</th>
