@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     fontSize: 20, // Slightly reduced for A5
     fontWeight: 'bold',
     textAlign: 'center',
-    color:'red',
+    color:'black',
   },
   address: {
     fontSize: 10,
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   },
   
   label: { 
-    width: 80, 
+    width: 105, 
     fontWeight: 'bold',
   },
   value: {
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 15, // Changed from auto to fixed margin
+    marginTop: "50%", // Changed from auto to fixed margin
   },
   // Add these to your StyleSheet.create({})
  photoContainer: {
@@ -235,17 +235,17 @@ const phoneIcon = "https://cdn-icons-png.flaticon.com/512/455/455705.png";
               <Text>GST IN: {data?.gst || "33EEBPM7995M1ZQ"}</Text>
               <Text>உ</Text>
               <View style={styles.phoneContainer}>
-              <Image src={phoneIcon} style={styles.phoneIcon} />
-              <Text>9159605464, 9360705455</Text>
+                <Image src={phoneIcon} style={styles.phoneIcon} />
+                <Text>9159605464, 9360705455</Text>
               </View>
             </View>
 
             <View style={styles.headerBox}>
-              <Text style={styles.title}>நிதி கோல்டு லோ{""}ன்</Text>
+              <Text style={styles.title}>நிதி கோல்டு லோ{""}ன் </Text>
             </View>
 
             <Text style={styles.address}>
-              H/O:182, இரண்டாவது மாடி, AKS தியேட்டர் ரோடு, கோவில்பட்{""}டி 
+              H/O:182, இரண்டாவது மாடி, AKS தியேட்டர் ரோடு, கோவில்பட்{""}டி
             </Text>
 
             <View style={styles.doubleLineContainer}>
@@ -254,8 +254,10 @@ const phoneIcon = "https://cdn-icons-png.flaticon.com/512/455/455705.png";
             </View>
 
             <View style={styles.infoRow}>
-              <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={styles.label}>பெயர் :</Text>
+              <View
+                style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
+              >
+                <Text style={styles.label}>பெயர் </Text>
                 <Text style={styles.value}>{name}</Text>
               </View>
               <View style={styles.rightSection}>
@@ -267,8 +269,10 @@ const phoneIcon = "https://cdn-icons-png.flaticon.com/512/455/455705.png";
             </View>
 
             <View style={styles.infoRow}>
-              <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={styles.label}>முகவரி :</Text>
+              <View
+                style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
+              >
+                <Text style={styles.label}>முகவரி</Text>
                 <Text style={styles.value}>{place}</Text>
               </View>
               <View style={styles.rightSection}>
@@ -280,18 +284,33 @@ const phoneIcon = "https://cdn-icons-png.flaticon.com/512/455/455705.png";
             </View>
 
             <View style={styles.infoRow}>
-              <Text style={styles.label}>தொலைபேசி</Text>
-              <View>
-                <Text style={{ marginLeft: 20 }}>{mobile}</Text>
+              <View
+                style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
+              >
+                <Text style={styles.label}>தொலைபேசி :</Text>
+                <Text style={styles.value}>{mobile}</Text>
               </View>
             </View>
 
             <View style={styles.body}>
               <Text>
-                நான்  {formattedDate}{""} தேதியில் {data?.bank_name} {""} யில் அடகு வைத்த நகை/அளவு{""} ........................................................{"\n"}
-                M.K.கோல்டு நிறுவனத்தில் அசல் ................................ வட்டி ................................ {""}தொகைகளை வாங்கி {""} பொருட்களை திருப்பி, என்னுடைய {""} அவசர நிமித்த {""} செலவிற்காக நகைகளை விற்பனை செய்து, மீதமுள்ள தொகை ரூபாய் ..........................பணத்தை M.K.கோல்டு நிறுவனத்திலிருந்து பெற்றுக் {""} கொண்டேன். இதில் ஏதேனும் வில்லங்கம் வந்தால், அதை நானே என்னுடைய சொந்த {""}பொறுப்பில் சரி செய்து கொடுக்கின்றேன்.{""} இதை படித்துப் பார்த்தும், படிக்கக் கேட்டும் {""} தெரிந்து {""} கொண்டேன்.
+                நான் {formattedDate}
+                {""} தேதியில் {data?.bank_name} {""} யில் அடகு வைத்த நகை/அளவு
+                {""} ........................................................
+                {"\n"}
+                M.K.கோல்டு நிறுவனத்தில் அசல் ................................
+                வட்டி ................................ {""}தொகைகளை வாங்கி {""}{" "}
+                பொருட்களை திருப்பி, என்னுடைய {""} அவசர நிமித்த {""} செலவிற்காக
+                நகைகளை விற்பனை செய்து, மீதமுள்ள தொகை ரூபாய்
+                ..........................பணத்தை M.K.கோல்டு நிறுவனத்திலிருந்து
+                பெற்றுக் {""} கொண்டேன். இதில் ஏதேனும் வில்லங்கம் வந்தால், அதை
+                நானே என்னுடைய சொந்த {""}பொறுப்பில் சரி செய்து கொடுக்கின்றேன்.
+                {""} இதை படித்துப் பார்த்தும், படிக்கக் கேட்டும் {""} தெரிந்து{" "}
+                {""} கொண்டேன்.
               </Text>
             </View>
+
+            {/* <View style={{flexGrow: 1}} /> */}
 
             <View style={styles.footer}>
               <View>
@@ -405,6 +424,8 @@ const phoneIcon = "https://cdn-icons-png.flaticon.com/512/455/455705.png";
                   இந்த உறுதிமொழி, எந்தவித கட்டாயமுமின்றி, என் {""} சொந்த விருப்பத்தின் பேரில் எழுதிக் கொடுக்கப்பட்டது. இதற்கு {""}நான் முழுப்{""} பொறுப்பேற்கிறேன்.
                 </Text>
               </View>
+
+              <View style={{flexGrow: 1}} />
 
               <View style={styles.footer}>
                 <View>
