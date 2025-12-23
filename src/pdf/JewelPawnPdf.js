@@ -538,7 +538,7 @@ const LoanReceiptPDF = ({ data }) => {
   const totalCount = data.jewel_product
     .reduce((sum, item) => sum + Number(item.count || 0), 0);
 
-
+const customerImage = data.proof && data.proof.length > 0 ? data.proof[0].data : null;
 
   function numberToWords(num) {
     if (!Number.isFinite(num)) return 'Zero Only';
@@ -945,7 +945,11 @@ const LoanReceiptPDF = ({ data }) => {
     {/* Right Column: Photo Placeholder */}
     <View style={{ width: '25%', alignItems: 'center' }}>
       <View style={{ width: 80, height: 100, border: '1px solid black', backgroundColor: '#f0f0f0', justifyContent: 'center' }}>
-        <Text style={{ textAlign: 'center', fontSize: 8 }}>PHOTO</Text>
+       {customerImage && (
+            <View style={styles.imageBox}>
+              <Image src={customerImage} style={{ width: '100%', height: '100%' }} />
+            </View>
+          )}
       </View>
     </View>
   </View>
