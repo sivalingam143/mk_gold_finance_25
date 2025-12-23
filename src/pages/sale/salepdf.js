@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     fontSize: 20, // Slightly reduced for A5
     fontWeight: 'bold',
     textAlign: 'center',
-    color:"red",
+    color:"black",
   },
   address: {
     fontSize: 10,
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   },
   
   label: { 
-    width: 80, 
+    width: 110, 
     fontWeight: 'bold',
   },
   value: {
@@ -223,7 +223,7 @@ const phoneIcon = "https://cdn-icons-png.flaticon.com/512/455/455705.png";
 
             <View style={styles.infoRow}>
               <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={styles.label}>பெயர் :</Text>
+                <Text style={styles.label}>பெயர் </Text>
                 <Text style={styles.value}>{name}</Text>
               </View>
               <View style={styles.rightSection}>
@@ -236,7 +236,7 @@ const phoneIcon = "https://cdn-icons-png.flaticon.com/512/455/455705.png";
 
             <View style={styles.infoRow}>
               <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={styles.label}>முகவரி :</Text>
+                <Text style={styles.label}>முகவரி </Text>
                 <Text style={styles.value}>{place}</Text>
               </View>
               <View style={styles.rightSection}>
@@ -246,11 +246,19 @@ const phoneIcon = "https://cdn-icons-png.flaticon.com/512/455/455705.png";
                 </View>
               </View>
             </View>
+             {/* <View style={styles.infoRow}>
+                          <View
+                            style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
+                          >
+                            <Text style={styles.label}>தொலைபேசி :</Text>
+                            <Text style={styles.value}>{mobile}</Text>
+                          </View>
+                        </View> */}
 
             <View style={styles.infoRow}>
               <Text style={styles.label}>தொலைபேசி</Text>
               <View>
-                <Text style={{ marginLeft: 20 }}>{mobile}</Text>
+                <Text >{mobile}</Text>
               </View>
             </View>
 
