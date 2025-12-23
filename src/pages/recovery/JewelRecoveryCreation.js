@@ -518,7 +518,7 @@ console.log("matchedPawnData", matchedPawnData);
     }
   };
   return (
-    <div >
+    <div  overflow="hidden">
       <Container>
         <Row className="regular">
           <Col lg="12" md="12" xs="12" className="py-3">
@@ -790,7 +790,7 @@ console.log("matchedPawnData", matchedPawnData);
             </div>
           </Col>
           <Col lg="12" md="12" xs="12">
-            <table className="table table-bordered responsive overflow-hidden">
+            <table className="table table-bordered responsive">
               <thead>
                 <tr>
                   <th style={{ width: "5%" }}>S.No</th>

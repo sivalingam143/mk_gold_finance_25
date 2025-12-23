@@ -101,9 +101,9 @@ const styles = StyleSheet.create({
         marginBottom: 15,
     },
     imageBox: {
-        width: 68,
-        height: 68,
-        objectFit: 'cover',
+        width: 100,
+        height: 100,
+        objectFit: 'contain',
         border: '1px solid #D1D5DB',
         borderRadius: 5,
         overflow: 'hidden',
@@ -662,11 +662,20 @@ const OfficeCopyDocument = ({ data }) => {
                 </View>
             
                 {/* Right Column: Photo Placeholder */}
-                <View style={{ width: '25%', alignItems: 'center' }}>
-                  <View style={{ width: 80, height: 100, border: '1px solid black', backgroundColor: '#f0f0f0', justifyContent: 'center' }}>
-                    <Text style={{ textAlign: 'center', fontSize: 8 }}>PHOTO</Text>
-                  </View>
-                </View>
+              <View style={{ width: '25%', alignItems: 'center' }}>
+  {data.proof?.[0] ? (
+    <View style={styles.imageBox}>
+       <Image 
+         src={data.proof[0]} 
+         style={{ width: '100%', height: '100%' }} 
+       />
+    </View>
+  ) : (
+    <View style={{ width: 80, height: 100, border: '1px solid black', backgroundColor: '#f0f0f0', justifyContent: 'center' }}>
+      <Text style={{ textAlign: 'center', fontSize: 8 }}>படம் இல்லை</Text>
+    </View>
+  )}
+</View>
               </View>
             
               <Text style={[styles.label, { marginTop: 15, marginBottom: 10 }]}>ஐயா / அம்மா,</Text>
