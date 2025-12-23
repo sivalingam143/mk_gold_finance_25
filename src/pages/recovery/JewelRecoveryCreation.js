@@ -1,7 +1,11 @@
-import React, { useState, useEffect,useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Col, Container, Row, Alert, Modal, Form } from "react-bootstrap";
 import { TextInputForm, Calender } from "../../components/Forms";
-import { ClickButton, Delete,ChooseButton } from "../../components/ClickButton";
+import {
+  ClickButton,
+  Delete,
+  ChooseButton,
+} from "../../components/ClickButton";
 import PageNav from "../../components/PageNav";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -18,92 +22,108 @@ const UserCreation = () => {
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState(false);
   const [PawnData, setPawnUserData] = useState([]);
+  console.log("PawnData", PawnData);
+    console.log("setPawnUserData", setPawnUserData);
   const [userData, setUserData] = useState([]);
   const [error, setError] = useState("");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [productList, setProductList] = useState([]);
-const [previewFile, setPreviewFile] = useState(null);
+  const [previewFile, setPreviewFile] = useState(null);
   const redirectModal = () => {
     navigate("/console/master/jewelrecovery");
   };
-const [isLoadingImage, setIsLoadingImage] = useState(false);
+  const [isLoadingImage, setIsLoadingImage] = useState(false);
 
-const customerPicInputRef = useRef(null);
+  const customerPicInputRef = useRef(null);
   const initialState =
     type === "edit"
       ? {
-        ...rowData,
-    pawnjewelry_date: rowData.pawnjewelry_date && rowData.pawnjewelry_date !== "0000-00-00" ? rowData.pawnjewelry_date : new Date().toISOString().substr(0, 10),
-pawnjewelry_recovery_date: rowData.pawnjewelry_recovery_date && rowData.pawnjewelry_recovery_date !== "0000-00-00" ? rowData.pawnjewelry_recovery_date : new Date().toISOString().substr(0, 10),
-        jewel_product: Array.isArray(rowData.jewel_product)
-          ? rowData.jewel_product
-          : JSON.parse(rowData.jewel_product || "[]"),
+          ...rowData,
+          pawnjewelry_date:
+            rowData.pawnjewelry_date &&
+            rowData.pawnjewelry_date !== "0000-00-00"
+              ? rowData.pawnjewelry_date
+              : new Date().toISOString().substr(0, 10),
+          pawnjewelry_recovery_date:
+            rowData.pawnjewelry_recovery_date &&
+            rowData.pawnjewelry_recovery_date !== "0000-00-00"
+              ? rowData.pawnjewelry_recovery_date
+              : new Date().toISOString().substr(0, 10),
+          jewel_product: Array.isArray(rowData.jewel_product)
+            ? rowData.jewel_product
+            : JSON.parse(rowData.jewel_product || "[]"),
           customer_pic: Array.isArray(rowData.customer_pic)
-          ? rowData.customer_pic.map((url) => ({
-              name: url.split("/").pop(),
-              data: url,
-              type: "image",
-              isExisting: true,
-            }))
-          : [],
-      }
-      
+            ? rowData.customer_pic.map((url) => ({
+                name: url.split("/").pop(),
+                data: url,
+                type: "image",
+                isExisting: true,
+              }))
+            : [],
+        }
       : {
-        receipt_no: "",
-        pawnjewelry_date: "",
-        name: "",
-        customer_details: "",
-        place: "",
-        mobile_number: "",
-        original_amount: "",
-        interest_rate: "",
-        interest_income: 0,
-        interest_payment_periods: "",
-        refund_amount: "",
-        other_amount: "",
-        customer_pic: [],
-        pawnjewelry_recovery_date: new Date().toISOString().substr(0, 10),
-        jewel_product: [
-          { JewelName: "", count: "", weight: "", net: "", remark: "",carrat:"" },
-        ],
-      };
+          receipt_no: "",
+          pawnjewelry_date: "",
+          name: "",
+          customer_details: "",
+          place: "",
+          mobile_number: "",
+          original_amount: "",
+          interest_rate: "",
+          interest_income: 0,
+          interest_payment_periods: "",
+          refund_amount: "",
+          other_amount: "",
+          customer_pic: [],
+          pawnjewelry_recovery_date: new Date().toISOString().substr(0, 10),
+          jewel_product: [
+            {
+              JewelName: "",
+              count: "",
+              weight: "",
+              net: "",
+              remark: "",
+              carrat: "",
+            },
+          ],
+        };
 
   const [formData, setFormData] = useState(initialState);
 
- const handleFileChange = (files, field) => {
-  setIsLoadingImage(true);
-  const fileArray = Array.from(files);
-  const newImages = [];
+  const handleFileChange = (files, field) => {
+    setIsLoadingImage(true);
+    const fileArray = Array.from(files);
+    const newImages = [];
 
-  fileArray.forEach((file) => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      newImages.push({
-        name: file.name || `capture_${Date.now()}.jpg`,
-        data: reader.result,
-        type: "image",
-        isExisting: false,
-      });
+    fileArray.forEach((file) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        newImages.push({
+          name: file.name || `capture_${Date.now()}.jpg`,
+          data: reader.result,
+          type: "image",
+          isExisting: false,
+        });
 
-      if (newImages.length === fileArray.length) {
-        setFormData((prev) => ({
-          ...prev,
-          [field]: [...prev[field], ...newImages],
-        }));
-        setIsLoadingImage(false);
-      }
-    };
-    reader.readAsDataURL(file);
-  });
-};
+        if (newImages.length === fileArray.length) {
+          setFormData((prev) => ({
+            ...prev,
+            [field]: [...prev[field], ...newImages],
+          }));
+          setIsLoadingImage(false);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  };
 
-const handleImageDelete = (index, field) => {
-  setFormData((prev) => ({
-    ...prev,
-    [field]: prev[field].filter((_, i) => i !== index),
-  }));
-};
- const handlePreview = (file) => {
+  const handleImageDelete = (index, field) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: prev[field].filter((_, i) => i !== index),
+    }));
+  };
+  const handlePreview = (file) => {
     setPreviewFile(file);
   };
 
@@ -111,10 +131,6 @@ const handleImageDelete = (index, field) => {
     setPreviewFile(null);
   };
 
-
-
-
-  
   console.log("formData", formData);
   const handleChange = (e, fieldName, rowIndex) => {
     const value = e.target ? e.target.value : e.value;
@@ -173,8 +189,9 @@ const handleImageDelete = (index, field) => {
       periodString += `${months} month${months > 1 ? "s" : ""}`;
     }
     if (days > 0) {
-      periodString += `${months > 0 ? " " : ""}${days} day${days > 1 ? "s" : ""
-        }`;
+      periodString += `${months > 0 ? " " : ""}${days} day${
+        days > 1 ? "s" : ""
+      }`;
     }
     return periodString || "0 days";
   };
@@ -196,7 +213,7 @@ const handleImageDelete = (index, field) => {
       return false;
     });
 
-    console.log(matchedPawnData);
+    
 
     if (matchedPawnData) {
       const matchedInterestData = userData.filter((item) => {
@@ -224,7 +241,7 @@ const handleImageDelete = (index, field) => {
 
       // Format total interest_payment_periods
       const formattedPeriod = formatInterestPaymentPeriods(totalDays);
-
+console.log("matchedPawnData", matchedPawnData);
       setFormData((prevFormData) => ({
         ...prevFormData,
         receipt_no: matchedPawnData?.receipt_no || "",
@@ -242,7 +259,18 @@ const handleImageDelete = (index, field) => {
         interest_payment_periods: formattedPeriod,
         outstanding_amount: matchedPawnData.interest_payment_amount,
         outstanding_period: matchedPawnData.interest_payment_period,
-        refund_amount : parseFloat(matchedPawnData?.original_amount) + parseFloat(matchedPawnData.interest_payment_amount)
+         customer_pic:matchedPawnData.proof.map((url, index) => {
+              const extension = url.split(".").pop()?.toLowerCase();
+              const isImage = /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(url);
+              return {
+                name: `file_${index + 1}.${extension}`,
+                data: url,
+                type: isImage ? "image" : "file",
+              };
+            }),
+        refund_amount:
+          parseFloat(matchedPawnData?.original_amount) +
+          parseFloat(matchedPawnData.interest_payment_amount),
       }));
     } else {
       setFormData({
@@ -310,30 +338,30 @@ const handleImageDelete = (index, field) => {
       console.error("Error fetching data:", error.message);
     }
   };
-const fetchDataproduct = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(`${API_DOMAIN}/product.php`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ search_text: "" }),
-        });
-  
-        const responseData = await response.json();
-        setLoading(false);
-  
-        if (responseData.head.code === 200) {
-          setProductList(responseData.body.product); // <- Jewel names
-        } else {
-          throw new Error(responseData.head.msg);
-        }
-      } catch (error) {
-        console.error("Error fetching product data:", error.message);
-        setLoading(false);
+  const fetchDataproduct = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_DOMAIN}/product.php`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ search_text: "" }),
+      });
+
+      const responseData = await response.json();
+      setLoading(false);
+
+      if (responseData.head.code === 200) {
+        setProductList(responseData.body.product); // <- Jewel names
+      } else {
+        throw new Error(responseData.head.msg);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching product data:", error.message);
+      setLoading(false);
+    }
+  };
   useEffect(() => {
     fetchDataproduct();
     // if (searchText.length > 0) {
@@ -342,78 +370,81 @@ const fetchDataproduct = async () => {
     // }
   }, [searchText]);
 
- const handleSubmit = async () => {
-  setLoading(true);
+  const handleSubmit = async () => {
+    setLoading(true);
 
-  const refundAmount = parseFloat(formData.refund_amount) || 0;
-  const outstandingInterest = parseFloat(formData.outstanding_amount) || 0;
+    const refundAmount = parseFloat(formData.refund_amount) || 0;
+    const outstandingInterest = parseFloat(formData.outstanding_amount) || 0;
 
-  try {
-    // Step 1: If refund > 0 and there is outstanding interest, submit it first
-    if (refundAmount > 0 && outstandingInterest > 0) {
-      const currentDate = new Date().toISOString().split("T")[0];
+    try {
+      // Step 1: If refund > 0 and there is outstanding interest, submit it first
+      if (refundAmount > 0 && outstandingInterest > 0) {
+        const currentDate = new Date().toISOString().split("T")[0];
 
-      const interestRes = await fetch(`${API_DOMAIN}/interest.php`, {
+        const interestRes = await fetch(`${API_DOMAIN}/interest.php`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            edit_interest_id: "",
+            receipt_no: formData.receipt_no,
+            interest_receive_date: currentDate,
+            name: formData.name,
+            customer_details: formData.customer_details,
+            place: formData.place,
+            mobile_number: formData.mobile_number,
+            original_amount: formData.original_amount,
+            interest_rate: formData.interest_rate,
+            jewel_product: formData.jewel_product,
+            interest_income: outstandingInterest,
+            outstanding_period: formData.outstanding_period,
+            outstanding_amount: formData.outstanding_amount,
+            topup_amount: 0,
+            deduction_amount: 0,
+          }),
+        });
+
+        const interestData = await interestRes.json();
+        if (interestData.head.code !== 200) {
+          toast.error("Interest entry failed: " + interestData.head.msg);
+          setLoading(false);
+          return;
+        }
+      }
+
+      // Step 2: Submit the recovery record (with customer_pic properly formatted)
+      const payload = {
+        ...formData,
+        edit_pawnrecovery_id:
+          type === "edit" ? rowData.pawnjewelry_recovery_id : "",
+        customer_pic: formData.customer_pic.map((img) => ({
+          data: img.data,
+          isExisting: img.isExisting || false,
+        })),
+      };
+
+      const recoveryRes = await fetch(`${API_DOMAIN}/pawnrecovery.php`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          edit_interest_id: "",
-          receipt_no: formData.receipt_no,
-          interest_receive_date: currentDate,
-          name: formData.name,
-          customer_details: formData.customer_details,
-          place: formData.place,
-          mobile_number: formData.mobile_number,
-          original_amount: formData.original_amount,
-          interest_rate: formData.interest_rate,
-          jewel_product: formData.jewel_product,
-          interest_income: outstandingInterest,
-          outstanding_period: formData.outstanding_period,
-          outstanding_amount: formData.outstanding_amount,
-          topup_amount: 0,
-          deduction_amount: 0,
-        }),
+        body: JSON.stringify(payload),
       });
 
-      const interestData = await interestRes.json();
-      if (interestData.head.code !== 200) {
-        toast.error("Interest entry failed: " + interestData.head.msg);
-        setLoading(false);
-        return;
+      const recoveryData = await recoveryRes.json();
+
+      if (recoveryData.head.code === 200) {
+        toast.success(
+          recoveryData.head.msg || "Recovery submitted successfully"
+        );
+        setTimeout(() => navigate("/console/master/jewelrecovery"), 1500);
+      } else {
+        toast.error(recoveryData.head.msg || "Recovery submission failed");
       }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Network error. Please try again.");
+    } finally {
+      setLoading(false);
     }
-
-    // Step 2: Submit the recovery record (with customer_pic properly formatted)
-    const payload = {
-      ...formData,
-      edit_pawnrecovery_id: type === "edit" ? rowData.pawnjewelry_recovery_id : "",
-      customer_pic: formData.customer_pic.map((img) => ({
-        data: img.data,
-        isExisting: img.isExisting || false,
-      })),
-    };
-
-    const recoveryRes = await fetch(`${API_DOMAIN}/pawnrecovery.php`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    const recoveryData = await recoveryRes.json();
-
-    if (recoveryData.head.code === 200) {
-      toast.success(recoveryData.head.msg || "Recovery submitted successfully");
-      setTimeout(() => navigate("/console/master/jewelrecovery"), 1500);
-    } else {
-      toast.error(recoveryData.head.msg || "Recovery submission failed");
-    }
-  } catch (error) {
-    console.error("Error:", error);
-    toast.error("Network error. Please try again.");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const handleUpdateSubmit = async () => {
     setLoading(true);
@@ -444,7 +475,17 @@ const fetchDataproduct = async () => {
   const handleAddRow = () => {
     setFormData({
       ...formData,
-      jewel_product: [...formData.jewel_product, { JewelName: "", count: "", weight: "", net: "", remark: "", carrat:"" }],
+      jewel_product: [
+        ...formData.jewel_product,
+        {
+          JewelName: "",
+          count: "",
+          weight: "",
+          net: "",
+          remark: "",
+          carrat: "",
+        },
+      ],
     });
   };
 
@@ -477,17 +518,18 @@ const fetchDataproduct = async () => {
     }
   };
   return (
-    <div>
+    <div >
       <Container>
         <Row className="regular">
           <Col lg="12" md="12" xs="12" className="py-3">
             <PageNav
-              pagetitle={`Loan Closing${type === "view"
+              pagetitle={`Loan Closing${
+                type === "view"
                   ? " view "
                   : type === "edit"
-                    ? " edit "
-                    : " Creation"
-                }`}
+                  ? " edit "
+                  : " Creation"
+              }`}
             ></PageNav>
           </Col>
           <Col lg="3" md="6" xs="12" className="py-3">
@@ -558,27 +600,27 @@ const fetchDataproduct = async () => {
               onChange={(e) => handleChange(e, "original_amount")}
             />
           </Col>
-         <Col lg="3" md="4" xs="12" className="py-3">
-  <Form.Group controlId="interestRate">
-    <Form.Label>Interest Rate</Form.Label>
-    <Form.Select
-      name="interest_rate"
-      value={formData.interest_rate}
-      onChange={(e) => handleChange(e, "interest_rate")}
-    >
-      <option value="">-- Select Interest Rate --</option>
-      {[...Array(7)].map((_, i) => {
-        const percentage = 18 + i; // 18% to 24%
-        const monthlyRate = (percentage / 12).toFixed(2); // e.g., 1.50 for 18%
-        return (
-          <option key={percentage} value={monthlyRate}>
-            {percentage}%
-          </option>
-        );
-      })}
-    </Form.Select>
-  </Form.Group>
-</Col>
+          <Col lg="3" md="4" xs="12" className="py-3">
+            <Form.Group controlId="interestRate">
+              <Form.Label>Interest Rate</Form.Label>
+              <Form.Select
+                name="interest_rate"
+                value={formData.interest_rate}
+                onChange={(e) => handleChange(e, "interest_rate")}
+              >
+                <option value="">-- Select Interest Rate --</option>
+                {[...Array(7)].map((_, i) => {
+                  const percentage = 18 + i; // 18% to 24%
+                  const monthlyRate = (percentage / 12).toFixed(2); // e.g., 1.50 for 18%
+                  return (
+                    <option key={percentage} value={monthlyRate}>
+                      {percentage}%
+                    </option>
+                  );
+                })}
+              </Form.Select>
+            </Form.Group>
+          </Col>
 
           <Col lg="3" md="4" xs="12" className="py-3">
             <TextInputForm
@@ -637,209 +679,236 @@ const fetchDataproduct = async () => {
           <Col lg="3" md="6" xs="12" className="py-3">
             <Calender
               setLabel={(date) => setLabel(date, "pawnjewelry_recovery_date")}
-             initialDate={formData.pawnjewelry_recovery_date || new Date().toISOString().substr(0, 10)}
+              initialDate={
+                formData.pawnjewelry_recovery_date ||
+                new Date().toISOString().substr(0, 10)
+              }
               calenderlabel="Jewelry pawn redemption date"
               disabled={type === "view" || type === "edit"}
             />
           </Col>
           <Col lg="4" md="6" xs="12" className="py-4">
-  <div className="file-upload">
-    <label className="form-label">
-      {type === "edit" ? " Update Customer Photo" : "Upload Customer Photo"}
-    </label>
+            <div className="file-upload">
+              <label className="form-label">
+                {type === "edit"
+                  ? " Update Customer Photo"
+                  : "Upload Customer Photo"}
+              </label>
 
-    <input
-      type="file"
-      id="customer_pic"
-      accept="image/*"
-      ref={customerPicInputRef}
-      multiple
-      onChange={(e) => handleFileChange(e.target.files, "customer_pic")}
-      style={{ display: "none" }}
-    />
+              <input
+                type="file"
+                id="customer_pic"
+                accept="image/*"
+                ref={customerPicInputRef}
+                multiple
+                onChange={(e) =>
+                  handleFileChange(e.target.files, "customer_pic")
+                }
+                style={{ display: "none" }}
+              />
 
-   <ChooseButton
-  label="Choose File"
-  onClick={() => customerPicInputRef.current?.click()}
-  className="choosefilebtn"
- 
-/>
+              <ChooseButton
+                label="Choose File"
+                onClick={() => customerPicInputRef.current?.click()}
+                className="choosefilebtn"
+              />
 
-    {/* <ChooseButton
+              {/* <ChooseButton
       label="Take Photo"
       onClick={() => startWebcam("customer_pic")}
       className="choosefilebtn"
     /> */}
 
-    <div className="mt-3">
-      {formData.customer_pic.map((file, index) => (
-        <div
-          key={index}
-          className="file-item d-flex align-items-center mb-3 border p-2 rounded"
-        >
-          <div style={{ position: "relative", width: "100px", height: "100px", marginRight: "15px" }}>
-            {isLoadingImage && index === formData.customer_pic.length - 1 && (
-              <div style={{
-                position: "absolute", inset: 0, display: "flex",
-                justifyContent: "center", alignItems: "center",
-                background: "rgba(255,255,255,0.8)", borderRadius: "8px", zIndex: 10
-              }}>
-                <div className="spinner-border text-primary" role="status">
-                  <span className="visually-hidden">Loading...</span>
-                </div>
+              <div className="mt-3">
+                {formData.customer_pic.map((file, index) => (
+                  <div
+                    key={index}
+                    className="file-item d-flex align-items-center mb-3 border p-2 rounded"
+                  >
+                    <div
+                      style={{
+                        position: "relative",
+                        width: "100px",
+                        height: "100px",
+                        marginRight: "15px",
+                      }}
+                    >
+                      {isLoadingImage &&
+                        index === formData.customer_pic.length - 1 && (
+                          <div
+                            style={{
+                              position: "absolute",
+                              inset: 0,
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              background: "rgba(255,255,255,0.8)",
+                              borderRadius: "8px",
+                              zIndex: 10,
+                            }}
+                          >
+                            <div
+                              className="spinner-border text-primary"
+                              role="status"
+                            >
+                              <span className="visually-hidden">
+                                Loading...
+                              </span>
+                            </div>
+                          </div>
+                        )}
+
+                      <img
+                        src={file.data}
+                        alt={file.name}
+                        style={{
+                          width: "100px",
+                          height: "100px",
+                          objectFit: "cover",
+                          borderRadius: "8px",
+                          border: "1px solid #ddd",
+                        }}
+                      />
+                    </div>
+
+                    <div className="flex-grow-1">
+                   
+                    </div>
+                    <ChooseButton
+                      label="Preview"
+                      className="btn btn-primary btn-sm me-2"
+                      onClick={() => handlePreview(file)}
+                    />
+                    <ChooseButton
+                      label="Delete"
+                      className="btn btn-danger btn-sm"
+                      onClick={() => handleImageDelete(index, "customer_pic")}
+                    />
+                  </div>
+                ))}
               </div>
-            )}
+            </div>
+          </Col>
+          <Col lg="12" md="12" xs="12">
+            <table className="table table-bordered responsive overflow-hidden">
+              <thead>
+                <tr>
+                  <th style={{ width: "5%" }}>S.No</th>
+                  <th style={{ width: "20%" }}>நகை பெயர்</th>
+                  <th style={{ width: "10%" }}>தரம்</th>
+                  <th style={{ width: "8%" }}>எண்ணிக்கை</th>
+                  <th style={{ width: "10%" }}>மொத்த எடை</th>
+                  <th style={{ width: "10%" }}>நிகர எடை</th>
+                  <th style={{ width: "25%" }}>குறிப்பு</th>
+                  <th style={{ width: "5%" }}></th>
+                  <th style={{ width: "7%" }}>நீக்கு</th>
+                </tr>
+              </thead>
+              <tbody>
+                {formData.jewel_product &&
+                  formData.jewel_product.length > 0 &&
+                  formData.jewel_product.map((row, index) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
 
-            <img
-              src={file.data}
-              alt={file.name}
-              style={{
-                width: "100px", height: "100px", objectFit: "cover",
-                borderRadius: "8px", border: "1px solid #ddd"
-              }}
-            />
-          </div>
-
-          <div className="flex-grow-1">
-            <small className="text-muted d-block text-truncate" style={{ maxWidth: "200px" }}>
-              {file.name}
-            </small>
-          </div>
- <ChooseButton
-                                  label="Preview"
-                                  className="btn btn-primary btn-sm me-2"
-                                  onClick={() => handlePreview(file)}
-                                />
-          <ChooseButton
-            label="Delete"
-            className="btn btn-danger btn-sm"
-            onClick={() => handleImageDelete(index, "customer_pic")}
-          />
-        </div>
-      ))}
-
-    
-    </div>
-  </div>
-</Col>
-          <Col lg="12" md="6" xs="12">
-           <table className="table table-bordered mx-auto">
-             <thead>
-               <tr>
-                 <th style={{ width: '5%' }}>S.No</th>
-                 <th style={{ width: '20%' }}>நகை பெயர்</th>
-                 <th style={{ width: '10%' }}>தரம்</th>
-                 <th style={{ width: '8%' }}>எண்ணிக்கை</th>
-                 <th style={{ width: '10%' }}>மொத்த எடை</th>
-                 <th style={{ width: '10%' }}>நிகர எடை</th>
-                 <th style={{ width: '25%' }}>குறிப்பு</th>
-                 <th style={{ width: '5%' }}></th>
-                 <th style={{ width: '7%' }}>நீக்கு</th>
-               </tr>
-             </thead>
-             <tbody>
-               {formData.jewel_product &&
-                 formData.jewel_product.length > 0 &&
-                 formData.jewel_product.map((row, index) => (
-                   <tr key={index}>
-                     <td>{index + 1}</td>
-         
-                     {/* Jewel Name Dropdown */}
-                     <td>
-                       <select
-                         className="form-cntrl w-100"
-                         value={row.JewelName}
-                         onChange={(e) => handleChange(e, "JewelName", index)}
-                         autoFocus={index === formData.jewel_product.length - 1}
-                       >
-                         <option value="">தேர்வு செய்க</option>
-                         {productList.map((item, idx) => (
-                           <option key={idx} value={item.product_eng}>
-                             {item.product_eng}
-                           </option>
-                         ))}
-                       </select>
-                     </td>
-         
-                     {/* Carat Dropdown */}
-                     <td>
+                      {/* Jewel Name Dropdown */}
+                      <td>
                         <select
-                className="form-cntrl w-100"
-                value={row.carrat}
-                onChange={(e) => handleChange(e, "carrat", index)}
-              >
-                <option value="">தேர்வு செய்க</option>
-               
-                <option value="18">18</option>
-                <option value="20">20</option>
-                <option value="22">22</option>
-              </select>
-                     </td>
-         
-                     {/* Count */}
-                     <td>
-                       <input
-                         type="number"
-                         className="form-cntrl w-100"
-                         value={row.count}
-                         onChange={(e) => handleChange(e, "count", index)}
-                       />
-                     </td>
-         
-                     {/* Gross Weight */}
-                     <td>
-                       <input
-                         type="number"
-                         className="form-cntrl w-100"
-                         value={row.weight}
-                         onChange={(e) => handleChange(e, "weight", index)}
-                       />
-                     </td>
-         
-                     {/* Net Weight */}
-                     <td>
-                       <input
-                         type="number"
-                         className="form-cntrl w-100"
-                         value={row.net}
-                         onChange={(e) => handleChange(e, "net", index)}
-                       />
-                     </td>
-         
-                     {/* Remark */}
-                     <td>
-                       <textarea
-                         rows={1}
-                         className="form-cntrl w-100"
-                         value={row.remark}
-                         onChange={(e) => handleChange(e, "remark", index)}
-                       />
-                     </td>
-         
-                     {/* Add More (hidden) */}
-                     <td>
-                       <div className="d-none">
-                         {index === formData.jewel_product.length - 1 && (
-                           <ClickButton
-                             label={<>Add More</>}
-                             onClick={handleAddRow}
-                           />
-                         )}
-                       </div>
-                     </td>
-         
-                     {/* Delete */}
-                     <td>
-                       <Delete
-                         onClick={() => handleDeleteRow(index)}
-                         label={<MdDeleteForever />}
-                       />
-                     </td>
-                   </tr>
-                 ))}
-             </tbody>
-           </table>
-         </Col>
+                          className="form-cntrl w-100"
+                          value={row.JewelName}
+                          onChange={(e) => handleChange(e, "JewelName", index)}
+                          autoFocus={
+                            index === formData.jewel_product.length - 1
+                          }
+                        >
+                          <option value="">தேர்வு செய்க</option>
+                          {productList.map((item, idx) => (
+                            <option key={idx} value={item.product_eng}>
+                              {item.product_eng}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+
+                      {/* Carat Dropdown */}
+                      <td>
+                        <select
+                          className="form-cntrl w-100"
+                          value={row.carrat}
+                          onChange={(e) => handleChange(e, "carrat", index)}
+                        >
+                          <option value="">தேர்வு செய்க</option>
+
+                          <option value="18">18</option>
+                          <option value="20">20</option>
+                          <option value="22">22</option>
+                        </select>
+                      </td>
+
+                      {/* Count */}
+                      <td>
+                        <input
+                          type="number"
+                          className="form-cntrl w-100"
+                          value={row.count}
+                          onChange={(e) => handleChange(e, "count", index)}
+                        />
+                      </td>
+
+                      {/* Gross Weight */}
+                      <td>
+                        <input
+                          type="number"
+                          className="form-cntrl w-100"
+                          value={row.weight}
+                          onChange={(e) => handleChange(e, "weight", index)}
+                        />
+                      </td>
+
+                      {/* Net Weight */}
+                      <td>
+                        <input
+                          type="number"
+                          className="form-cntrl w-100"
+                          value={row.net}
+                          onChange={(e) => handleChange(e, "net", index)}
+                        />
+                      </td>
+
+                      {/* Remark */}
+                      <td>
+                        <textarea
+                          rows={1}
+                          className="form-cntrl w-100"
+                          value={row.remark}
+                          onChange={(e) => handleChange(e, "remark", index)}
+                        />
+                      </td>
+
+                      {/* Add More (hidden) */}
+                      <td>
+                        <div className="d-none">
+                          {index === formData.jewel_product.length - 1 && (
+                            <ClickButton
+                              label={<>Add More</>}
+                              onClick={handleAddRow}
+                            />
+                          )}
+                        </div>
+                      </td>
+
+                      {/* Delete */}
+                      <td>
+                        <Delete
+                          onClick={() => handleDeleteRow(index)}
+                          label={<MdDeleteForever />}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </Col>
           <Col lg="12">
             <div className="text-center">
               {type === "view" ? (
@@ -946,77 +1015,77 @@ const fetchDataproduct = async () => {
       </Modal>
 
       {previewFile && (
-              <div
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0, 0, 0, 0.7)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+          }}
+        >
+          <div
+            style={{
+              position: "relative",
+              backgroundColor: "#fff",
+              padding: "20px",
+              borderRadius: "8px",
+              maxWidth: "100%",
+              maxHeight: "100%",
+              overflow: "auto",
+            }}
+          >
+            <button
+              onClick={closePreview}
+              style={{
+                position: "absolute",
+                top: "1px",
+                right: "1px",
+                background: "black",
+                border: "none",
+                fontSize: "24px",
+                cursor: "pointer",
+                color: "#333",
+              }}
+            >
+              ×
+            </button>
+            {previewFile.type === "image" ? (
+              <img
+                src={previewFile.data}
+                alt={`Preview ${previewFile.name}`}
                 style={{
-                  position: "fixed",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                  backgroundColor: "rgba(0, 0, 0, 0.7)",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  zIndex: 1000,
+                  maxWidth: "100%",
+                  maxHeight: "80vh",
+                  objectFit: "contain",
                 }}
-              >
-                <div
-                  style={{
-                    position: "relative",
-                    backgroundColor: "#fff",
-                    padding: "20px",
-                    borderRadius: "8px",
-                    maxWidth: "100%",
-                    maxHeight: "100%",
-                    overflow: "auto",
-                  }}
-                >
-                  <button
-                    onClick={closePreview}
-                    style={{
-                      position: "absolute",
-                      top: "1px",
-                      right: "1px",
-                      background: "black",
-                      border: "none",
-                      fontSize: "24px",
-                      cursor: "pointer",
-                      color: "#333",
-                    }}
-                  >
-                    ×
-                  </button>
-                  {previewFile.type === "image" ? (
-                    <img
-                      src={previewFile.data}
-                      alt={`Preview ${previewFile.name}`}
-                      style={{
-                        maxWidth: "100%",
-                        maxHeight: "80vh",
-                        objectFit: "contain",
-                      }}
-                      onError={() =>
-                        toast.error(`Failed to load image: ${previewFile.name}`, {
-                          position: "top-center",
-                          autoClose: 2000,
-                          theme: "colored",
-                        })
-                      }
-                    />
-                  ) : (
-                    <iframe
-                      src={previewFile.data}
-                      title={`Preview ${previewFile.name}`}
-                      style={{
-                        width: "100%",
-                        height: "80vh",
-                        border: "none",
-                      }}
-                    />
-                  )}
-                </div>
-              </div>
+                onError={() =>
+                  toast.error(`Failed to load image: ${previewFile.name}`, {
+                    position: "top-center",
+                    autoClose: 2000,
+                    theme: "colored",
+                  })
+                }
+              />
+            ) : (
+              <iframe
+                src={previewFile.data}
+                title={`Preview ${previewFile.name}`}
+                style={{
+                  width: "100%",
+                  height: "80vh",
+                  border: "none",
+                }}
+              />
             )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
