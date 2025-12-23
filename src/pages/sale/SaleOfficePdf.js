@@ -110,6 +110,10 @@ const styles = StyleSheet.create({
     marginBottom: 8, // Reduced from 12
     marginLeft: -10,
   },
+  colon: {
+  width: 10, // Give the colon its own small fixed width
+  fontWeight: 'bold',
+},
 
   label: {
     width: 105,
@@ -266,7 +270,7 @@ const SaleOfficePDF = ({ data }) => {
                 style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
               >
                 {/* Use a fixed width for the label container to align the colons */}
-                <Text style={[styles.label, { width: 100 }]}>பெயர்</Text>
+                <Text style={[styles.label, { width: 120 }]}>பெயர்</Text>
                 <Text style={styles.colon}>: </Text>
                 <Text style={styles.value}>{name}</Text>
               </View>
@@ -284,7 +288,7 @@ const SaleOfficePDF = ({ data }) => {
               <View
                 style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
               >
-                <Text style={[styles.label, { width: 100 }]}>முகவரி</Text>
+                <Text style={[styles.label, { width: 120 }]}>முகவரி</Text>
                 <Text style={styles.colon}>: </Text>
                 <Text style={styles.value}>{place}</Text>
               </View>
@@ -298,15 +302,14 @@ const SaleOfficePDF = ({ data }) => {
               </View>
             </View>
 
-            <View style={styles.infoRow}>
-              <View
-                style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
-              >
-                <Text style={[styles.label, { width: 100 }]}>தொலைபேசி</Text>
-                <Text style={styles.colon}>: </Text>
-                <Text style={styles.value}>{mobile}</Text>
-              </View>
-            </View>
+           <View style={styles.infoRow}>
+  <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
+    {/* Try increasing width to 130 and adding flexShrink: 0 */}
+    <Text style={[styles.label, { width: 120, flexShrink: 0 }]}>தொலைபேசி</Text>
+    <Text style={styles.colon}>: </Text>
+    <Text style={styles.value}>{mobile}</Text>
+  </View>
+</View>
 
             <View style={styles.body}>
               <Text>
