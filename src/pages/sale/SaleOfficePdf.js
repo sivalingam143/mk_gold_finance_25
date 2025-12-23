@@ -1,66 +1,76 @@
-import React from 'react';
-import { useState,useEffect } from 'react';
-import { Page, Text, View, Document, StyleSheet, Font, pdf, Image,PDFViewer } from '@react-pdf/renderer';
-import { useLocation } from 'react-router-dom';
+import React from "react";
+import { useState, useEffect } from "react";
+import {
+  Page,
+  Text,
+  View,
+  Document,
+  StyleSheet,
+  Font,
+  pdf,
+  Image,
+  PDFViewer,
+} from "@react-pdf/renderer";
+import { useLocation } from "react-router-dom";
 import image from "../../mklogo.png";
 import fontBold from "../../pdf/fonts/NotoSansTamil-Bold.ttf";
 import fontRegular from "../../pdf/fonts/NotoSansTamil-Regular.ttf";
 
 // Register Tamil Fonts
 Font.register({
-  family: 'TamilFont',
+  family: "TamilFont",
   fonts: [
-    { src: fontRegular, fontWeight: 'normal' },
-    { src: fontBold, fontWeight: 'bold' }
-  ]
+    { src: fontRegular, fontWeight: "normal" },
+    { src: fontBold, fontWeight: "bold" },
+  ],
 });
 
 const styles = StyleSheet.create({
   page: {
     padding: 0,
-    fontFamily: 'TamilFont',
+    fontFamily: "TamilFont",
     fontSize: 12, // Slightly reduced base font for A5
-    position: 'relative', 
+    position: "relative",
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
+    flexDirection: "row",
+    alignItems: "flex-end",
     marginBottom: 15,
   },
-   dottedLine: {
-    borderBottom: '1pt dotted black',
+  dottedLine: {
+    borderBottom: "1pt dotted black",
     flex: 1,
     marginLeft: 10,
     marginRight: 10,
     height: 18,
   },
   backgroundImage: {
-    position: 'absolute',
-    top: '30%', 
-    left: '25%', 
-    width: '50%', 
-    opacity: 0.12, 
+    position: "absolute",
+    top: "30%",
+    left: "25%",
+    width: "50%",
+    opacity: 0.12,
     zIndex: -1,
   },
   outerBorder: {
-    border: '2pt solid black',
+    border: "2pt solid black",
     margin: 10, // Reduced from 15 to fit A5
     padding: 3,
     flexGrow: 1,
     zIndex: 1,
   },
   innerBorder: {
-    border: '1pt solid black',
+    border: "1pt solid black",
     paddingTop: 20, // Reduced from 25
     paddingBottom: 10,
     paddingRight: 30, // Reduced from 35
     paddingLeft: 20,
     flexGrow: 1, // Changed from height 100% to prevent page overflow
-    flexDirection: 'column',
+    flexDirection: "column",
   },
   topRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     fontSize: 10,
     marginLeft: -10,
     marginTop: -15, // Adjusted for A5
@@ -68,21 +78,21 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   headerBox: {
-    border: '1pt solid black',
+    border: "1pt solid black",
     borderRadius: 9,
     padding: 2,
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 5,
   },
   title: {
     fontSize: 20, // Slightly reduced for A5
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color:'black',
+    fontWeight: "bold",
+    textAlign: "center",
+    color: "black",
   },
   address: {
     fontSize: 10,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 10,
     marginTop: 5,
   },
@@ -91,44 +101,44 @@ const styles = StyleSheet.create({
     marginLeft: -20,
     marginRight: -30,
   },
-  lineThick: { borderBottom: '2pt solid black' },
-  lineThin: { borderBottom: '1pt solid black', marginTop: 2 },
-  
+  lineThick: { borderBottom: "2pt solid black" },
+  lineThin: { borderBottom: "1pt solid black", marginTop: 2 },
+
   infoRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 8, // Reduced from 12
     marginLeft: -10,
   },
-  
-  label: { 
-    width: 105, 
-    fontWeight: 'bold',
+
+  label: {
+    width: 105,
+    fontWeight: "bold",
   },
   value: {
     flex: 1,
     fontSize: 11,
   },
-  rightSection: { 
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    justifyContent: 'flex-end',
+  rightSection: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
     width: 140,
   },
-  numberValueBox: { 
-    width: 70, 
-    textAlign: 'center',
+  numberValueBox: {
+    width: 70,
+    textAlign: "center",
     marginLeft: 5,
   },
-  
+
   body: {
     fontSize: 11,
-    lineHeight: 2, // Slightly tighter line height
+    lineHeight: 2.5, // Slightly tighter line height
     // textAlign: 'justify',
-    marginTop: 8,
+    marginTop: 25,
     marginLeft: -10,
   },
-   body1: {
+  body1: {
     fontSize: 11,
     lineHeight: 1.5, // Slightly tighter line height
     // textAlign: 'justify',
@@ -136,74 +146,73 @@ const styles = StyleSheet.create({
     marginLeft: -10,
   },
   phoneContainer: {
-    flexDirection: 'row',
-   
+    flexDirection: "row",
+
     // justifyContent: 'flex-end',
   },
   phoneIcon: {
     width: 10,
     height: 10,
-  marginRight:4, 
+    marginRight: 4,
   },
   footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: "50%", // Changed from auto to fixed margin
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: "54%", // Changed from auto to fixed margin
   },
   // Add these to your StyleSheet.create({})
- photoContainer: {
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  alignItems: 'flex-start',
-  marginTop: 10,
-}
-,
+  photoContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginTop: 10,
+  },
   jewelDetails: {
     flex: 1,
   },
-customerPhoto: {
-  width: 90,        // Slightly larger
-  height: 110,
-  border: '2pt solid black',  // Thicker border
-  marginLeft: 15,
-  objectFit: 'cover',
-  backgroundColor: '#ffffff', // Force white background if image is transparent/dark
-},
-imageGallery: {
-    padding: 20,
-    flexDirection: 'column',
+  customerPhoto: {
+    width: 90, // Slightly larger
+    height: 110,
+    border: "2pt solid black", // Thicker border
+    marginLeft: 15,
+    objectFit: "cover",
+    backgroundColor: "#ffffff", // Force white background if image is transparent/dark
   },
-sectionTitle: {
-  fontSize: 11, // Reduced size for side-by-side layout
-  fontWeight: 'bold',
-  marginBottom: 5,
-  marginTop: 10,
+  imageGallery: {
+    padding: 20,
+    flexDirection: "column",
+  },
+  sectionTitle: {
+    fontSize: 11, // Reduced size for side-by-side layout
+    fontWeight: "bold",
+    marginBottom: 5,
+    marginTop: 10,
 
-  padding: 3,
-},
+    padding: 3,
+  },
   imageRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: 10,
     marginBottom: 10,
   },
-documentImage: {
-  width: '100%',     // Fills its half-width column
-  height: 140,       // Fixed height for all images
-  objectFit: 'cover', // Crops image to fill the box without stretching
-  border: '1pt solid #ccc',
-  borderRadius: 4,
-},
-documentImage1: {
-  width: '50%',     // Fills its half-width column
-  height: 140,       // Fixed height for all images
-  objectFit: 'cover', // Crops image to fill the box without stretching
-  border: '1pt solid #ccc',
-  borderRadius: 4,
-},
-  witnessLabel: { fontWeight: 'bold', marginBottom: 5 },
+  documentImage: {
+    width: "100%", // Fills its half-width column
+    height: 140, // Fixed height for all images
+    objectFit: "cover", // Crops image to fill the box without stretching
+    border: "1pt solid #ccc",
+    borderRadius: 4,
+  },
+  documentImage1: {
+    width: "50%", // Fills its half-width column
+    height: 140, // Fixed height for all images
+    objectFit: "cover", // Crops image to fill the box without stretching
+    border: "1pt solid #ccc",
+    borderRadius: 4,
+  },
+  witnessLabel: { fontWeight: "bold", marginBottom: 5 },
 
-  signatureSection: { alignItems: 'flex-end' },
+  signatureSection: { alignItems: "flex-end" },
 });
 
 const SaleOfficePDF = ({ data }) => {
@@ -215,14 +224,13 @@ const SaleOfficePDF = ({ data }) => {
     const year = date.getFullYear();
     return `${day}-${month}-${year}`;
   };
-// This defines the variable to fix the ESLint 'no-undef' error
-const phoneIcon = "https://cdn-icons-png.flaticon.com/512/455/455705.png";
+  // This defines the variable to fix the ESLint 'no-undef' error
+  const phoneIcon = "https://cdn-icons-png.flaticon.com/512/455/455705.png";
   const formattedDate = formatDate(data?.sale_date || data?.date);
   const id = data?.id || "";
   const name = data?.name || "";
   const place = data?.place || "";
   const mobile = data?.mobile_number || "";
-
 
   return (
     <Document>
@@ -257,11 +265,15 @@ const phoneIcon = "https://cdn-icons-png.flaticon.com/512/455/455705.png";
               <View
                 style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
               >
-                <Text style={styles.label}>பெயர் </Text>
+                {/* Use a fixed width for the label container to align the colons */}
+                <Text style={[styles.label, { width: 100 }]}>பெயர்</Text>
+                <Text style={styles.colon}>: </Text>
                 <Text style={styles.value}>{name}</Text>
               </View>
+
               <View style={styles.rightSection}>
-                <Text>எண்:</Text>
+                <Text style={{ width: 40 }}>எண்</Text>
+                <Text style={styles.colon}>: </Text>
                 <View style={styles.numberValueBox}>
                   <Text>{id}</Text>
                 </View>
@@ -272,11 +284,14 @@ const phoneIcon = "https://cdn-icons-png.flaticon.com/512/455/455705.png";
               <View
                 style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
               >
-                <Text style={styles.label}>முகவரி</Text>
+                <Text style={[styles.label, { width: 100 }]}>முகவரி</Text>
+                <Text style={styles.colon}>: </Text>
                 <Text style={styles.value}>{place}</Text>
               </View>
+
               <View style={styles.rightSection}>
-                <Text>தேதி:</Text>
+                <Text style={{ width: 40 }}>தேதி</Text>
+                <Text style={styles.colon}>: </Text>
                 <View style={styles.numberValueBox}>
                   <Text>{formattedDate}</Text>
                 </View>
@@ -287,7 +302,8 @@ const phoneIcon = "https://cdn-icons-png.flaticon.com/512/455/455705.png";
               <View
                 style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
               >
-                <Text style={styles.label}>தொலைபேசி :</Text>
+                <Text style={[styles.label, { width: 100 }]}>தொலைபேசி</Text>
+                <Text style={styles.colon}>: </Text>
                 <Text style={styles.value}>{mobile}</Text>
               </View>
             </View>
@@ -295,8 +311,10 @@ const phoneIcon = "https://cdn-icons-png.flaticon.com/512/455/455705.png";
             <View style={styles.body}>
               <Text>
                 நான் {formattedDate}
-                {""} தேதியில் {data?.bank_name} {""} யில் அடகு வைத்த நகை/அளவு
-                {""} ........................................................
+                {""} தேதியில் {data?.bank_name} {""} யில் அடகு வைத்த நகை/அளவு{" "}
+                {data?.total_jewel_weightss ||
+                  "................................."}
+                {""}
                 {"\n"}
                 M.K.கோல்டு நிறுவனத்தில் அசல் ................................
                 வட்டி ................................ {""}தொகைகளை வாங்கி {""}{" "}
@@ -314,144 +332,185 @@ const phoneIcon = "https://cdn-icons-png.flaticon.com/512/455/455705.png";
 
             <View style={styles.footer}>
               <View>
-                <Text style={{fontWeight: 'bold', marginBottom: 15,marginTop:10 }}>தேதி:</Text>
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                    marginBottom: 15,
+                    marginTop: 10,
+                  }}
+                >
+                  தேதி:
+                </Text>
                 <Text style={styles.witnessLabel}>சாட்சி</Text>
-                <Text >1.</Text>
-                <Text style={{ marginTop:2 }}>2.</Text>
+                <Text>1.</Text>
+                <Text style={{ marginTop: 2 }}>2.</Text>
               </View>
               <View style={styles.signatureSection}>
-                <Text style={{ fontWeight: 'bold',marginTop:6 }}>இப்படிக்கு</Text>
+                <Text style={{ fontWeight: "bold", marginTop: 6 }}>
+                  இப்படிக்கு
+                </Text>
               </View>
             </View>
           </View>
         </View>
       </Page>
 
-
-    <Page size="A4" style={styles.page}>
-  {/* Removed background image as requested */}
-  <View style={styles.outerBorder}>
-    <View style={[styles.innerBorder, styles.imageGallery]}>
-      <Text style={{ textAlign: 'center', fontSize: 16, fontWeight: 'bold', marginBottom: 10 }}>
-        ஆவணங்கள் மற்றும் புகைப்படங்கள்
-      </Text>
-
-      {/* Row 1: Customer Photo and ID Proof */}
-      <View style={{ flexDirection: 'row', gap: 10 }}>
-        
-        {/* Customer Pictures */}
-        <View style={{ flex: 1 }}>
-          <Text style={styles.sectionTitle}>CUSTOMER PHOTO</Text>
-          <View style={styles.imageRow}>
-            {data?.customer_pic?.map((pic, index) => {
-              const imgSrc = pic?.data || pic; // Handle both object and string formats
-              return imgSrc ? <Image key={index} src={imgSrc} style={styles.documentImage} /> : null;
-            })}
-          </View>
-        </View>
-
-        {/* ID Proof */}
-        <View style={{ flex: 1 }}>
-          <Text style={styles.sectionTitle}>ID PROOF</Text>
-          <View style={styles.imageRow}>
-            {data?.id_pic?.map((pic, index) => {
-              const imgSrc = pic?.data || pic;
-              return imgSrc ? <Image key={index} src={imgSrc} style={styles.documentImage} /> : null;
-            })}
-          </View>
-        </View>
-      </View>
-
-      {/* Row 2: Jewel Photo */}
-      <View style={{ marginTop: 10 }}>
-        <Text style={styles.sectionTitle}>JEWEL PHOTO</Text>
-        <View style={styles.imageRow}>
-          {data?.jewel_pic?.map((pic, index) => {
-            const imgSrc = pic?.data || pic;
-            return imgSrc ? <Image key={index} src={imgSrc} style={styles.documentImage1} /> : null;
-          })}
-        </View>
-      </View>
-    </View>
-  </View>
-</Page>
-    
-    
-     
-
-        <Page size="A4" style={styles.page}>
-          <Image src={image} style={styles.backgroundImage} />
-          <View style={styles.outerBorder}>
-            <View style={styles.innerBorder}>
-              <View style={styles.headerBox}>
-                <Text style={styles.title}>நிதி கோல்டு லோ{""}ன்</Text>
-                
-              </View>
-               <Text style={styles.address}>
-              H/O:182, இரண்டாவது மாடி, AKS தியேட்டர் ரோடு, கோவில்பட்{""}டி 
+      <Page size="A4" style={styles.page}>
+        {/* Removed background image as requested */}
+        <View style={styles.outerBorder}>
+          <View style={[styles.innerBorder, styles.imageGallery]}>
+            <Text
+              style={{
+                textAlign: "center",
+                fontSize: 16,
+                fontWeight: "bold",
+                marginBottom: 10,
+              }}
+            >
+              ஆவணங்கள் மற்றும் புகைப்படங்கள்
             </Text>
-              <Text style={[styles.address, { textDecoration: 'underline' }]}>உறுதிமொழி படிவ{""}ம்</Text>
-              
 
-  <View style={styles.photoContainer}>
-    <View style={[styles.body, styles.jewelDetails, { marginTop: 8 }]}>
-         <Text style={[styles.label, { marginBottom: 2 }]}>அடகு விபரம்</Text>
-      <Text>எடை : {data?.total_jewel_weight} கிராம்</Text>
-      <Text>பொருளின் விபரம் : தரம் {data?.tharam}</Text>
-      <Text>விற்பனை தேதி : {formattedDate}</Text>
-    </View>
-
-
-  </View>
-              <View style={[styles.body1, { marginTop: 10 }]}>
-                <Text style={{ textAlign: 'justify' }}>
-                  நான் {data?.name}, மேலே குறிப்பிட்ட நிதி நிறுவனத்தில் என் சொந்தமான தங்க நகைகளை அடகு வைத்திருந்தேன். 
-                </Text>
-                
-                <Text style={{ marginTop: 5, textAlign: 'justify' }}>
-                  அடகு காலம் முடிவடைந்த போதிலும், நிதி குறைவு காரணமாக அல்லது தனிப்பட்ட காரணங்களால் அடகு வைத்திருந்த நகைகளை மீட்க நான் இயலாத நிலை ஏற்பட்டுள்ளது. 
-                </Text>
-
-                <Text style={{ marginTop: 5, textAlign: 'justify' }}>
-                  எனவே, அடகு வைத்திருந்த என் தங்க நகைகளை, அந்நிறுவன விதிமுறைகளின்படி, அசல் தொகை மற்றும் அதற்குரிய வட்டி தொகையை சரிசெய்து, நிதி கோல்டு {""}பைனான்ஸ் நிறுவனம் விற்பனை செய்து கொள்ள நான் {""}முழுமனதுடன் ஒப்புக்கொள்கிறேன்.
-                </Text>
-
-                <Text style={{ marginTop: 5, textAlign: 'justify' }}>
-                  இந்த நகை விற்பனை தொடர்பாக, எதிர்காலத்தில் நான் அல்லது என் வாரிசுகள் எவரும் அந்நிறுவனத்தின் மீது எந்தவிதமான உரிமை, கோரிக்கை அல்லது சட்ட நடவடிக்கையும் {""} மேற்கொள்ள மாட்டோம் என்று உறுதியாக அறிவிக்கிறேன்.
-                </Text>
-
-                <Text style={{ marginTop: 5, textAlign: 'justify' }}>
-                  இந்த உறுதிமொழி, எந்தவித கட்டாயமுமின்றி, என் {""} சொந்த விருப்பத்தின் பேரில் எழுதிக் கொடுக்கப்பட்டது. இதற்கு {""}நான் முழுப்{""} பொறுப்பேற்கிறேன்.
-                </Text>
+            {/* Row 1: Customer Photo and ID Proof */}
+            <View style={{ flexDirection: "row", gap: 10 }}>
+              {/* Customer Pictures */}
+              <View style={{ flex: 1 }}>
+                <Text style={styles.sectionTitle}>CUSTOMER PHOTO</Text>
+                <View style={styles.imageRow}>
+                  {data?.customer_pic?.map((pic, index) => {
+                    const imgSrc = pic?.data || pic; // Handle both object and string formats
+                    return imgSrc ? (
+                      <Image
+                        key={index}
+                        src={imgSrc}
+                        style={styles.documentImage}
+                      />
+                    ) : null;
+                  })}
+                </View>
               </View>
 
-              <View style={{flexGrow: 1}} />
-
-              <View style={styles.footer}>
-                <View>
-                  <Text>நாள் : {formattedDate}</Text>
-                  <Text>இடம் : {data?.place}</Text>
-                </View>
-                <View style={styles.signatureSection}>
-                  <Text style={{ fontWeight: 'bold' }}>இப்படிக்கு</Text>
-
+              {/* ID Proof */}
+              <View style={{ flex: 1 }}>
+                <Text style={styles.sectionTitle}>ID PROOF</Text>
+                <View style={styles.imageRow}>
+                  {data?.id_pic?.map((pic, index) => {
+                    const imgSrc = pic?.data || pic;
+                    return imgSrc ? (
+                      <Image
+                        key={index}
+                        src={imgSrc}
+                        style={styles.documentImage}
+                      />
+                    ) : null;
+                  })}
                 </View>
               </View>
             </View>
+
+            {/* Row 2: Jewel Photo */}
+            <View style={{ marginTop: 10 }}>
+              <Text style={styles.sectionTitle}>JEWEL PHOTO</Text>
+              <View style={styles.imageRow}>
+                {data?.jewel_pic?.map((pic, index) => {
+                  const imgSrc = pic?.data || pic;
+                  return imgSrc ? (
+                    <Image
+                      key={index}
+                      src={imgSrc}
+                      style={styles.documentImage1}
+                    />
+                  ) : null;
+                })}
+              </View>
+            </View>
           </View>
-        </Page>
+        </View>
+      </Page>
+
+      <Page size="A4" style={styles.page}>
+        <Image src={image} style={styles.backgroundImage} />
+        <View style={styles.outerBorder}>
+          <View style={styles.innerBorder}>
+            <View style={styles.headerBox}>
+              <Text style={styles.title}>நிதி கோல்டு லோ{""}ன்</Text>
+            </View>
+            <Text style={styles.address}>
+              H/O:182, இரண்டாவது மாடி, AKS தியேட்டர் ரோடு, கோவில்பட்{""}டி
+            </Text>
+            <Text style={[styles.address, { textDecoration: "underline" }]}>
+              உறுதிமொழி படிவ{""}ம்
+            </Text>
+
+            <View style={styles.photoContainer}>
+              <View
+                style={[styles.body, styles.jewelDetails, { marginTop: 8 }]}
+              >
+                <Text style={[styles.label, { marginBottom: 2 }]}>
+                  அடகு விபரம்
+                </Text>
+                <Text>எடை : {data?.total_jewel_weight} கிராம்</Text>
+                <Text>பொருளின் விபரம் : தரம் {data?.tharam}</Text>
+                <Text>விற்பனை தேதி : {formattedDate}</Text>
+              </View>
+            </View>
+            <View style={[styles.body1, { marginTop: 20 }]}>
+              <Text style={{ textAlign: "justify" }}>
+                நான் {data?.name}, மேலே குறிப்பிட்ட நிதி நிறுவனத்தில் என்
+                சொந்தமான தங்க நகைகளை அடகு வைத்திருந்தேன்.
+              </Text>
+
+              <Text style={{ marginTop: 5, textAlign: "justify" }}>
+                அடகு காலம் முடிவடைந்த போதிலும், நிதி குறைவு காரணமாக அல்லது
+                தனிப்பட்ட காரணங்களால் அடகு வைத்திருந்த நகைகளை மீட்க நான் இயலாத
+                நிலை ஏற்பட்டுள்ளது.
+              </Text>
+
+              <Text style={{ marginTop: 5, textAlign: "justify" }}>
+                எனவே, அடகு வைத்திருந்த என் தங்க நகைகளை, அந்நிறுவன
+                விதிமுறைகளின்படி, அசல் தொகை மற்றும் அதற்குரிய வட்டி தொகையை
+                சரிசெய்து, நிதி கோல்டு {""}பைனான்ஸ் நிறுவனம் விற்பனை செய்து
+                கொள்ள நான் {""}முழுமனதுடன் ஒப்புக்கொள்கிறேன்.
+              </Text>
+
+              <Text style={{ marginTop: 5, textAlign: "justify" }}>
+                இந்த நகை விற்பனை தொடர்பாக, எதிர்காலத்தில் நான் அல்லது என்
+                வாரிசுகள் எவரும் அந்நிறுவனத்தின் மீது எந்தவிதமான உரிமை, கோரிக்கை
+                அல்லது சட்ட நடவடிக்கையும் {""} மேற்கொள்ள மாட்டோம் என்று உறுதியாக
+                அறிவிக்கிறேன்.
+              </Text>
+
+              <Text style={{ marginTop: 5, textAlign: "justify" }}>
+                இந்த உறுதிமொழி, எந்தவித கட்டாயமுமின்றி, என் {""} சொந்த
+                விருப்பத்தின் பேரில் எழுதிக் கொடுக்கப்பட்டது. இதற்கு {""}நான்
+                முழுப்{""} பொறுப்பேற்கிறேன்.
+              </Text>
+            </View>
+
+            {/* <View style={{ flexGrow: 1 }} /> */}
+
+            <View style={styles.footer}>
+              <View>
+                <Text>நாள் : {formattedDate}</Text>
+                <Text>இடம் : {data?.place}</Text>
+              </View>
+              <View style={styles.signatureSection}>
+                <Text style={{ fontWeight: "bold" }}>இப்படிக்கு</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      </Page>
     </Document>
   );
 };
-
 
 export const SaleOfficePDFView = ({ copyType }) => {
   const location = useLocation();
   const { rowData } = location.state || {};
 
   return (
-    <div style={{ height: '100vh', width: '100%' }}>
-      <PDFViewer style={{ width: '100%', height: '100%' }}>
+    <div style={{ height: "100vh", width: "100%" }}>
+      <PDFViewer style={{ width: "100%", height: "100%" }}>
         <SaleOfficePDF data={rowData} copyType={copyType} />
       </PDFViewer>
     </div>
