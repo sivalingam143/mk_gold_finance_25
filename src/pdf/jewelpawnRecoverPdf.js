@@ -323,7 +323,9 @@ const RecoveryConfirmationPage = ({ data }) => {
 const jewels = typeof data.jewel_product === 'string' 
   ? JSON.parse(data.jewel_product) 
   : (data.jewel_product || []);
-
+const imageSrc = Array.isArray(data.customer_pic) && data.customer_pic.length > 0 
+  ? data.customer_pic[0] 
+  : null;
 // 2. Sum the weight (checking for both 'weight' and 'Weight')
 const totalWeight = jewels.reduce((sum, item) => sum + parseFloat(item.weight || item.Weight || 0), 0);
   return (
@@ -350,9 +352,25 @@ const totalWeight = jewels.reduce((sum, item) => sum + parseFloat(item.weight ||
           <Text>நகை மீட்கப்பட்ட தொகை - {data.refund_amount}/-</Text>
           <Text>வட்டி வரவு தொகை - {data.interest_income}/-</Text>
         </View>
-        <View style={{ width: 110, height: 110, border: 1, alignItems: "center", justifyContent: "center" }}>
+        <View style={{ 
+        width: 110, 
+        height: 120, 
+        border: 1, 
+        borderColor: "#000", 
+        alignItems: "center", 
+        justifyContent: "center",
+        overflow: "hidden" 
+      }}>
+        {imageSrc ? (
+          <Image 
+            src={imageSrc} 
+            style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+          />
+        ) : (
           <Text style={{ fontSize: 9 }}>புகைப்படம் இல்லை</Text>
-        </View>
+        )}
+      </View>
+      
       </View>
 
       <View style={{ marginTop: 30, fontSize: 11, lineHeight: 1.6 }}>

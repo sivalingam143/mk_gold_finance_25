@@ -506,7 +506,7 @@ const SaleCreations = () => {
           </Col>
 
           {/* Customer Photo */}
-          <Col lg="4" className="py-5">
+          <Col lg="6" className="py-5">
             <div className="file-upload">
               <label>Customer Photo</label>
               <input
@@ -567,7 +567,7 @@ const SaleCreations = () => {
           </Col>
 
           {/* ID Proof */}
-          <Col lg="4" className="py-5">
+          <Col lg="6" className="py-5">
             <div className="file-upload">
               <label>ID Proof</label>
               <input
@@ -626,7 +626,7 @@ const SaleCreations = () => {
           </Col>
 
           {/* Jewel Photo */}
-          <Col lg="4" className="py-5">
+          <Col lg="6" className="py-5">
             <div className="file-upload">
               <label>Jewel Photo</label>
               <input
@@ -684,7 +684,7 @@ const SaleCreations = () => {
             </div>
           </Col>
           {/* Proof Pic */}
-          <Col lg="12" className="py-5">
+          <Col lg="6" className="py-5">
             <div className="file-upload">
               <label>Proof Pic</label>
               <input
