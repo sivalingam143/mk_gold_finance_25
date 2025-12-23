@@ -116,30 +116,22 @@ const handleImageDelete = (index, field) => {
 
   
   console.log("formData", formData);
-  const handleChange = (e, fieldName, rowIndex) => {
-    const value = e.target ? e.target.value : e.value;
+ const handleChange = (e, fieldName, rowIndex) => {
+  const value = e.target ? e.target.value : e.value;
 
-    let updatedFormData = { ...formData };
-
+  setFormData((prev) => {
     if (rowIndex !== undefined) {
-      // If rowIndex is defined, it means we are updating a table row
-      updatedFormData.jewel_product = formData.jewel_product.map((row, index) =>
+      // Correctly update nested jewel_product array
+      const updatedProducts = prev.jewel_product.map((row, index) =>
         index === rowIndex ? { ...row, [fieldName]: value } : row
       );
+      return { ...prev, jewel_product: updatedProducts };
     } else {
-      // If rowIndex is undefined, update the top-level formData
-      updatedFormData = {
-        ...formData,
-        [fieldName]: value,
-      };
+      // Correctly update top-level fields without redundant overwrites
+      return { ...prev, [fieldName]: value };
     }
-
-    setFormData({
-      ...updatedFormData,
-      [fieldName]: value,
-    });
-  };
-
+  });
+};
   const setLabel = (date, label) => {
     const formattedDate = dayjs(date).format("YYYY-MM-DD");
     setFormData((prevData) => ({
@@ -257,6 +249,7 @@ const handleImageDelete = (index, field) => {
         interest_rate: "",
         jewel_product: [],
         pawnjewelry_date: new Date().toISOString().substr(0, 10),
+        pawnjewelry_recovery_date: formData.pawnjewelry_recovery_date || new Date().toISOString().substr(0, 10),
         interest_income: 0,
         interest_payment_periods: "",
       });
@@ -325,7 +318,7 @@ const fetchDataproduct = async () => {
         setLoading(false);
   
         if (responseData.head.code === 200) {
-          setProductList(responseData.body.product); // <- Jewel names
+          setProductList(responseData.body.product); 
         } else {
           throw new Error(responseData.head.msg);
         }
@@ -386,6 +379,7 @@ const fetchDataproduct = async () => {
     // Step 2: Submit the recovery record (with customer_pic properly formatted)
     const payload = {
       ...formData,
+      pawnjewelry_recovery_date: formData.pawnjewelry_recovery_date || new Date().toISOString().split("T")[0],
       edit_pawnrecovery_id: type === "edit" ? rowData.pawnjewelry_recovery_id : "",
       customer_pic: formData.customer_pic.map((img) => ({
         data: img.data,
