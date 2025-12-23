@@ -659,9 +659,9 @@ const fetchDataproduct = async () => {
     />
 
    <ChooseButton
-  label="Choose Photo"
+  label="Choose File"
   onClick={() => customerPicInputRef.current?.click()}
-  className="choosefilebtn me-4"
+  className="choosefilebtn"
  
 />
 
