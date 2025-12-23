@@ -101,9 +101,9 @@ const styles = StyleSheet.create({
         marginBottom: 15,
     },
     imageBox: {
-        width: 68,
-        height: 68,
-        objectFit: 'cover',
+        width: 100,
+        height: 100,
+        objectFit: 'contain',
         border: '1px solid #D1D5DB',
         borderRadius: 5,
         overflow: 'hidden',
