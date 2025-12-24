@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     fontSize: 20, // Slightly reduced for A5
     fontWeight: "bold",
     textAlign: "center",
-    color: "black",
+    color: "red",
   },
   address: {
     fontSize: 10,
