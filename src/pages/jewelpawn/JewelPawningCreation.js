@@ -1400,7 +1400,8 @@ const UserCreation = () => {
           </Col>
 
           <Col lg="12" md="6" xs="12">
-            <table className="table table-bordered mx-auto">
+          <div className="table-responsive-sm">
+            <table className="table table-bordered mobile-table">
               <thead>
                 <tr>
                   <th style={{ width: "5%" }}>S.No</th>
@@ -1522,6 +1523,7 @@ const UserCreation = () => {
                   ))}
               </tbody>
             </table>
+            </div>
           </Col>
 
           {/* New Bank Pledge Details Section */}

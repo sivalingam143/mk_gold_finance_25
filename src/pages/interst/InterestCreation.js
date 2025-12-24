@@ -552,7 +552,8 @@ const handleKeyPress = (event, index) => {
             ></TextInputForm>
           </Col>
            <Col lg="12" md="6" xs="12">
-            <table className="table table-bordered mx-auto">
+            <div className="table-responsive-sm">
+            <table className="table table-bordered mx-auto mobile-table">
               <thead>
                 <tr>
                   <th style={{ width: '5%' }}>S.No</th>
@@ -668,6 +669,7 @@ const handleKeyPress = (event, index) => {
                   ))}
               </tbody>
             </table>
+            </div>
           </Col>
           <Col lg="12" md="12" xs="12" className="py-5 align-self-center">
             <div className="text-center">
