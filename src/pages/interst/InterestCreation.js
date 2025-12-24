@@ -557,13 +557,13 @@ const handleKeyPress = (event, index) => {
               <thead>
                 <tr>
                   <th style={{ width: '5%' }}>S.No</th>
-                  <th style={{ width: '20%' }}>நகை பெயர்</th>
-                  <th style={{ width: '10%' }}>தரம்</th>
+                  <th style={{ width: '13%' }}>நகை பெயர்</th>
+                  <th style={{ width: '13%' }}>தரம்</th>
                   <th style={{ width: '8%' }}>எண்ணிக்கை</th>
                   <th style={{ width: '10%' }}>மொத்த எடை</th>
                   <th style={{ width: '10%' }}>நிகர எடை</th>
                   <th style={{ width: '25%' }}>குறிப்பு</th>
-                  <th style={{ width: '5%' }}></th>
+                 
                   <th style={{ width: '7%' }}>நீக்கு</th>
                 </tr>
               </thead>
@@ -644,18 +644,6 @@ const handleKeyPress = (event, index) => {
                           value={row.remark}
                           onChange={(e) => handleChange(e, "remark", index)}
                         />
-                      </td>
-          
-                      {/* Add More (hidden) */}
-                      <td>
-                        <div className="d-none">
-                          {index === formData.jewel_product.length - 1 && (
-                            <ClickButton
-                              label={<>Add More</>}
-                              onClick={handleAddRow}
-                            />
-                          )}
-                        </div>
                       </td>
           
                       {/* Delete */}
