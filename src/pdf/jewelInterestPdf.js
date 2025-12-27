@@ -241,7 +241,7 @@ const Receipt = ({ data }) => {
             <View style={styles.logoContainer}>
               <Image src="/logo192.png" style={styles.logoImage} />
             </View>
-            <Text style={styles.storename}>MK GOLD FINANCE </Text>
+            <Text style={styles.storename}>NITHI GOLD LOAN </Text>
             <Text style={{ marginTop: 3, fontSize: 8 }}>
               No.12-E, P.S.R. Road, Sivakasi - 626123.
             </Text>
@@ -315,7 +315,7 @@ const Receipt = ({ data }) => {
         </View>
         <View style={styles.phone}>
           <View style={styles.termpoint}>
-            <Text style={styles.boldText}>For MK GOLD FINANCE</Text>
+            <Text style={styles.boldText}>For NITHI GOLD LOAN</Text>
           </View>
         </View>
       </View>

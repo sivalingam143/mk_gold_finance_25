@@ -6,6 +6,7 @@ import PageNav from "../../components/PageNav";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import API_DOMAIN from "../../config/config";
+import { SignatureCanvas } from "react-signature-canvas";
 import "react-toastify/dist/ReactToastify.css";
 
 const SaleCreations = () => {
@@ -16,72 +17,98 @@ const SaleCreations = () => {
   const customerPicInputRef = useRef(null);
   const idPicInputRef = useRef(null);
   const jewelPicInputRef = useRef(null);
+  const proofPicInputRef = useRef(null);
+  const sigCustomerRef = useRef();
+  const sigStaffRef = useRef();
 
   const [previewFile, setPreviewFile] = useState(null);
 
   const tharamOptions = [
-    { value: "16", label: "16" },
-    { value: "17", label: "17" },
-    { value: "18", label: "18" },
-    { value: "19", label: "19" },
-    { value: "20", label: "20" },
-    { value: "21", label: "21" },
-    { value: "22", label: "22" },
-    { value: "22CD", label: "22CD" },
-    { value: "916", label: "916" },
+    { value: "18", label: "18k" },
+    { value: "20", label: "20k" },
+    { value: "22", label: "22k" },
+    { value: "24", label: "24k" },
   ];
-  const getTodayDate = () => new Date().toISOString().split('T')[0];
-// Replace the initialState definition in SaleCreations.js
-const initialState =
-  type === "edit" || type === "view"
-    ? {
-        ...rowData,
-        date: rowData.date || getTodayDate(),
-        tharam: rowData.tharam || "",
-        customer_pic: Array.isArray(rowData.customer_pic) 
-          ? rowData.customer_pic.map((url) => ({
-              name: url.split('/').pop(),
-              data: url, // Use the full URL directly
-              type: /\.(pdf)$/i.test(url) ? "pdf" : "image",
-              isExisting: true
-            })) 
-          : [],
-        id_pic: Array.isArray(rowData.id_pic) 
-          ? rowData.id_pic.map((url) => ({
-              name: url.split('/').pop(),
-              data: url,
-              type: /\.(pdf)$/i.test(url) ? "pdf" : "image",
-              isExisting: true
-            })) 
-          : [],
-        jewel_pic: Array.isArray(rowData.jewel_pic) 
-          ? rowData.jewel_pic.map((url) => ({
-              name: url.split('/').pop(),
-              data: url,
-              type: /\.(pdf)$/i.test(url) ? "pdf" : "image",
-              isExisting: true
-            })) 
-          : [],
-      }
-    : {
-        // ... (keep your create initialState as is)
-        date: getTodayDate(),
-        sale_id: "",
-        name: "",
-        place: "",
-        mobile_number: "",
-        bank_name: "",
-        bank_loan_amount: "",
-        customer_receive_amount: "",
-        total_jewel_weight: "",
-        total_loan_amount: "",
-        tharam: "",
-        staff_name: "",
-        customer_pic: [],
-        id_pic: [],
-        jewel_pic: [],
-      };
+  const getTodayDate = () => new Date().toISOString().split("T")[0];
+  // Replace the initialState definition in SaleCreations.js
+  const initialState =
+    type === "edit" || type === "view"
+      ? {
+          ...rowData,
+          date: rowData.date || getTodayDate(),
+          tharam: rowData.tharam || "",
+          customer_pic: Array.isArray(rowData.customer_pic)
+            ? rowData.customer_pic.map((url) => ({
+                name: url.split("/").pop(),
+                data: url, // Use the full URL directly
+                type: /\.(pdf)$/i.test(url) ? "pdf" : "image",
+                isExisting: true,
+              }))
+            : [],
+          id_pic: Array.isArray(rowData.id_pic)
+            ? rowData.id_pic.map((url) => ({
+                name: url.split("/").pop(),
+                data: url,
+                type: /\.(pdf)$/i.test(url) ? "pdf" : "image",
+                isExisting: true,
+              }))
+            : [],
+          jewel_pic: Array.isArray(rowData.jewel_pic)
+            ? rowData.jewel_pic.map((url) => ({
+                name: url.split("/").pop(),
+                data: url,
+                type: /\.(pdf)$/i.test(url) ? "pdf" : "image",
+                isExisting: true,
+              }))
+            : [],
+          proof_pic: Array.isArray(rowData.proof_pic)
+            ? rowData.proof_pic.map((url) => ({
+                name: url.split("/").pop(),
+                data: url,
+                type: /\.(pdf)$/i.test(url) ? "pdf" : "image",
+                isExisting: true,
+              }))
+            : [],
+          staff_sign_pic: Array.isArray(rowData.staff_sign_pic)
+            ? rowData.staff_sign_pic.map((url) => ({
+                name: url.split("/").pop(),
+                data: url,
+                type: /\.(pdf)$/i.test(url) ? "pdf" : "image",
+                isExisting: true,
+              }))
+            : [],
+          customer_sign_pic: Array.isArray(rowData.customer_sign_pic)
+            ? rowData.customer_sign_pic.map((url) => ({
+                name: url.split("/").pop(),
+                data: url,
+                type: /\.(pdf)$/i.test(url) ? "pdf" : "image",
+                isExisting: true,
+              }))
+            : [],
+        }
+      : {
+          // ... (keep your create initialState as is)
+          date: getTodayDate(),
+          sale_id: "",
+          name: "",
+          place: "",
+          mobile_number: "",
+          bank_name: "",
+          bank_loan_amount: "",
+          customer_receive_amount: "",
+          total_jewel_weight: "",
+          total_loan_amount: "",
+          tharam: "",
+          staff_name: "",
+          customer_pic: [],
+          id_pic: [],
+          jewel_pic: [],
+          proof_pic: [],
+          staff_sign_pic: [],
+          customer_sign_pic: [],
+        };
   const [formData, setFormData] = useState(initialState);
+  console.log(formData);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -114,7 +141,7 @@ const initialState =
     }
   }, [type]);
 
-const handleChange = (e, field) => {
+  const handleChange = (e, field) => {
     const value = e.target ? e.target.value : e.value;
 
     setFormData((prev) => {
@@ -125,8 +152,9 @@ const handleChange = (e, field) => {
       if (field === "bank_loan_amount" || field === "customer_receive_amount") {
         // Parse values as numbers, defaulting to 0 if empty or invalid
         const bankAmt = parseFloat(updatedData.bank_loan_amount) || 0;
-        const customerAmt = parseFloat(updatedData.customer_receive_amount) || 0;
-        
+        const customerAmt =
+          parseFloat(updatedData.customer_receive_amount) || 0;
+
         // Update the total field automatically
         updatedData.total_loan_amount = (bankAmt + customerAmt).toString();
       }
@@ -184,6 +212,68 @@ const handleChange = (e, field) => {
     setPreviewFile(file);
   };
 
+  const handleSaveCustomerSign = () => {
+    if (sigCustomerRef.current.isEmpty()) {
+      toast.error("Please provide customer signature first!");
+      return;
+    }
+    const dataUrl = sigCustomerRef.current.toDataURL("image/png");
+    setFormData((prev) => ({
+      ...prev,
+      customer_sign_pic: [
+        {
+          name: "customer_sign.png",
+          data: dataUrl,
+          type: "image",
+          isExisting: false,
+        },
+      ],
+    }));
+    toast.success("Customer signature saved!");
+  };
+
+  const handleClearCustomerSign = () => {
+    if (sigCustomerRef.current) {
+      sigCustomerRef.current.clear();
+    }
+    setFormData((prev) => ({
+      ...prev,
+      customer_sign_pic: [],
+    }));
+    toast.info("Customer signature cleared");
+  };
+
+  const handleSaveStaffSign = () => {
+    if (sigStaffRef.current.isEmpty()) {
+      toast.error("Please provide staff signature first!");
+      return;
+    }
+    const dataUrl = sigStaffRef.current.toDataURL("image/png");
+    setFormData((prev) => ({
+      ...prev,
+      staff_sign_pic: [
+        {
+          name: "staff_sign.png",
+          data: dataUrl,
+          type: "image",
+          isExisting: false,
+        },
+      ],
+    }));
+    toast.success("Staff signature saved!");
+  };
+
+  const handleClearStaffSign = () => {
+    if (sigStaffRef.current) {
+      sigStaffRef.current.clear();
+    }
+    setFormData((prev) => ({
+      ...prev,
+      staff_sign_pic: [],
+    }));
+    toast.info("Staff signature cleared");
+  };
+
   const handleSubmit = async () => {
     const required = ["name", "mobile_number", "bank_name", "staff_name"];
     for (const key of required) {
@@ -191,6 +281,14 @@ const handleChange = (e, field) => {
         toast.error(`${key.replace(/_/g, " ")} is required!`);
         return;
       }
+    }
+
+    if (
+      formData.customer_sign_pic.length === 0 ||
+      formData.staff_sign_pic.length === 0
+    ) {
+      toast.error("Both customer and staff signatures are required!");
+      return;
     }
 
     setLoading(true);
@@ -210,6 +308,11 @@ const handleChange = (e, field) => {
         customer_pic: formData.customer_pic.map((f) => ({ data: f.data })),
         id_pic: formData.id_pic.map((f) => ({ data: f.data })),
         jewel_pic: formData.jewel_pic.map((f) => ({ data: f.data })),
+        proof_pic: formData.proof_pic.map((f) => ({ data: f.data })),
+        staff_sign_pic: formData.staff_sign_pic.map((f) => ({ data: f.data })),
+        customer_sign_pic: formData.customer_sign_pic.map((f) => ({
+          data: f.data,
+        })),
       };
 
       const response = await fetch(`${API_DOMAIN}/sale.php`, {
@@ -232,115 +335,178 @@ const handleChange = (e, field) => {
     }
   };
 
-const handleUpdateSubmit = async () => {
-  setLoading(true);
+  const handleUpdateSubmit = async () => {
+    setLoading(true);
 
-  const prepareFiles = (files) =>
-    files.map((file) => {
-      if (file.isExisting) {
-        // Just send the path back to keep it in the DB
-        return { data: file.data, isExisting: true };
+    const prepareFiles = (files) =>
+      files.map((file) => {
+        if (file.isExisting) {
+          // Just send the path back to keep it in the DB
+          return { data: file.data, isExisting: true };
+        }
+        return { data: file.data, isExisting: false };
+      });
+
+    // For signatures, if they were cleared or re-signed, handle accordingly
+    const prepareSignatures = (files) => {
+      if (files.length === 0) {
+        return []; // Empty if cleared
       }
-      return { data: file.data, isExisting: false };
-    });
-
-  try {
-    const payload = {
-      edit_sale_id: rowData.sale_id,
-      ...formData,
-      sale_date: formData.date || getTodayDate(),
-      customer_pic: prepareFiles(formData.customer_pic),
-      id_pic: prepareFiles(formData.id_pic),
-      jewel_pic: prepareFiles(formData.jewel_pic),
+      return files.map((file) => ({
+        data: file.data,
+        isExisting: file.isExisting || false,
+      }));
     };
 
-    const response = await fetch(`${API_DOMAIN}/sale.php`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    try {
+      const payload = {
+        edit_sale_id: rowData.sale_id,
+        sale_date: formData.date || getTodayDate(),
+        name: formData.name,
+        place: formData.place || "",
+        mobile_number: formData.mobile_number,
+        bank_name: formData.bank_name,
+        bank_loan_amount: formData.bank_loan_amount || "0",
+        customer_receive_amount: formData.customer_receive_amount || "0",
+        total_jewel_weight: formData.total_jewel_weight || "0",
+        total_loan_amount: formData.total_loan_amount || "0",
+        tharam: formData.tharam || "",
+        staff_name: formData.staff_name,
+        customer_pic: prepareFiles(formData.customer_pic),
+        id_pic: prepareFiles(formData.id_pic),
+        jewel_pic: prepareFiles(formData.jewel_pic),
+        proof_pic: prepareFiles(formData.proof_pic),
+        staff_sign_pic: prepareSignatures(formData.staff_sign_pic),
+        customer_sign_pic: prepareSignatures(formData.customer_sign_pic),
+      };
 
-    const result = await response.json();
-    if (result.head.code === 200) {
-      toast.success("Updated successfully");
-      setTimeout(() => {
-        navigate("/console/master/sale");
-      }, 1200);
-    
+      const response = await fetch(`${API_DOMAIN}/sale.php`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+      if (result.head.code === 200) {
+        toast.success("Updated successfully");
+        setTimeout(() => {
+          navigate("/console/master/sale");
+        }, 1200);
+      }
+    } catch (error) {
+      toast.error("Update failed");
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    toast.error("Update failed");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <div>
       <Container>
         <Row className="regular">
           <Col lg="12" className="py-3">
-            <PageNav pagetitle={`${type === "edit" ? "Edit" : type === "view" ? "View" : "Create"} Sale`} />
-          </Col>
-<Col lg="3" className="py-3">
-  <label className="form-label">Date</label>
-  <input
-    type="date"
-    className="form-control"
-    value={formData.date}
-    onChange={(e) => handleChange(e, "date")}
-    disabled={type === "view"}
-  />
-</Col>
-          <Col lg="3" className="py-3">
-            <TextInputForm labelname="Name" value={formData.name} onChange={(e) => handleChange(e, "name")} disabled={type === "view"} />
+            <PageNav
+              pagetitle={`${
+                type === "edit" ? "Edit" : type === "view" ? "View" : "Create"
+              } Sale`}
+            />
           </Col>
           <Col lg="3" className="py-3">
-            <TextInputForm labelname="Place" value={formData.place} onChange={(e) => handleChange(e, "place")} disabled={type === "view"} />
+            <label className="form-label">Date</label>
+            <input
+              type="date"
+              className="form-control"
+              value={formData.date}
+              onChange={(e) => handleChange(e, "date")}
+              disabled={type === "view"}
+            />
           </Col>
           <Col lg="3" className="py-3">
-            <TextInputForm labelname="Mobile Number" value={formData.mobile_number} onChange={(e) => handleChange(e, "mobile_number")} disabled={type === "view"} />
+            <TextInputForm
+              labelname="Name"
+              value={formData.name}
+              onChange={(e) => handleChange(e, "name")}
+              disabled={type === "view"}
+            />
           </Col>
           <Col lg="3" className="py-3">
-            <TextInputForm labelname="Bank Name" value={formData.bank_name} onChange={(e) => handleChange(e, "bank_name")} disabled={type === "view"} />
+            <TextInputForm
+              labelname="Place"
+              value={formData.place}
+              onChange={(e) => handleChange(e, "place")}
+              disabled={type === "view"}
+            />
           </Col>
           <Col lg="3" className="py-3">
-            <TextInputForm labelname="Bank Loan Amount" value={formData.bank_loan_amount} onChange={(e) => handleChange(e, "bank_loan_amount")} disabled={type === "view"} />
+            <TextInputForm
+              labelname="Mobile Number"
+              value={formData.mobile_number}
+              onChange={(e) => handleChange(e, "mobile_number")}
+              disabled={type === "view"}
+            />
           </Col>
           <Col lg="3" className="py-3">
-            <TextInputForm labelname="Customer Receive Amount" value={formData.customer_receive_amount} onChange={(e) => handleChange(e, "customer_receive_amount")} disabled={type === "view"} />
+            <TextInputForm
+              labelname="Bank Name"
+              value={formData.bank_name}
+              onChange={(e) => handleChange(e, "bank_name")}
+              disabled={type === "view"}
+            />
           </Col>
-         <Col lg="3" className="py-3">
-  <label className="form-label">தரம்</label>
-  <select 
-    className="form-select"  // Changed from form-control to form-select
-    value={formData.tharam} 
-    onChange={(e) => handleChange(e, "tharam")}
-    disabled={type === "view"}
-  >
-    <option value="">Select தரம்</option>
-    {tharamOptions.map((opt) => (
-      <option key={opt.value} value={opt.value}>{opt.label}</option>
-    ))}
-  </select>
-</Col>
-           <Col lg="3" className="py-3">
-            <TextInputForm labelname="Total Jewel Weight" value={formData.total_jewel_weight} onChange={(e) => handleChange(e, "total_jewel_weight")} disabled={type === "view"} />
-          </Col>
-           <Col lg="3" className="py-3">
-  <TextInputForm 
-    labelname="Total Loan Amount" 
-    value={formData.total_loan_amount} 
-    onChange={(e) => handleChange(e, "total_loan_amount")} 
-    disabled={true} // Set to true since it's auto-calculated
-  />
-</Col>
           <Col lg="3" className="py-3">
-            <TextInputForm labelname="Staff Name" value={formData.staff_name} onChange={(e) => handleChange(e, "staff_name")} disabled={type === "view"} />
+            <TextInputForm
+              labelname="Bank Loan Amount"
+              value={formData.bank_loan_amount}
+              onChange={(e) => handleChange(e, "bank_loan_amount")}
+              disabled={type === "view"}
+            />
+          </Col>
+          <Col lg="3" className="py-3">
+            <TextInputForm
+              labelname="Customer Receive Amount"
+              value={formData.customer_receive_amount}
+              onChange={(e) => handleChange(e, "customer_receive_amount")}
+              disabled={type === "view"}
+            />
+          </Col>
+          <Col lg="3" className="py-3">
+            <label className="form-label">தரம்</label>
+            <select
+              className="form-select" // Changed from form-control to form-select
+              value={formData.tharam}
+              onChange={(e) => handleChange(e, "tharam")}
+              disabled={type === "view"}
+            >
+              <option value="">Select தரம்</option>
+              {tharamOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </Col>
+          <Col lg="3" className="py-3">
+            <TextInputForm
+              labelname="Total Jewel Weight"
+              value={formData.total_jewel_weight}
+              onChange={(e) => handleChange(e, "total_jewel_weight")}
+              disabled={type === "view"}
+            />
+          </Col>
+          <Col lg="3" className="py-3">
+            <TextInputForm
+              labelname="Total Loan Amount"
+              value={formData.total_loan_amount}
+              onChange={(e) => handleChange(e, "total_loan_amount")}
+              disabled={true} // Set to true since it's auto-calculated
+            />
+          </Col>
+          <Col lg="12" className="py-3">
+            <h5>Customer, ID Proof and Jewel Images</h5>
           </Col>
 
           {/* Customer Photo */}
-          <Col lg="4" className="py-5">
+          <Col lg="6" className="py-5">
             <div className="file-upload">
               <label>Customer Photo</label>
               <input
@@ -349,29 +515,59 @@ const handleUpdateSubmit = async () => {
                 multiple
                 ref={customerPicInputRef}
                 style={{ display: "none" }}
-                onChange={(e) => handleFileChange(e.target.files, "customer_pic")}
+                onChange={(e) =>
+                  handleFileChange(e.target.files, "customer_pic")
+                }
               />
-              <ChooseButton label="Choose File" onClick={() => customerPicInputRef.current?.click()} />
+              <ChooseButton
+                label="Choose File"
+                onClick={() => customerPicInputRef.current?.click()}
+              />
               {formData.customer_pic.map((file, i) => (
-                <div key={i} className="file-item d-flex align-items-center mb-2 mt-2">
+                <div
+                  key={i}
+                  className="file-item d-flex flex-column flex-md-row align-items-md-center mb-2 mt-2 gap-2"
+                >
                   {file.type === "image" ? (
                     <img
                       src={file.data}
                       alt="preview"
-                      style={{ width: 100, height: 100, objectFit: "cover", marginRight: 10, borderRadius: 5 }}
+                      className="img-fluid"
+                      style={{
+                        width: 100,
+                        height: 100,
+                        objectFit: "cover",
+                        marginRight: 10,
+                        borderRadius: 5,
+                      }}
                     />
                   ) : (
-                    <span style={{ marginRight: 10 }}>{file.name}</span>
+                    <span
+                      className="text-truncate"
+                      style={{ maxWidth: "100%" }}
+                    >
+                      {file.name}
+                    </span>
                   )}
-                  <ChooseButton label="Preview" className="btn btn-primary btn-sm me-2" onClick={() => handlePreview(file)} />
-                  <ChooseButton label="Delete" className="btn btn-danger btn-sm" onClick={() => handleImageDelete(i, "customer_pic")} />
+                  <div className="d-flex flex-column flex-md-row gap-2 w-100 w-md-auto">
+                    <ChooseButton
+                      label="Preview"
+                      className="btn btn-primary btn-sm w-100 w-md-auto"
+                      onClick={() => handlePreview(file)}
+                    />
+                    <ChooseButton
+                      label="Delete"
+                      className="btn btn-danger btn-sm w-100 w-md-auto"
+                      onClick={() => handleImageDelete(i, "customer_pic")}
+                    />
+                  </div>
                 </div>
               ))}
             </div>
           </Col>
 
           {/* ID Proof */}
-          <Col lg="4" className="py-5">
+          <Col lg="6" className="py-5">
             <div className="file-upload">
               <label>ID Proof</label>
               <input
@@ -382,27 +578,55 @@ const handleUpdateSubmit = async () => {
                 style={{ display: "none" }}
                 onChange={(e) => handleFileChange(e.target.files, "id_pic")}
               />
-              <ChooseButton label="Choose File" onClick={() => idPicInputRef.current?.click()} />
+              <ChooseButton
+                label="Choose File"
+                onClick={() => idPicInputRef.current?.click()}
+              />
               {formData.id_pic.map((file, i) => (
-                <div key={i} className="file-item d-flex align-items-center mb-2 mt-2">
+                <div
+                  key={i}
+                  className="file-item d-flex flex-column flex-md-row align-items-md-center mb-2 mt-2 gap-2"
+                >
                   {file.type === "image" ? (
                     <img
                       src={file.data}
                       alt="preview"
-                      style={{ width: 100, height: 100, objectFit: "cover", marginRight: 10, borderRadius: 5 }}
+                      className="img-fluid"
+                      style={{
+                        width: 100,
+                        height: 100,
+                        objectFit: "cover",
+                        marginRight: 10,
+                        borderRadius: 5,
+                      }}
                     />
                   ) : (
-                    <span style={{ marginRight: 10 }}>{file.name}</span>
+                    <span
+                      className="text-truncate"
+                      style={{ maxWidth: "100%" }}
+                    >
+                      {file.name}
+                    </span>
                   )}
-                  <ChooseButton label="Preview" className="btn btn-primary btn-sm me-2" onClick={() => handlePreview(file)} />
-                  <ChooseButton label="Delete" className="btn btn-danger btn-sm" onClick={() => handleImageDelete(i, "id_pic")} />
+                  <div className="d-flex flex-column flex-md-row gap-2 w-100 w-md-auto">
+                    <ChooseButton
+                      label="Preview"
+                      className="btn btn-primary btn-sm w-100 w-md-auto"
+                      onClick={() => handlePreview(file)}
+                    />
+                    <ChooseButton
+                      label="Delete"
+                      className="btn btn-danger btn-sm w-100 w-md-auto"
+                      onClick={() => handleImageDelete(i, "id_pic")}
+                    />
+                  </div>
                 </div>
               ))}
             </div>
           </Col>
 
           {/* Jewel Photo */}
-          <Col lg="4" className="py-5">
+          <Col lg="6" className="py-5">
             <div className="file-upload">
               <label>Jewel Photo</label>
               <input
@@ -413,58 +637,258 @@ const handleUpdateSubmit = async () => {
                 style={{ display: "none" }}
                 onChange={(e) => handleFileChange(e.target.files, "jewel_pic")}
               />
-              <ChooseButton label="Choose File" onClick={() => jewelPicInputRef.current?.click()} />
+              <ChooseButton
+                label="Choose File"
+                onClick={() => jewelPicInputRef.current?.click()}
+              />
               {formData.jewel_pic.map((file, i) => (
-                <div key={i} className="file-item d-flex align-items-center mb-2 mt-2">
+                <div
+                  key={i}
+                  className="file-item d-flex flex-column flex-md-row align-items-md-center mb-2 mt-2 gap-2"
+                >
                   {file.type === "image" ? (
                     <img
                       src={file.data}
                       alt="preview"
-                      style={{ width: 100, height: 100, objectFit: "cover", marginRight: 10, borderRadius: 5 }}
+                      className="img-fluid"
+                      style={{
+                        width: 100,
+                        height: 100,
+                        objectFit: "cover",
+                        marginRight: 10,
+                        borderRadius: 5,
+                      }}
                     />
                   ) : (
-                    <span style={{ marginRight: 10 }}>{file.name}</span>
+                    <span
+                      className="text-truncate"
+                      style={{ maxWidth: "100%" }}
+                    >
+                      {file.name}
+                    </span>
                   )}
-                  <ChooseButton label="Preview" className="btn btn-primary btn-sm me-2" onClick={() => handlePreview(file)} />
-                  <ChooseButton label="Delete" className="btn btn-danger btn-sm" onClick={() => handleImageDelete(i, "jewel_pic")} />
+                  <div className="d-flex flex-column flex-md-row gap-2 w-100 w-md-auto">
+                    <ChooseButton
+                      label="Preview"
+                      className="btn btn-primary btn-sm w-100 w-md-auto"
+                      onClick={() => handlePreview(file)}
+                    />
+                    <ChooseButton
+                      label="Delete"
+                      className="btn btn-danger btn-sm w-100 w-md-auto"
+                      onClick={() => handleImageDelete(i, "jewel_pic")}
+                    />
+                  </div>
                 </div>
               ))}
             </div>
           </Col>
+          {/* Proof Pic */}
+          <Col lg="6" className="py-5">
+            <div className="file-upload">
+              <label>Proof Pic</label>
+              <input
+                type="file"
+                accept="image/*,application/pdf"
+                multiple
+                ref={proofPicInputRef}
+                style={{ display: "none" }}
+                onChange={(e) => handleFileChange(e.target.files, "proof_pic")}
+              />
+              <ChooseButton
+                label="Choose File"
+                onClick={() => proofPicInputRef.current?.click()}
+              />
+              {formData.proof_pic.map((file, i) => (
+                <div
+                  key={i}
+                  className="file-item d-flex flex-column flex-md-row align-items-md-center mb-2 mt-2 gap-2"
+                >
+                  {file.type === "image" ? (
+                    <img
+                      src={file.data}
+                      alt="preview"
+                      className="img-fluid"
+                      style={{
+                        width: 100,
+                        height: 100,
+                        objectFit: "cover",
+                        marginRight: 10,
+                        borderRadius: 5,
+                      }}
+                    />
+                  ) : (
+                    <span
+                      className="text-truncate"
+                      style={{ maxWidth: "100%" }}
+                    >
+                      {file.name}
+                    </span>
+                  )}
+                  <div className="d-flex flex-column flex-md-row gap-2 w-100 w-md-auto">
+                    <ChooseButton
+                      label="Preview"
+                      className="btn btn-primary btn-sm w-100 w-md-auto"
+                      onClick={() => handlePreview(file)}
+                    />
+                    <ChooseButton
+                      label="Delete"
+                      className="btn btn-danger btn-sm w-100 w-md-auto"
+                      onClick={() => handleImageDelete(i, "proof_pic")}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Col>
+          {/* Staff Name - Moved and aligned to full width */}
+          <Col lg="3" className="py-3">
+            <TextInputForm
+              labelname="Staff Name"
+              value={formData.staff_name}
+              onChange={(e) => handleChange(e, "staff_name")}
+              disabled={type === "view"}
+            />
+          </Col>
 
-         <Col lg="12" className="text-center py-5">
-  {type === "view" ? (
-    <ClickButton
-      label="Back"
-      onClick={() => navigate("/console/master/sale")}
-    />
-  ) : type === "edit" ? (
-    <div className="d-flex justify-content-center gap-3">
-      <ClickButton
-        label={loading ? "Updating..." : "Update"}
-        onClick={handleUpdateSubmit}
-        disabled={loading}
-      />
-      <ClickButton
-        label="Cancel"
-        onClick={() => navigate("/console/master/sale")}
-      />
-    </div>
-  ) : (
-    <div className="d-flex justify-content-center gap-3">
-      <ClickButton
-        label={loading ? "Submitting..." : "Submit"}
-        onClick={handleSubmit}
-        disabled={loading}
-      />
-      <ClickButton
-        label="Cancel"
-        onClick={() => navigate("/console/master/sale")}
-      />
-    </div>
-  )}
-</Col>
+          {/* Signs Heading */}
+          <Col lg="12" className="py-3">
+            <h5>Customer Sign and Staff Sign</h5>
+          </Col>
 
+          {/* Customer Sign */}
+          <Col lg="6" className="py-5">
+            <div className="file-upload position-relative">
+              <label>Customer Sign</label>
+              <input
+                type="checkbox"
+                className="position-absolute top-0 end-0 mt-1 me-1 form-check-input"
+                checked={formData.customer_sign_pic.length > 0}
+                disabled
+              />
+              {(type === "edit" || type === "view") &&
+              formData.customer_sign_pic.length > 0 ? (
+                <img
+                  src={formData.customer_sign_pic[0].data}
+                  alt="Customer Signature"
+                  className="img-fluid w-100"
+                  style={{
+                    height: "200px",
+                    objectFit: "contain",
+                    border: "1px solid #ccc",
+                    borderRadius: 5,
+                    background: "#fff",
+                  }}
+                />
+              ) : (
+                <SignatureCanvas
+                  ref={sigCustomerRef}
+                  canvasProps={{
+                    className: "sigCanvas border rounded w-100",
+                    style: { width: "100%", height: "200px" },
+                  }}
+                />
+              )}
+
+              <div className="d-flex justify-content-center gap-2 mt-2">
+                <ClickButton
+                  label="Submit Signature"
+                  onClick={handleSaveCustomerSign}
+                  className="btn btn-success btn-sm"
+                  disabled={type === "view"}
+                />
+                <ClickButton
+                  label="Clear"
+                  onClick={handleClearCustomerSign}
+                  className="btn btn-secondary btn-sm"
+                  disabled={type === "view"}
+                />
+              </div>
+            </div>
+          </Col>
+
+          {/* Staff Sign */}
+          <Col lg="6" className="py-5">
+            <div className="file-upload position-relative">
+              <label>Staff Sign</label>
+              <input
+                type="checkbox"
+                className="position-absolute top-0 end-0 mt-1 me-1 form-check-input"
+                checked={formData.staff_sign_pic.length > 0}
+                disabled
+              />
+              {(type === "edit" || type === "view") &&
+              formData.staff_sign_pic.length > 0 ? (
+                <img
+                  src={formData.staff_sign_pic[0].data}
+                  alt="Staff Signature"
+                  className="img-fluid w-100"
+                  style={{
+                    height: "200px",
+                    objectFit: "contain",
+                    border: "1px solid #ccc",
+                    borderRadius: 5,
+                    background: "#fff",
+                  }}
+                />
+              ) : (
+                <SignatureCanvas
+                  ref={sigStaffRef}
+                  canvasProps={{
+                    className: "sigCanvas border rounded w-100",
+                    style: { width: "100%", height: "200px" },
+                  }}
+                />
+              )}
+
+              <div className="d-flex justify-content-center gap-2 mt-2">
+                <ClickButton
+                  label="Submit Signature"
+                  onClick={handleSaveStaffSign}
+                  className="btn btn-success btn-sm"
+                  disabled={type === "view"}
+                />
+                <ClickButton
+                  label="Clear"
+                  onClick={handleClearStaffSign}
+                  className="btn btn-secondary btn-sm"
+                  disabled={type === "view"}
+                />
+              </div>
+            </div>
+          </Col>
+          <Col lg="12" className="text-center py-5">
+            {type === "view" ? (
+              <ClickButton
+                label="Back"
+                onClick={() => navigate("/console/master/sale")}
+              />
+            ) : type === "edit" ? (
+              <div className="d-flex justify-content-center gap-3">
+                <ClickButton
+                  label={loading ? "Updating..." : "Update"}
+                  onClick={handleUpdateSubmit}
+                  disabled={loading}
+                />
+                <ClickButton
+                  label="Cancel"
+                  onClick={() => navigate("/console/master/sale")}
+                />
+              </div>
+            ) : (
+              <div className="d-flex justify-content-center gap-3">
+                <ClickButton
+                  label={loading ? "Submitting..." : "Submit"}
+                  onClick={handleSubmit}
+                  disabled={loading}
+                />
+                <ClickButton
+                  label="Cancel"
+                  onClick={() => navigate("/console/master/sale")}
+                />
+              </div>
+            )}
+          </Col>
         </Row>
       </Container>
 
@@ -483,17 +907,44 @@ const handleUpdateSubmit = async () => {
             zIndex: 9999,
           }}
         >
-          <div style={{ position: "relative", background: "#fff", padding: 20, borderRadius: 8 }}>
+          <div
+            style={{
+              position: "relative",
+              background: "#fff",
+              padding: 20,
+              borderRadius: 8,
+            }}
+          >
             <button
               onClick={() => setPreviewFile(null)}
-              style={{ position: "absolute", top: 5, right: 10, fontSize: 24, background: "none", border: "none", cursor: "pointer" }}
+              style={{
+                position: "absolute",
+                top: 5,
+                right: 10,
+                fontSize: 24,
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+              }}
             >
               ×
             </button>
             {previewFile.type === "image" ? (
-              <img src={previewFile.data} alt="Preview" style={{ maxWidth: "90vw", maxHeight: "90vh", objectFit: "contain" }} />
+              <img
+                src={previewFile.data}
+                alt="Preview"
+                style={{
+                  maxWidth: "90vw",
+                  maxHeight: "90vh",
+                  objectFit: "contain",
+                }}
+              />
             ) : (
-              <iframe src={previewFile.data} style={{ width: "80vw", height: "80vh" }} title="PDF Preview" />
+              <iframe
+                src={previewFile.data}
+                style={{ width: "80vw", height: "80vh" }}
+                title="PDF Preview"
+              />
             )}
           </div>
         </div>

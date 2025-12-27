@@ -110,9 +110,13 @@ const styles = StyleSheet.create({
     marginBottom: 8, // Reduced from 12
     marginLeft: -10,
   },
+  colon: {
+    width: 10, // Give the colon its own small fixed width
+    fontWeight: "bold",
+  },
 
   label: {
-    width: 110,
+    width: 105,
     fontWeight: "bold",
   },
   value: {
@@ -133,9 +137,9 @@ const styles = StyleSheet.create({
 
   body: {
     fontSize: 11,
-    lineHeight: 2, // Slightly tighter line height
+    lineHeight: 2.5, // Slightly tighter line height
     // textAlign: 'justify',
-    marginTop: 8,
+    marginTop: 25,
     marginLeft: -10,
   },
   body1: {
@@ -158,7 +162,7 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 15, // Changed from auto to fixed margin
+    marginTop: "54%", // Changed from auto to fixed margin
   },
   // Add these to your StyleSheet.create({})
   photoContainer: {
@@ -178,12 +182,44 @@ const styles = StyleSheet.create({
     objectFit: "cover",
     backgroundColor: "#ffffff", // Force white background if image is transparent/dark
   },
+  imageGallery: {
+    padding: 20,
+    flexDirection: "column",
+  },
+  sectionTitle: {
+    fontSize: 11, // Reduced size for side-by-side layout
+    fontWeight: "bold",
+    marginBottom: 5,
+    marginTop: 10,
+
+    padding: 3,
+  },
+  imageRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
+    marginBottom: 10,
+  },
+  documentImage: {
+    width: "100%", // Fills its half-width column
+    height: 140, // Fixed height for all images
+    objectFit: "cover", // Crops image to fill the box without stretching
+    border: "1pt solid #ccc",
+    borderRadius: 4,
+  },
+  documentImage1: {
+    width: "50%", // Fills its half-width column
+    height: 140, // Fixed height for all images
+    objectFit: "cover", // Crops image to fill the box without stretching
+    border: "1pt solid #ccc",
+    borderRadius: 4,
+  },
   witnessLabel: { fontWeight: "bold", marginBottom: 5 },
 
   signatureSection: { alignItems: "flex-end" },
 });
 
-const SalePDF = ({ data }) => {
+const SaleOfficePDF = ({ data }) => {
   const formatDate = (dateStr) => {
     if (!dateStr) return "";
     const date = new Date(dateStr);
@@ -202,7 +238,7 @@ const SalePDF = ({ data }) => {
 
   return (
     <Document>
-      <Page size="A5" style={styles.page}>
+      <Page size="A4" style={styles.page}>
         <Image src={image} style={styles.backgroundImage} />
 
         <View style={styles.outerBorder}>
@@ -234,7 +270,7 @@ const SalePDF = ({ data }) => {
                 style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
               >
                 {/* Use a fixed width for the label container to align the colons */}
-                <Text style={[styles.label, { width: 100 }]}>பெயர்</Text>
+                <Text style={[styles.label, { width: 120 }]}>பெயர்</Text>
                 <Text style={styles.colon}>: </Text>
                 <Text style={styles.value}>{name}</Text>
               </View>
@@ -252,7 +288,7 @@ const SalePDF = ({ data }) => {
               <View
                 style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
               >
-                <Text style={[styles.label, { width: 100 }]}>முகவரி</Text>
+                <Text style={[styles.label, { width: 120 }]}>முகவரி</Text>
                 <Text style={styles.colon}>: </Text>
                 <Text style={styles.value}>{place}</Text>
               </View>
@@ -270,7 +306,10 @@ const SalePDF = ({ data }) => {
               <View
                 style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
               >
-                <Text style={[styles.label, { width: 100 }]}>தொலைபேசி</Text>
+                {/* Try increasing width to 130 and adding flexShrink: 0 */}
+                <Text style={[styles.label, { width: 120, flexShrink: 0 }]}>
+                  தொலைபேசி
+                </Text>
                 <Text style={styles.colon}>: </Text>
                 <Text style={styles.value}>{mobile}</Text>
               </View>
@@ -279,32 +318,24 @@ const SalePDF = ({ data }) => {
             <View style={styles.body}>
               <Text>
                 நான் {formattedDate}
-                {""} தேதியில்{" "}
-                {data?.bank_name ||
-                  "..............................................."}{" "}
-                {""} யில் அடகு வைத்த நகை/அளவு{""}
-                {""}
-                {""}{" "}
+                {""} தேதியில் {data?.bank_name} {""} யில் அடகு வைத்த நகை/அளவு{" "}
                 {data?.total_jewel_weightss ||
-                  "........................................................"}
-                {""}
+                  "................................."}
                 {""}
                 {"\n"}
-                M.K.கோல்டு நிறுவனத்தில் அசல்{" "}
-                {data?.principal_amount ||
-                  "..................................."}{" "}
-                வட்டி{" "}
-                {data?.interest_amount ||
-                  "...................................."}{" "}
-                {""}தொகைகளை வாங்கி {""} பொருட்களை திருப்பி, என்னுடைய {""} அவசர
-                நிமித்த {""} செலவிற்காக நகைகளை விற்பனை செய்து, மீதமுள்ள தொகை
-                ரூபாய் ..........................பணத்தை M.K.கோல்டு
-                நிறுவனத்திலிருந்து பெற்றுக் {""} கொண்டேன். இதில் ஏதேனும்
-                வில்லங்கம் வந்தால், அதை நானே என்னுடைய சொந்த {""}பொறுப்பில் சரி
-                செய்து கொடுக்கின்றேன்.{""} இதை படித்துப் பார்த்தும், படிக்கக்
-                கேட்டும் {""} தெரிந்து {""} கொண்டேன்.
+                M.K.கோல்டு நிறுவனத்தில் அசல் ................................
+                வட்டி ................................ {""}தொகைகளை வாங்கி {""}{" "}
+                பொருட்களை திருப்பி, என்னுடைய {""} அவசர நிமித்த {""} செலவிற்காக
+                நகைகளை விற்பனை செய்து, மீதமுள்ள தொகை ரூபாய்
+                ..........................பணத்தை M.K.கோல்டு நிறுவனத்திலிருந்து
+                பெற்றுக் {""} கொண்டேன். இதில் ஏதேனும் வில்லங்கம் வந்தால், அதை
+                நானே என்னுடைய சொந்த {""}பொறுப்பில் சரி செய்து கொடுக்கின்றேன்.
+                {""} இதை படித்துப் பார்த்தும், படிக்கக் கேட்டும் {""} தெரிந்து{" "}
+                {""} கொண்டேன்.
               </Text>
             </View>
+
+            {/* <View style={{flexGrow: 1}} /> */}
 
             <View style={styles.footer}>
               <View>
@@ -331,20 +362,95 @@ const SalePDF = ({ data }) => {
         </View>
       </Page>
 
-      <Page size="A5" style={styles.page}>
+      <Page size="A4" style={styles.page}>
+        {/* Removed background image as requested */}
+        <View style={styles.outerBorder}>
+          <View style={[styles.innerBorder, styles.imageGallery]}>
+            <Text
+              style={{
+                textAlign: "center",
+                fontSize: 16,
+                fontWeight: "bold",
+                marginBottom: 10,
+              }}
+            >
+              ஆவணங்கள் மற்றும் புகைப்படங்கள்
+            </Text>
+
+            {/* Row 1: Customer Photo and ID Proof */}
+            <View style={{ flexDirection: "row", gap: 10 }}>
+              {/* Customer Pictures */}
+              <View style={{ flex: 1 }}>
+                <Text style={styles.sectionTitle}>CUSTOMER PHOTO</Text>
+                <View style={styles.imageRow}>
+                  {data?.customer_pic?.map((pic, index) => {
+                    const imgSrc = pic?.data || pic; // Handle both object and string formats
+                    return imgSrc ? (
+                      <Image
+                        key={index}
+                        src={imgSrc}
+                        style={styles.documentImage}
+                      />
+                    ) : null;
+                  })}
+                </View>
+              </View>
+
+              {/* ID Proof */}
+              <View style={{ flex: 1 }}>
+                <Text style={styles.sectionTitle}>ID PROOF</Text>
+                <View style={styles.imageRow}>
+                  {data?.id_pic?.map((pic, index) => {
+                    const imgSrc = pic?.data || pic;
+                    return imgSrc ? (
+                      <Image
+                        key={index}
+                        src={imgSrc}
+                        style={styles.documentImage}
+                      />
+                    ) : null;
+                  })}
+                </View>
+              </View>
+            </View>
+
+            {/* Row 2: Jewel Photo */}
+            <View style={{ marginTop: 10 }}>
+              <Text style={styles.sectionTitle}>JEWEL PHOTO</Text>
+              <View style={styles.imageRow}>
+                {data?.jewel_pic?.map((pic, index) => {
+                  const imgSrc = pic?.data || pic;
+                  return imgSrc ? (
+                    <Image
+                      key={index}
+                      src={imgSrc}
+                      style={styles.documentImage1}
+                    />
+                  ) : null;
+                })}
+              </View>
+            </View>
+          </View>
+        </View>
+      </Page>
+
+      <Page size="A4" style={styles.page}>
         <Image src={image} style={styles.backgroundImage} />
         <View style={styles.outerBorder}>
           <View style={styles.innerBorder}>
             <View style={styles.headerBox}>
               <Text style={styles.title}>நிதி கோல்டு லோ{""}ன்</Text>
             </View>
+            <Text style={styles.address}>
+              H/O:182, இரண்டாவது மாடி, AKS தியேட்டர் ரோடு, கோவில்பட்{""}டி
+            </Text>
             <Text style={[styles.address, { textDecoration: "underline" }]}>
               உறுதிமொழி படிவ{""}ம்
             </Text>
 
             <View style={styles.photoContainer}>
               <View
-                style={[styles.body, styles.jewelDetails, { marginTop: 10 }]}
+                style={[styles.body, styles.jewelDetails, { marginTop: 8 }]}
               >
                 <Text style={[styles.label, { marginBottom: 2 }]}>
                   அடகு விபரம்
@@ -354,7 +460,7 @@ const SalePDF = ({ data }) => {
                 <Text>விற்பனை தேதி : {formattedDate}</Text>
               </View>
             </View>
-            <View style={[styles.body1, { marginTop: 10 }]}>
+            <View style={[styles.body1, { marginTop: 20 }]}>
               <Text style={{ textAlign: "justify" }}>
                 நான் {data?.name}, மேலே குறிப்பிட்ட நிதி நிறுவனத்தில் என்
                 சொந்தமான தங்க நகைகளை அடகு வைத்திருந்தேன்.
@@ -369,8 +475,8 @@ const SalePDF = ({ data }) => {
               <Text style={{ marginTop: 5, textAlign: "justify" }}>
                 எனவே, அடகு வைத்திருந்த என் தங்க நகைகளை, அந்நிறுவன
                 விதிமுறைகளின்படி, அசல் தொகை மற்றும் அதற்குரிய வட்டி தொகையை
-                சரிசெய்து, நிதி கோல்டு லோ{""}ன் நிறுவனம் விற்பனை செய்து கொள்ள
-                நான் {""}முழுமனதுடன் ஒப்புக்கொள்கிறேன்.
+                சரிசெய்து, நிதி கோல்டு {""}பைனான்ஸ் நிறுவனம் விற்பனை செய்து
+                கொள்ள நான் {""}முழுமனதுடன் ஒப்புக்கொள்கிறேன்.
               </Text>
 
               <Text style={{ marginTop: 5, textAlign: "justify" }}>
@@ -386,6 +492,8 @@ const SalePDF = ({ data }) => {
                 முழுப்{""} பொறுப்பேற்கிறேன்.
               </Text>
             </View>
+
+            {/* <View style={{ flexGrow: 1 }} /> */}
 
             <View style={styles.footer}>
               <View>
@@ -403,17 +511,17 @@ const SalePDF = ({ data }) => {
   );
 };
 
-export const SalePDFView = ({ copyType }) => {
+export const SaleOfficePDFView = ({ copyType }) => {
   const location = useLocation();
   const { rowData } = location.state || {};
 
   return (
     <div style={{ height: "100vh", width: "100%" }}>
       <PDFViewer style={{ width: "100%", height: "100%" }}>
-        <SalePDF data={rowData} copyType={copyType} />
+        <SaleOfficePDF data={rowData} copyType={copyType} />
       </PDFViewer>
     </div>
   );
 };
 
-export default SalePDF;
+export default SaleOfficePDF;

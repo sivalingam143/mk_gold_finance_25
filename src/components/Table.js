@@ -113,7 +113,17 @@ const prevPage = () => {
       state: { type: "edit", rowData: rowData },
     });
   };
+const handleSaleCustomerViewClick = (rowData) => {
+  navigate("/console/salecustomer", {
+    state: { rowData: rowData },
+  });
+};
 
+const handleSaleOfficeViewClick = (rowData) => {
+  navigate("/console/saleoffice", {
+    state: { rowData: rowData },
+  });
+};
   const handleJewelPawningprintviewClick = (rowData) => {
     navigate("/console/jewelpawn", {
       state: { type: "pdfview", rowData: rowData },
@@ -1105,7 +1115,7 @@ const handleSaleDeleteClick = async (id) => {
                   </td>
                 </>
               )}
-              {type === "sale" && (
+   {type === "sale" && (
   <>
     <td>{rowIndex + 1}</td>
     <td>{rowData.name}</td>
@@ -1117,13 +1127,21 @@ const handleSaleDeleteClick = async (id) => {
             <BiDotsVerticalRounded />
           </Button>
         </Dropdown.Toggle>
+
         <Dropdown.Menu>
+          {/* Customer Copy View */}
+         <Dropdown.Item onClick={() => handleSaleCustomerViewClick(rowData)}>
+  CustomerCopy View
+</Dropdown.Item>
+
+<Dropdown.Item onClick={() => handleSaleOfficeViewClick(rowData)}>
+  OfficeCopy View
+</Dropdown.Item>
+
           <Dropdown.Item onClick={() => handleSaleEditClick(rowData)}>
             Edit
           </Dropdown.Item>
-          <Dropdown.Item onClick={() => handleSaleDownload(rowData, setLoading)}>
-            Download PDF
-          </Dropdown.Item>
+
           <Dropdown.Item
             onClick={() => handleSaleDeleteClick(rowData.sale_id)}
           >

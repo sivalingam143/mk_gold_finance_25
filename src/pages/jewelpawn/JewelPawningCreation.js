@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Col, Container, Row, Alert, Form } from "react-bootstrap";
 import { TextInputForm, Calender } from "../../components/Forms";
-import { ClickButton, ChooseButton, Delete } from "../../components/ClickButton";
+import {
+  ClickButton,
+  ChooseButton,
+  Delete,
+} from "../../components/ClickButton";
 import PageNav from "../../components/PageNav";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -30,71 +34,78 @@ const UserCreation = () => {
   const initialState =
     type === "edit"
       ? {
-        ...rowData,
-        pawnjewelry_date: rowData.pawnjewelry_date || defaultDate,
-        dateofbirth: rowData.dateofbirth || "",
-        proof_number: rowData.proof_number || "",
-        upload_type: rowData.upload_type || "",
-        proof: rowData.proof.map((url, index) => {
-          const extension = url.split(".").pop()?.toLowerCase();
-          const isImage = /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(url);
-          return {
-            name: `file_${index + 1}.${extension}`,
-            data: url,
-            type: isImage ? "image" : "file",
-          };
-        }),
-        aadharproof: rowData.aadharproof.map((url, index) => {
-          const extension = url.split(".").pop()?.toLowerCase();
-          const isImage = /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(url);
-          return {
-            name: `file_${index + 1}.${extension}`,
-            data: url,
-            type: isImage ? "image" : "file",
-          };
-        }),
-        jewel_product: rowData.jewel_product || [
-          { JewelName: "", count: "", weight: "", net: "", remark: "" },
-        ],
-        // New bank pledge fields
-        bank_pledge_date: rowData.bank_pledge_date || defaultDate,
-        bank_assessor_name: rowData.bank_assessor_name || "",
-        bank_name: rowData.bank_name || "",
-        bank_pawn_value: rowData.bank_pawn_value || "",
-        bank_interest: rowData.bank_interest || "",
-        bank_duration: rowData.bank_duration || "",
-        bank_additional_charges: rowData.bank_additional_charges || "",
-      }
+          ...rowData,
+          pawnjewelry_date: rowData.pawnjewelry_date || defaultDate,
+          dateofbirth: rowData.dateofbirth || "",
+          proof_number: rowData.proof_number || "",
+          upload_type: rowData.upload_type || "",
+          proof: rowData.proof.map((url, index) => {
+            const extension = url.split(".").pop()?.toLowerCase();
+            const isImage = /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(url);
+            return {
+              name: `file_${index + 1}.${extension}`,
+              data: url,
+              type: isImage ? "image" : "file",
+            };
+          }),
+          aadharproof: rowData.aadharproof.map((url, index) => {
+            const extension = url.split(".").pop()?.toLowerCase();
+            const isImage = /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(url);
+            return {
+              name: `file_${index + 1}.${extension}`,
+              data: url,
+              type: isImage ? "image" : "file",
+            };
+          }),
+          jewel_product: rowData.jewel_product || [
+            { JewelName: "", count: "", weight: "", net: "", remark: "" },
+          ],
+          // New bank pledge fields
+          bank_pledge_date: rowData.bank_pledge_date || defaultDate,
+          bank_assessor_name: rowData.bank_assessor_name || "",
+          bank_name: rowData.bank_name || "",
+          bank_pawn_value: rowData.bank_pawn_value || "",
+          bank_interest: rowData.bank_interest || "",
+          bank_duration: rowData.bank_duration || "",
+          bank_additional_charges: rowData.bank_additional_charges || "",
+        }
       : {
-        customer_no: "",
-        receipt_no: "",
-        pawnjewelry_date: null,
-        name: "",
-        customer_details: "",
-        place: "",
-        mobile_number: "",
-        dateofbirth: "",
-        proof_number: "",
-        upload_type: "",
-        original_amount: "",
-        interest_rate: "",
-        Jewelry_recovery_agreed_period: "",
-        proof: [],
-        aadharproof: [],
-        group_type: "Gold",
-        jewel_product: [
-          { JewelName: "", count: "", weight: "", net: "", remark: "", carrat: "" },
-        ],
-        // New bank pledge fields
-        bank_pledge_date: defaultDate,
-        bank_assessor_name: "",
-        bank_name: "",
-        bank_pawn_value: "",
-        bank_interest: "",
-        bank_duration: "",
-        bank_additional_charges: "",
-        location : ""
-      };
+          customer_no: "",
+          receipt_no: "",
+          pawnjewelry_date: null,
+          name: "",
+          customer_details: "",
+          place: "",
+          mobile_number: "",
+          dateofbirth: "",
+          proof_number: "",
+          upload_type: "",
+          original_amount: "",
+          interest_rate: "",
+          Jewelry_recovery_agreed_period: "",
+          proof: [],
+          aadharproof: [],
+          group_type: "Gold",
+          jewel_product: [
+            {
+              JewelName: "",
+              count: "",
+              weight: "",
+              net: "",
+              remark: "",
+              carrat: "",
+            },
+          ],
+          // New bank pledge fields
+          bank_pledge_date: defaultDate,
+          bank_assessor_name: "",
+          bank_name: "",
+          bank_pawn_value: "",
+          bank_interest: "",
+          bank_duration: "",
+          bank_additional_charges: "",
+          location: "",
+        };
 
   const [formData, setFormData] = useState(initialState);
   const [error, setError] = useState("");
@@ -124,16 +135,20 @@ const UserCreation = () => {
         if (field === "customer_no") setSearchcutomernumber(value);
 
         if (value.length >= 2) {
-          fetchDatajewelpawncustomer({ text: value, field }).then((customers) => {
-            setCustomerSuggestions(customers);
-          });
+          fetchDatajewelpawncustomer({ text: value, field }).then(
+            (customers) => {
+              setCustomerSuggestions(customers);
+            }
+          );
         } else {
           setCustomerSuggestions([]);
         }
       }
 
       if (field === "customer_no" && rowIndex === undefined) {
-        const customer = customerData.find((cust) => cust.customer_no === value);
+        const customer = customerData.find(
+          (cust) => cust.customer_no === value
+        );
         if (customer) {
           updatedFormData = {
             ...updatedFormData,
@@ -144,24 +159,24 @@ const UserCreation = () => {
             dateofbirth: customer.dateofbirth || "",
             proof_number: customer.proof_number || "",
             upload_type: customer.upload_type || "",
-             proof: customer.proof.map((url, index) => {
-          const extension = url.split(".").pop()?.toLowerCase();
-          const isImage = /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(url);
-          return {
-            name: `file_${index + 1}.${extension}`,
-            data: url,
-            type: isImage ? "image" : "file",
-          };
-        }),
-        aadharproof: customer.aadharproof.map((url, index) => {
-          const extension = url.split(".").pop()?.toLowerCase();
-          const isImage = /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(url);
-          return {
-            name: `file_${index + 1}.${extension}`,
-            data: url,
-            type: isImage ? "image" : "file",
-          };
-        }),
+            proof: customer.proof.map((url, index) => {
+              const extension = url.split(".").pop()?.toLowerCase();
+              const isImage = /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(url);
+              return {
+                name: `file_${index + 1}.${extension}`,
+                data: url,
+                type: isImage ? "image" : "file",
+              };
+            }),
+            aadharproof: customer.aadharproof.map((url, index) => {
+              const extension = url.split(".").pop()?.toLowerCase();
+              const isImage = /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(url);
+              return {
+                name: `file_${index + 1}.${extension}`,
+                data: url,
+                type: isImage ? "image" : "file",
+              };
+            }),
           };
         } else {
           updatedFormData = {
@@ -194,24 +209,24 @@ const UserCreation = () => {
       dateofbirth: customer.dateofbirth || "",
       proof_number: customer.proof_number || "",
       upload_type: customer.upload_type || "",
-           proof: customer.proof.map((url, index) => {
-          const extension = url.split(".").pop()?.toLowerCase();
-          const isImage = /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(url);
-          return {
-            name: `file_${index + 1}.${extension}`,
-            data: url,
-            type: isImage ? "image" : "file",
-          };
-        }),
-        aadharproof: customer.aadharproof.map((url, index) => {
-          const extension = url.split(".").pop()?.toLowerCase();
-          const isImage = /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(url);
-          return {
-            name: `file_${index + 1}.${extension}`,
-            data: url,
-            type: isImage ? "image" : "file",
-          };
-        }),
+      proof: customer.proof.map((url, index) => {
+        const extension = url.split(".").pop()?.toLowerCase();
+        const isImage = /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(url);
+        return {
+          name: `file_${index + 1}.${extension}`,
+          data: url,
+          type: isImage ? "image" : "file",
+        };
+      }),
+      aadharproof: customer.aadharproof.map((url, index) => {
+        const extension = url.split(".").pop()?.toLowerCase();
+        const isImage = /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(url);
+        return {
+          name: `file_${index + 1}.${extension}`,
+          data: url,
+          type: isImage ? "image" : "file",
+        };
+      }),
     });
     setSearchName("");
     setSearchMobile("");
@@ -353,8 +368,12 @@ const UserCreation = () => {
       return file;
     };
 
-    const proofBase64Array = await Promise.all(formData.proof.map(convertToBase64IfUrl));
-    const aadharproofBase64Array = await Promise.all(formData.aadharproof.map(convertToBase64IfUrl));
+    const proofBase64Array = await Promise.all(
+      formData.proof.map(convertToBase64IfUrl)
+    );
+    const aadharproofBase64Array = await Promise.all(
+      formData.aadharproof.map(convertToBase64IfUrl)
+    );
     try {
       const response = await fetch(`${API_DOMAIN}/pawnjewelry.php`, {
         method: "POST",
@@ -409,8 +428,12 @@ const UserCreation = () => {
       return file;
     };
 
-    const proofBase64Array = await Promise.all(formData.proof.map(convertToBase64IfUrl));
-    const aadharproofBase64Array = await Promise.all(formData.aadharproof.map(convertToBase64IfUrl));
+    const proofBase64Array = await Promise.all(
+      formData.proof.map(convertToBase64IfUrl)
+    );
+    const aadharproofBase64Array = await Promise.all(
+      formData.aadharproof.map(convertToBase64IfUrl)
+    );
 
     try {
       const response = await fetch(`${API_DOMAIN}/pawnjewelry.php`, {
@@ -433,7 +456,8 @@ const UserCreation = () => {
           original_amount: formData.original_amount,
           interest_rate: formData.interest_rate,
           jewel_product: formData.jewel_product,
-          Jewelry_recovery_agreed_period: formData.Jewelry_recovery_agreed_period,
+          Jewelry_recovery_agreed_period:
+            formData.Jewelry_recovery_agreed_period,
           group_type: formData.group_type,
           proof: proofBase64Array,
           aadharproof: aadharproofBase64Array,
@@ -445,7 +469,7 @@ const UserCreation = () => {
           bank_interest: formData.bank_interest,
           bank_duration: formData.bank_duration,
           bank_additional_charges: formData.bank_additional_charges,
-          location : formData.location
+          location: formData.location,
         }),
       });
 
@@ -567,8 +591,8 @@ const UserCreation = () => {
           sortedData = Array.isArray(sortedData)
             ? sortedData.filter((user) => user.RoleSelection === "பணியாளர்")
             : sortedData.RoleSelection === "பணியாளர்"
-              ? [sortedData]
-              : [];
+            ? [sortedData]
+            : [];
         }
         setUserData(Array.isArray(sortedData) ? sortedData : [sortedData]);
       } else {
@@ -649,7 +673,9 @@ const UserCreation = () => {
         }
       }, 100);
     } catch (err) {
-      console.warn("Webcam access failed or not available. Fallback to file upload.");
+      console.warn(
+        "Webcam access failed or not available. Fallback to file upload."
+      );
       toast.info("No camera detected. Opening file upload instead.", {
         position: "top-center",
         autoClose: 2000,
@@ -835,7 +861,14 @@ const UserCreation = () => {
       ...formData,
       jewel_product: [
         ...formData.jewel_product,
-        { JewelName: "", count: "", weight: "", net: "", remark: "", carrat: "" },
+        {
+          JewelName: "",
+          count: "",
+          weight: "",
+          net: "",
+          remark: "",
+          carrat: "",
+        },
       ],
     });
   };
@@ -876,12 +909,13 @@ const UserCreation = () => {
         <Row className="regular">
           <Col lg="12" md="6" xs="12" className="py-3">
             <PageNav
-              pagetitle={`Loan${type === "view"
-                ? " view "
-                : type === "edit"
+              pagetitle={`Loan${
+                type === "view"
+                  ? " view "
+                  : type === "edit"
                   ? " edit "
                   : " Creation"
-                }`}
+              }`}
             />
           </Col>
           <Col lg="3" md="4" xs="12" className="py-3">
@@ -1065,7 +1099,9 @@ const UserCreation = () => {
           <Col lg="3" md="4" xs="12" className="py-3">
             <Calender
               setLabel={(date) => setLabel(date, "dateofbirth")}
-              initialDate={type === "edit" ? formData.dateofbirth : formData.dateofbirth}
+              initialDate={
+                type === "edit" ? formData.dateofbirth : formData.dateofbirth
+              }
               calenderlabel="Date of Birth"
               disabled={true}
             />
@@ -1094,11 +1130,10 @@ const UserCreation = () => {
                     {opt.label}
                   </option>
                 ))}
-
               </select>
             </div>
-          </Col> */}
-          {/* <Col lg="3" md="4" xs="12" className="py-3">
+          </Col>
+          <Col lg="3" md="4" xs="12" className="py-3">
             <TextInputForm
               placeholder={"Proof Number"}
               labelname={"Proof Number"}
@@ -1111,7 +1146,7 @@ const UserCreation = () => {
           <Col lg="3" md="4" xs="12" className="py-3">
             <TextInputForm
               placeholder={"principal amount"}
-              labelname={"principal amount"}
+              labelname={"Principal amount"}
               name="original_amount"
               value={formData.original_amount}
               onChange={(e) => handleChange(e, "original_amount")}
@@ -1137,26 +1172,26 @@ const UserCreation = () => {
             </div>
           </Col>
           <Col lg="3" md="4" xs="12" className="py-3">
-  <Form.Group controlId="interestRate">
-    <Form.Label>Interest Rate</Form.Label>
-    <Form.Select
-      name="interest_rate"
-      value={formData.interest_rate}
-      onChange={(e) => handleChange(e, "interest_rate")}
-    >
-      <option value="">-- Select Interest Rate --</option>
-      {[...Array(7)].map((_, i) => {
-        const percentage = 18 + i; // 18% to 24%
-        const monthlyRate = (percentage / 12).toFixed(2); // e.g., 1.50 for 18%
-        return (
-          <option key={percentage} value={monthlyRate}>
-            {percentage}%
-          </option>
-        );
-      })}
-    </Form.Select>
-  </Form.Group>
-</Col>
+            <Form.Group controlId="interestRate">
+              <Form.Label>Interest Rate</Form.Label>
+              <Form.Select
+                name="interest_rate"
+                value={formData.interest_rate}
+                onChange={(e) => handleChange(e, "interest_rate")}
+              >
+                <option value="">-- Select Interest Rate --</option>
+                {[...Array(7)].map((_, i) => {
+                  const percentage = 18 + i; // 18% to 24%
+                  const monthlyRate = (percentage / 12).toFixed(2); // e.g., 1.50 for 18%
+                  return (
+                    <option key={percentage} value={monthlyRate}>
+                      {percentage}%
+                    </option>
+                  );
+                })}
+              </Form.Select>
+            </Form.Group>
+          </Col>
 
           <Col lg="3" md="4" xs="12" className="py-3">
             <TextInputForm
@@ -1164,12 +1199,16 @@ const UserCreation = () => {
               labelname={"Jewelry recovery agreed period"}
               name="Jewelry_recovery_agreed_period"
               value={formData.Jewelry_recovery_agreed_period}
-              onChange={(e) => handleChange(e, "Jewelry_recovery_agreed_period")}
+              onChange={(e) =>
+                handleChange(e, "Jewelry_recovery_agreed_period")
+              }
             />
           </Col>
           <Col lg="4" md="4" xs="12" className="py-5">
             <div className="file-upload">
-              <label>{type === "edit" ? "Preview Ornament" : "Upload Ornament"}</label>
+              <label>
+                {type === "edit" ? "Preview Ornament" : "Upload Customer Proof"}
+              </label>
               <input
                 type="file"
                 id="proof"
@@ -1245,10 +1284,7 @@ const UserCreation = () => {
                       />
                     </div>
                   ) : (
-                    <div
-                      className="file-info"
-                      style={{ marginRight: "10px" }}
-                    >
+                    <div className="file-info" style={{ marginRight: "10px" }}>
                       <p>
                         <a
                           href={file.data}
@@ -1275,13 +1311,33 @@ const UserCreation = () => {
               ))}
             </div>
           </Col>
-          {/* <Col lg="4" md="4" xs="12" className="py-5">
+          <Col lg="4" md="4" xs="12" className="py-5">
             <div className="file-upload">
               <label>
                 {type === "edit"
-                  ? `Preview ${formData.upload_type?.toLocaleLowerCase() ?? ""} Files`
-                  : `Upload ${formData.upload_type?.toLocaleLowerCase() ?? ""} Proof`}
+                  ? `Preview ${
+                      formData.upload_type?.toLocaleLowerCase() ?? ""
+                    } Files`
+                  : `Upload ${
+                      formData.upload_type?.toLocaleLowerCase() ?? ""
+                    } aadharproof`}
               </label>
+              <input
+                type="file"
+                id="aadharproof"
+                accept=".pdf,image/*"
+                ref={fileInputRef}
+                multiple
+                onChange={(e) =>
+                  handleFileChange(e.target.files, "aadharproof")
+                }
+                style={{ display: "none" }}
+              />
+              <ChooseButton
+                label="Choose File"
+                onClick={startWebcam}
+                className="choosefilebtn"
+              />
               {formData.aadharproof && formData.aadharproof.length > 0 && (
                 <div className="file-preview mt-2">
                   {formData.aadharproof.map((file, index) => (
@@ -1331,135 +1387,134 @@ const UserCreation = () => {
                         className="btn btn-primary btn-sm me-2"
                         onClick={() => handlePreview(file)}
                       />
+                      <ChooseButton
+                        label="Delete"
+                        className="btn btn-danger btn-sm"
+                        onClick={() => handleImageDelete(index, "aadharproof")}
+                      />
                     </div>
                   ))}
                 </div>
               )}
             </div>
-          </Col> */}
+          </Col>
 
           <Col lg="12" md="6" xs="12">
-  <table className="table table-bordered mx-auto">
-    <thead>
-      <tr>
-        <th style={{ width: '5%' }}>S.No</th>
-        <th style={{ width: '20%' }}>நகை பெயர்</th>
-        <th style={{ width: '10%' }}>தரம்</th>
-        <th style={{ width: '8%' }}>எண்ணிக்கை</th>
-        <th style={{ width: '10%' }}>மொத்த எடை</th>
-        <th style={{ width: '10%' }}>நிகர எடை</th>
-        <th style={{ width: '25%' }}>குறிப்பு</th>
-        <th style={{ width: '5%' }}></th>
-        <th style={{ width: '7%' }}>நீக்கு</th>
-      </tr>
-    </thead>
-    <tbody>
-      {formData.jewel_product &&
-        formData.jewel_product.length > 0 &&
-        formData.jewel_product.map((row, index) => (
-          <tr key={index}>
-            <td>{index + 1}</td>
+          <div className="table-responsive-sm">
+            <table className="table table-bordered mobile-table">
+              <thead>
+                <tr>
+                  <th style={{ width: "5%" }}>S.No</th>
+                  <th style={{ width: "10%" }}>நகை பெயர்</th>
+                  <th style={{ width: "10%" }}>தரம்</th>
+                  <th style={{ width: "8%" }}>எண்ணிக்கை</th>
+                  <th style={{ width: "10%" }}>மொத்த எடை</th>
+                  <th style={{ width: "10%" }}>நிகர எடை</th>
+                  <th style={{ width: "25%" }}>குறிப்பு</th>
+                 
+                  <th style={{ width: "7%" }}>நீக்கு</th>
+                </tr>
+              </thead>
+              <tbody>
+                {formData.jewel_product &&
+                  formData.jewel_product.length > 0 &&
+                  formData.jewel_product.map((row, index) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
 
-            {/* Jewel Name Dropdown */}
-            <td>
-              <select
-                className="form-cntrl w-100"
-                value={row.JewelName}
-                onChange={(e) => handleChange(e, "JewelName", index)}
-                autoFocus={index === formData.jewel_product.length - 1}
-              >
-                <option value="">தேர்வு செய்க</option>
-                {productList.map((item, idx) => (
-                  <option key={idx} value={item.product_eng}>
-                    {item.product_eng}
-                  </option>
-                ))}
-              </select>
-            </td>
+                      {/* Jewel Name Dropdown */}
+                      <td>
+                        <select
+                          className="form-cntrl w-100"
+                          value={row.JewelName}
+                          onChange={(e) => handleChange(e, "JewelName", index)}
+                          autoFocus={
+                            index === formData.jewel_product.length - 1
+                          }
+                        >
+                          <option value="">தேர்வு செய்க</option>
+                          {productList.map((item, idx) => (
+                            <option key={idx} value={item.product_eng}>
+                              {item.product_eng}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
 
-            {/* Carat Dropdown */}
-            <td>
-              <select
-                className="form-cntrl w-100"
-                value={row.carrat}
-                onChange={(e) => handleChange(e, "carrat", index)}
-              >
-                <option value="">தேர்வு செய்க</option>
-               
-                <option value="18">18</option>
-                <option value="20">20</option>
-                <option value="22">22</option>
-              </select>
-            </td>
+                      {/* Carat Dropdown */}
+                      <td>
+                        <select
+                          className="form-cntrl w-100"
+                          value={row.carrat}
+                          onChange={(e) => handleChange(e, "carrat", index)}
+                        >
+                          <option value="">தேர்வு செய்க</option>
 
-            {/* Count */}
-            <td>
-              <input
-                type="number"
-                className="form-cntrl w-100"
-                value={row.count}
-                onChange={(e) => handleChange(e, "count", index)}
-                onKeyPress={(e) => handleKeyPress(e,index)}
-              />
-            </td>
+                          <option value="18">18</option>
+                          <option value="20">20</option>
+                          <option value="22">22</option>
+                        </select>
+                      </td>
 
-            {/* Gross Weight */}
-            <td>
-              <input
-                type="number"
-                className="form-cntrl w-100"
-                value={row.weight}
-                onChange={(e) => handleChange(e, "weight", index)}
-                 onKeyPress={(e) => handleKeyPress(e,index)}
-              />
-            </td>
+                      {/* Count */}
+                      <td>
+                        <input
+                          type="number"
+                          className="form-cntrl w-100"
+                          value={row.count}
+                          onChange={(e) => handleChange(e, "count", index)}
+                          onKeyPress={(e) => handleKeyPress(e, index)}
+                        />
+                      </td>
 
-            {/* Net Weight */}
-            <td>
-              <input
-                type="number"
-                className="form-cntrl w-100"
-                value={row.net}
-                onChange={(e) => handleChange(e, "net", index)}
-                onKeyPress={(e) => handleKeyPress(e,index)}
-              />
-            </td>
+                      {/* Gross Weight */}
+                      <td>
+                        <input
+                          type="number"
+                          className="form-cntrl w-100"
+                          value={row.weight}
+                          onChange={(e) => handleChange(e, "weight", index)}
+                          onKeyPress={(e) => handleKeyPress(e, index)}
+                        />
+                      </td>
 
-            {/* Remark */}
-            <td>
-              <textarea
-                rows={1}
-                className="form-cntrl w-100"
-                value={row.remark}
-                onChange={(e) => handleChange(e, "remark", index)}
-                onKeyPress={(e) => handleKeyPress(e,index)}
-              />
-            </td>
+                      {/* Net Weight */}
+                      <td>
+                        <input
+                          type="number"
+                          className="form-cntrl w-100"
+                          value={row.net}
+                          onChange={(e) => handleChange(e, "net", index)}
+                          onKeyPress={(e) => handleKeyPress(e, index)}
+                        />
+                      </td>
 
-            {/* Add More (hidden) */}
-            <td>
-              <div className="d-none">
-                {index === formData.jewel_product.length - 1 && (
-                  <ClickButton
-                    label={<>Add More</>}
-                    onClick={handleAddRow}
-                  />
-                )}
-              </div>
-            </td>
+                      {/* Remark */}
+                      <td>
+                        <textarea
+                          rows={1}
+                          className="form-cntrl w-100"
+                          value={row.remark}
+                          onChange={(e) => handleChange(e, "remark", index)}
+                          onKeyPress={(e) => handleKeyPress(e, index)}
+                        />
+                      </td>
 
-            {/* Delete */}
-            <td>
-              <Delete
-                onClick={() => handleDeleteRow(index)}
-                label={<MdDeleteForever />}
-              />
-            </td>
-          </tr>
-        ))}
-    </tbody>
-  </table>
-</Col>
+                     
+
+                      {/* Delete */}
+                      <td>
+                        <Delete
+                          onClick={() => handleDeleteRow(index)}
+                          label={<MdDeleteForever />}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+            </div>
+          </Col>
 
           {/* New Bank Pledge Details Section */}
           <Col lg="12" className="py-3">
@@ -1516,15 +1571,12 @@ const UserCreation = () => {
             />
           </Col>
           <Col lg="3" md="4" xs="12" className="py-3">
-          <Calender
+            <Calender
               setLabel={(date) => setLabel(date, "bank_duration")}
-              initialDate={
-                type === "edit" ? formData.bank_duration : undefined
-              }
+              initialDate={type === "edit" ? formData.bank_duration : undefined}
               calenderlabel="Due Date"
               disabled={type === "view"}
             />
-           
           </Col>
           <Col lg="3" md="4" xs="12" className="py-3">
             <TextInputForm

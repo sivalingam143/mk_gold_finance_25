@@ -8,8 +8,8 @@ import {
     Font,
     Image
 } from '@react-pdf/renderer';
-import logo from '.././components/sidebar/images/logo.png';
-import watermark from '.././components/sidebar/images/logo.png';
+import logo from '../logo1.png';
+import watermark from './images/back.jpg'; 
 import customerPhoto from './images/customer.png';
 import jewelPhoto from './images/jewel.png';
 import tamilRegular from './fonts/NotoSansTamil-Regular.ttf';
@@ -26,20 +26,20 @@ const styles = StyleSheet.create({
         backgroundColor: '#F9FAFB',
         position: 'relative',
     },
-    watermark: {
-        position: 'absolute',
-        top: '20%',
-        left: '6%',
-        width: 550,
-        opacity: 0.08,
-    },
+   watermark: {
+    position: 'absolute',
+    top: '25%',
+    left: '10%',
+    width: 500,
+    opacity: 0.06,
+  },
     header: {
         alignItems: 'center',
          fontFamily: 'NotoTamil-Bold',
 
     },
     headerLogo: {
-        width: 250,
+        width: 100,
         height: 100,
 
     },
@@ -101,9 +101,9 @@ const styles = StyleSheet.create({
         marginBottom: 15,
     },
     imageBox: {
-        width: 68,
-        height: 68,
-        objectFit: 'cover',
+        width: 100,
+        height: 100,
+        objectFit: 'contain',
         border: '1px solid #D1D5DB',
         borderRadius: 5,
         overflow: 'hidden',
@@ -145,6 +145,12 @@ const styles = StyleSheet.create({
         textAlign: 'justify',
     }
     ,
+     loan1Paragraph: {
+    fontSize: 8,
+    fontFamily: 'NotoTamil',
+    lineHeight: 2,
+    textAlign: 'justify',
+  },
     sectionTitle: {
         fontFamily: 'NotoTamil-Bold',
 
@@ -630,6 +636,81 @@ const OfficeCopyDocument = ({ data }) => {
 
                 {/* Footer */}
                 <Text style={styles.footer}> கடன்தாரர் கையொப்பம் </Text>
+            </Page>
+              <Page size="A4" style={styles.page}>
+              {/* Header Section */}
+              <View style={styles.header}>
+                <Text style={[styles.title, { fontSize: 20 ,color: "red"}]}>நிதி கோல்டு லோ{""}ன்</Text>
+                <Text style={styles.subText}> H/O:182, இரண்டாவது மாடி, AKS தியேட்டர் ரோடு, கோவில்பட்{""}டி </Text>
+                <View style={{ borderBottom: '1px solid black', width: '100%', marginTop: 5, marginBottom: 5 }} />
+                <Text style={[styles.centerText, { textDecoration: 'underline' }]}>உறுதிமொழி படிவ{""}ம்</Text>
+              </View>
+            
+              {/* Details and Photo Row */}
+              <View style={{ flexDirection: 'row', marginTop: 10, justifyContent: 'space-between' }}>
+                
+                {/* Left Column: Pledge Details */}
+                <View style={{ width: '70%' }}>
+                  <Text style={[styles.label, { marginBottom: 5 }]}>அடகு விபரம் :</Text>
+                  <View style={{ marginLeft: 10 }}>
+                    <Text style={styles.item}>அடகு எண் - {data.receipt_no}</Text>
+                    <Text style={styles.item}>எடை - {totalNet} கிராம்</Text>
+                    <Text style={styles.item}>பொருளின் விவரம் - {jewelNames}</Text>
+                    <Text style={styles.item}>அடகு தேதி - {formatDate(data.pawnjewelry_date)}</Text>
+                    <Text style={styles.item}>கடன் தொகை - {Number(data.original_amount).toLocaleString('en-IN')}/-</Text>
+                  </View>
+                </View>
+            
+                {/* Right Column: Photo Placeholder */}
+              <View style={{ width: '25%', alignItems: 'center' }}>
+  {data.proof?.[0] ? (
+    <View style={styles.imageBox}>
+       <Image 
+         src={data.proof[0]} 
+         style={{ width: '100%', height: '100%' }} 
+       />
+    </View>
+  ) : (
+    <View style={{ width: 80, height: 100, border: '1px solid black', backgroundColor: '#f0f0f0', justifyContent: 'center' }}>
+      <Text style={{ textAlign: 'center', fontSize: 8 }}>படம் இல்லை</Text>
+    </View>
+  )}
+</View>
+              </View>
+            
+              <Text style={[styles.label, { marginTop: 15, marginBottom: 10 }]}>ஐயா / அம்மா,</Text>
+            
+              {/* Declaration Paragraph */}
+              <View style={{ lineHeight: 2.5 }}>
+                <Text style={styles.loan1Paragraph}>
+                  நான் <Text style={styles.sectionTitle}>{data.name}</Text> s/o ..........., {data.customer_details}, {data.place} என்ற முகவரியில் வசித்து வருகிறேன். மேலும் என்னுடைய சொந்த தேவைக்காக இன்று {formatDate(data.pawnjewelry_date)} தங்களது பைனான்ஸ்-ல் என்னுடைய சொந்த நகையை மட்டுமே அடமானம் வைக்கின்றேன் என்பதை தெரிவித்து {""}கொள்கிறேன்.
+                </Text>
+                
+                <Text style={[styles.loan1Paragraph, { marginTop: 8 }]}>
+                  இந்த நகை எனக்கு மட்டுமே உரிமையானது. என் குடும்பத்தினற்க்கோ அல்லது என்னை சார்ந்தவர்களுக்கோ நான் இல்லாமல் {""}நகையை திருப்பவோ அல்லது மாற்றி வைக்கவோ இயலாது என்பதை நான் அறிவேன்.
+                </Text>
+            
+                <Text style={[styles.loan1Paragraph, { marginTop: 8 }]}>
+                  நான் திருப்பும் தேதி 16-01-2026 வரும் வரை நகையினை திரும்ப பெற இயலாது என்பதை நான் அறிந்து அதற்கு முழு மனதுடன் சம்மதித்து அடகு வைக்கிறேன். நகை திருப்பும் தவணை தேதி முடிந்த பிறகும் வட்டி செலுத்தவில்லை என்றால் 1 மாதத்திற்கு ஒருமுறை 1% வட்டி விகிதம் மாறுபடும் என்பதையும் மற்றும் நகையை திருப்புவதாக இருந்தால் இரண்டு நாட்களுக்கு முன்னர் நகையின் வட்டியை செலுத்திவிட்டு பின்னர் நகையின் அசலை செலுத்தி திருப்ப இயலும் என்பதையும் நான் அறிவேன்.
+                </Text>
+            
+                <Text style={[styles.loan1Paragraph, { marginTop: 8 }]}>
+                  இதில் கண்ட அனைத்தையும் நான் தெரிந்து கொண்டும் புரிந்து கொண்டும் இதற்கு முழு மனதுடன் சம்மதிக்கிறேன் என்பதை இத{""}ன் {""}மூலம் தெரிவித்துக்கொள்கிறேன்.
+                </Text>
+              </View>
+            
+              <Text style={{ textAlign: 'right', marginTop: 10, fontSize: 10 }}>நன்றி,</Text>
+            
+              {/* Footer Row */}
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 40 }}>
+                <View>
+                  <Text style={styles.value}>நாள் : {formatDate(data.pawnjewelry_date)}</Text>
+             <Text style={styles.value}>இடம் : {data.place ?? '-'}</Text>
+                </View>
+                <View style={{ alignItems: 'flex-end' }}>
+                  <Text style={styles.signatureText}>இப்படிக்கு,</Text>
+                </View>
+              </View>
             </Page>
         </Document>
     )

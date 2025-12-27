@@ -221,11 +221,9 @@ const styles = StyleSheet.create({
     paddingLeft: 22,
   },
 });
-const Receipt = ({ data }) => {
-  console.log("data", data);
 
+const Receipt = ({ data }) => {
   const formattedDate = formatDate(data.pawnjewelry_recovery_date);
- 
 
   return (
     <View style={styles.dupe}>
@@ -246,7 +244,7 @@ const Receipt = ({ data }) => {
               <View style={styles.logoContainer}>
                 <Image src="/logo192.png" style={styles.logoImage} />
               </View>
-              <Text style={styles.storename}>MK GOLD FINANCE </Text>
+              <Text style={styles.storename}>NITHI GOLD LOAN </Text>
               <Text style={{ marginTop: 3, fontSize: 8 }}>
                               No.12-E, P.S.R. Road, Sivakasi - 626123.
                             </Text>
@@ -309,7 +307,7 @@ const Receipt = ({ data }) => {
           </View>
           <View style={styles.phone}>
             <View style={styles.termpoint}>
-              <Text style={styles.boldText}>For MK GOLD FINANCE</Text>
+              <Text style={styles.boldText}>For NITHI GOLD LOAN</Text>
             </View>
           </View>
         </View>
@@ -318,8 +316,89 @@ const Receipt = ({ data }) => {
   )
 };
 
-const JewelryRecoveryPDF = ({ data }) => {
+const RecoveryConfirmationPage = ({ data }) => {
+  const recoveryDate = formatDate(data.pawnjewelry_recovery_date);
+  const pawnDate = formatDate(data.pawnjewelry_date);
+// 1. Check if it's already an object; if not, parse it.
+const jewels = typeof data.jewel_product === 'string' 
+  ? JSON.parse(data.jewel_product) 
+  : (data.jewel_product || []);
+const imageSrc = Array.isArray(data.customer_pic) && data.customer_pic.length > 0 
+  ? data.customer_pic[0] 
+  : null;
+// 2. Sum the weight (checking for both 'weight' and 'Weight')
+const totalWeight = jewels.reduce((sum, item) => sum + parseFloat(item.weight || item.Weight || 0), 0);
+  return (
+    <View style={{ padding: 40, fontFamily: "fontRegular", color: "#000" }}>
+      <View style={{ textAlign: "center", marginBottom: 20 }}>
+        <Text style={{ fontSize: 22, fontFamily: "fontBold",color: "red" }}>நிதி கோல்டு லோ{""}ன்</Text>
+        <Text style={{ fontSize: 10, marginTop: 5 }}>H/O:182, இரண்டாவது மாடி, AKS தியேட்டர் ரோடு, கோவில்பட்{""}டி </Text>
+        <View style={{ borderBottomWidth: 1, marginTop: 10, borderColor: "#000" }} />
+      </View>
 
+      <Text style={{ textAlign: "center", fontSize: 14, fontFamily: "fontBold", marginBottom: 15 }}>
+        நகை மீட்பு உறுதிமொழி படிவ{""}ம்
+      </Text>
+
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <View style={{ width: "60%", fontSize: 10, lineHeight: 1.8 }}>
+          <Text>அடகு விபரம் :</Text>
+          <Text>அடகு நம்பர் - {data.receipt_no}</Text>
+        <Text>எடை - {totalWeight} கிராம்</Text>
+          <Text>பொருளின் விவரம் - {data.item_description || "செயின் ஒன்று"}</Text>
+          <Text>அடகு தேதி - {pawnDate}</Text>
+          <Text>கடன் தொகை - {data.refund_amount}/-</Text>
+          <Text>நகை மீட்கப்பட்ட தேதி - {recoveryDate}</Text>
+          <Text>நகை மீட்கப்பட்ட தொகை - {data.refund_amount}/-</Text>
+          <Text>வட்டி வரவு தொகை - {data.interest_income}/-</Text>
+        </View>
+        <View style={{ 
+        width: 110, 
+        height: 120, 
+        border: 1, 
+        borderColor: "#000", 
+        alignItems: "center", 
+        justifyContent: "center",
+        overflow: "hidden" 
+      }}>
+        {imageSrc ? (
+          <Image 
+            src={imageSrc} 
+            style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+          />
+        ) : (
+          <Text style={{ fontSize: 9 }}>புகைப்படம் இல்லை</Text>
+        )}
+      </View>
+      
+      </View>
+
+      <View style={{ marginTop: 30, fontSize: 11, lineHeight: 1.6 }}>
+        <Text>ஐயா / அம்மா ,</Text>
+        <Text style={{ marginTop: 10, textIndent: 30, textAlign: "justify" }}>
+          வணக்கம், நான் நிதி கோல்டு லோ{""}ன்  மற்றும் பேரையூர் சக்தி பைனான்ஸ் என்ற
+          நிறுவனத்தில் எனது சொந்த நகையான {totalWeight} கிராம் நகையை {pawnDate} தேதியன்று PAWN NO 
+          {data.receipt_no} ல் அடகு வைத்தேன் அதற்கு இன்று {recoveryDate} அதற்கான அசலையும்
+          வட்டியையும் செலுத்தி எனது நகையை நல்ல நிலையில் பெறுகிறேன் என்பதை
+          தெரிவித்துக்கொள்கிறேன்.
+        </Text>
+        <Text style={{ textAlign: "center", marginTop: 20 }}>நன்றி,</Text>
+      </View>
+
+      <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 50, fontSize: 10 }}>
+        <View>
+          <Text style={{  fontFamily: "fontBold" }}>நாள் : {recoveryDate}</Text>
+          <Text style={{  fontFamily: "fontBold" }}>இடம் : {data.place || "-"}</Text>
+        </View>
+        <View>
+          <Text style={{  fontFamily: "fontBold" }}>இப்படிக்கு,</Text>
+        </View>
+      </View>
+    </View>
+  );
+};
+
+const JewelryRecoveryPDF = ({ data }) => {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -330,6 +409,9 @@ const JewelryRecoveryPDF = ({ data }) => {
         <View style={styles.halfPage}>
           <Receipt data={data} />
         </View>
+      </Page>
+      <Page size="A4">
+        <RecoveryConfirmationPage data={data} />
       </Page>
     </Document>
   );
