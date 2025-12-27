@@ -85,6 +85,8 @@ const SaleCreations = () => {
                 isExisting: true,
               }))
             : [],
+            latitude: rowData.latitude || "",
+        longitude: rowData.longitude || "",
         }
       : {
           // ... (keep your create initialState as is)
@@ -106,6 +108,8 @@ const SaleCreations = () => {
           proof_pic: [],
           staff_sign_pic: [],
           customer_sign_pic: [],
+          latitude: "",
+        longitude: "",
         };
   const [formData, setFormData] = useState(initialState);
   console.log(formData);
@@ -140,6 +144,83 @@ const SaleCreations = () => {
       fetchSales();
     }
   }, [type]);
+const getPreciseLocation = () => {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) {
+      reject("Geolocation not supported in this environment.");
+      return;
+    }
+
+    const options = {
+      enableHighAccuracy: true,     // forces GPS when available
+      timeout: 15000,               // more tolerance for accurate lock
+      maximumAge: 0,                // no cached location
+    };
+
+    let fallbackWatcher = null;
+    let didResolve = false;
+
+    const successHandler = (pos) => {
+      if (didResolve) return;
+      didResolve = true;
+
+      if (fallbackWatcher !== null) {
+        navigator.geolocation.clearWatch(fallbackWatcher);
+      }
+
+      resolve({
+        latitude: pos.coords.latitude.toFixed(7),
+        longitude: pos.coords.longitude.toFixed(7),
+        accuracy: pos.coords.accuracy,
+        timestamp: pos.timestamp,
+      });
+    };
+
+    const errorHandler = (err) => {
+      // If initial attempt fails, try watchPosition to stabilize
+      if (!didResolve && err.code !== err.PERMISSION_DENIED) {
+        fallbackWatcher = navigator.geolocation.watchPosition(
+          successHandler,
+          (watchErr) => reject(watchErr.message || "Location acquisition failed"),
+          { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
+        );
+      } else {
+        reject(err.message || "Location acquisition blocked");
+      }
+    };
+
+    navigator.geolocation.getCurrentPosition(successHandler, errorHandler, options);
+  });
+};
+
+const handleGetCurrentLocation = async () => {
+  try {
+    toast.info("Optimizing location acquisition…");
+
+    const permission = await navigator.permissions?.query({ name: "geolocation" }).catch(() => null);
+
+    if (permission?.state === "denied") {
+      toast.error("Location permission blocked. Enable it in browser/site settings.");
+      return;
+    }
+
+    const loc = await getPreciseLocation();
+
+    setFormData(prev => ({
+      ...prev,
+      latitude: loc.latitude,
+      longitude: loc.longitude,
+    }));
+
+    toast.success(
+      `High-accuracy location captured.
+Lat: ${loc.latitude} | Long: ${loc.longitude}
+Accuracy: ±${loc.accuracy}m`
+    );
+  } catch (e) {
+    toast.error(e || "Unable to capture accurate location.");
+  }
+};
 
   const handleChange = (e, field) => {
     const value = e.target ? e.target.value : e.value;
@@ -313,6 +394,8 @@ const SaleCreations = () => {
         customer_sign_pic: formData.customer_sign_pic.map((f) => ({
           data: f.data,
         })),
+        latitude: formData.latitude || "",
+  longitude: formData.longitude || "",
       };
 
       const response = await fetch(`${API_DOMAIN}/sale.php`, {
@@ -378,6 +461,8 @@ const SaleCreations = () => {
         proof_pic: prepareFiles(formData.proof_pic),
         staff_sign_pic: prepareSignatures(formData.staff_sign_pic),
         customer_sign_pic: prepareSignatures(formData.customer_sign_pic),
+        latitude: formData.latitude || "",
+  longitude: formData.longitude || "",
       };
 
       const response = await fetch(`${API_DOMAIN}/sale.php`, {
@@ -750,7 +835,41 @@ const SaleCreations = () => {
               disabled={type === "view"}
             />
           </Col>
+{/* Current Location Section - Place after Staff Name */}
+<Col lg="12" className="py-3">
+  <h5>Current Location</h5>
+</Col>
 
+<Col lg="4" className="py-3">
+  <label className="form-label">Latitude</label>
+  <input
+    type="text"
+    className="form-control"
+    value={formData.latitude}
+    disabled
+    placeholder="Click button to fetch"
+  />
+</Col>
+
+<Col lg="4" className="py-3">
+  <label className="form-label">Longitude</label>
+  <input
+    type="text"
+    className="form-control"
+    value={formData.longitude}
+    disabled
+    placeholder="Click button to fetch"
+  />
+</Col>
+
+<Col lg="4" className="py-3 d-flex align-items-end">
+  <ClickButton
+    label="Get Current Location"
+    onClick={handleGetCurrentLocation}
+    disabled={type === "view"}
+    className="btn btn-info w-100"
+  />
+</Col>
           {/* Signs Heading */}
           <Col lg="12" className="py-3">
             <h5>Customer Sign and Staff Sign</h5>
