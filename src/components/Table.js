@@ -8,7 +8,9 @@ import { MdChevronRight, MdChevronLeft } from "react-icons/md";
 import JewelPawnPdfG from "../pdf/JewelPawnPdfg";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import LoadingOverlay from "./LoadingOverlay";
-import SalePDF, { handleSaleDownload } from "../pages/sale/salepdf";
+import { toast,ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 
 const TableUI = ({
@@ -113,6 +115,22 @@ const prevPage = () => {
       state: { type: "edit", rowData: rowData },
     });
   };
+  const handleViewLocation = (data) => {
+  const { latitude, longitude } = data;
+
+  if (!latitude || !longitude) {
+    toast.error("Location coordinates not available");
+    return;
+  }
+
+  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const mapUrl = isIOS
+    ? `maps://maps.apple.com/?q=${latitude},${longitude}`
+    : `https://www.google.com/maps?q=${latitude},${longitude}&z=18`;
+
+  window.open(mapUrl, "_blank");
+};
+
 const handleSaleCustomerViewClick = (rowData) => {
   navigate("/console/salecustomer", {
     state: { rowData: rowData },
@@ -1129,6 +1147,10 @@ const handleSaleDeleteClick = async (id) => {
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
+          <Dropdown.Item onClick={() => handleViewLocation(rowData)}>
+  View Location
+</Dropdown.Item>
+
           {/* Customer Copy View */}
          <Dropdown.Item onClick={() => handleSaleCustomerViewClick(rowData)}>
   CustomerCopy View
@@ -1150,6 +1172,8 @@ const handleSaleDeleteClick = async (id) => {
         </Dropdown.Menu>
       </Dropdown>
     </td>
+    <ToastContainer />
+
   </>
 )}
               {type === "product" && (
