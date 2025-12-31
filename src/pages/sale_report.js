@@ -176,7 +176,7 @@ const SaleReport = () => {
     centerTextInMargins('Sale Report', currentY, 20, 'bold');
     currentY += 10;
 
-    centerTextInMargins('NITHI GOLD LOAN', currentY, 16, 'bold');
+    centerTextInMargins('NITIK GOLD LOAN', currentY, 16, 'bold');
     currentY += 15;
 
     if (fromDate && toDate) {

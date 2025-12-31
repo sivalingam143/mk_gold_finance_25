@@ -1051,11 +1051,11 @@ const LoanReceiptPDF = ({ data }) => {
         {/* Header Section */}
         <View style={styles.header}>
           <Text style={[styles.title, { fontSize: 20, color: "red" }]}>
-            நிதி கோல்டு லோ{""}ன்
+           நிதிக் கோல்டு லோ{""}ன்
           </Text>
           <Text style={styles.subText}>
             {" "}
-            H/O:182, இரண்டாவது மாடி, AKS தியேட்டர் ரோடு, கோவில்பட்{""}டி{" "}
+    190,VLS COMPLEX,NEWBUS STAND OPPOSITE, ARUPPUKOTTAI
           </Text>
           <View
             style={{

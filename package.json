@@ -1,8 +1,8 @@
 {
-  "name": "nithigoldloan",
+  "name": "nitikgoldloan",
   "version": "0.1.0",
   "private": true,
-  "description": "A billing application for NITHI GOLD LOAN.",
+  "description": "A billing application for NITIK GOLD LOAN.",
   "author": "Zentexus Technologies",
   "dependencies": {
     "@mui/icons-material": "^6.1.5",

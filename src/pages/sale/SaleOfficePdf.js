@@ -253,11 +253,11 @@ const SaleOfficePDF = ({ data }) => {
             </View>
 
             <View style={styles.headerBox}>
-              <Text style={styles.title}>நிதி கோல்டு லோ{""}ன் </Text>
+              <Text style={styles.title}>நிதிக் கோல்டு லோ{""}ன் </Text>
             </View>
 
             <Text style={styles.address}>
-              H/O:182, இரண்டாவது மாடி, AKS தியேட்டர் ரோடு, கோவில்பட்{""}டி
+              190,VLS COMPLEX,NEWBUS STAND OPPOSITE, ARUPPUKOTTAI
             </Text>
 
             <View style={styles.doubleLineContainer}>
@@ -323,11 +323,11 @@ const SaleOfficePDF = ({ data }) => {
                   "................................."}
                 {""}
                 {"\n"}
-                M.K.கோல்டு நிறுவனத்தில் அசல் ................................
+               நிதிக் கோல்டு நிறுவனத்தில் அசல் ................................
                 வட்டி ................................ {""}தொகைகளை வாங்கி {""}{" "}
                 பொருட்களை திருப்பி, என்னுடைய {""} அவசர நிமித்த {""} செலவிற்காக
                 நகைகளை விற்பனை செய்து, மீதமுள்ள தொகை ரூபாய்
-                ..........................பணத்தை M.K.கோல்டு நிறுவனத்திலிருந்து
+                ..........................பணத்தை நிதிக் கோல்டு நிறுவனத்திலிருந்து
                 பெற்றுக் {""} கொண்டேன். இதில் ஏதேனும் வில்லங்கம் வந்தால், அதை
                 நானே என்னுடைய சொந்த {""}பொறுப்பில் சரி செய்து கொடுக்கின்றேன்.
                 {""} இதை படித்துப் பார்த்தும், படிக்கக் கேட்டும் {""} தெரிந்து{" "}
@@ -439,10 +439,10 @@ const SaleOfficePDF = ({ data }) => {
         <View style={styles.outerBorder}>
           <View style={styles.innerBorder}>
             <View style={styles.headerBox}>
-              <Text style={styles.title}>நிதி கோல்டு லோ{""}ன்</Text>
+              <Text style={styles.title}>நிதிக் கோல்டு லோ{""}ன்</Text>
             </View>
             <Text style={styles.address}>
-              H/O:182, இரண்டாவது மாடி, AKS தியேட்டர் ரோடு, கோவில்பட்{""}டி
+              190,VLS COMPLEX,NEWBUS STAND OPPOSITE, ARUPPUKOTTAI
             </Text>
             <Text style={[styles.address, { textDecoration: "underline" }]}>
               உறுதிமொழி படிவ{""}ம்

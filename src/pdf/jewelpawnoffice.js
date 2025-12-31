@@ -640,8 +640,8 @@ const OfficeCopyDocument = ({ data }) => {
               <Page size="A4" style={styles.page}>
               {/* Header Section */}
               <View style={styles.header}>
-                <Text style={[styles.title, { fontSize: 20 ,color: "red"}]}>நிதி கோல்டு லோ{""}ன்</Text>
-                <Text style={styles.subText}> H/O:182, இரண்டாவது மாடி, AKS தியேட்டர் ரோடு, கோவில்பட்{""}டி </Text>
+                <Text style={[styles.title, { fontSize: 20 ,color: "red"}]}>நிதிக் கோல்டு லோ{""}ன்</Text>
+                <Text style={styles.subText}>  190,VLS COMPLEX,NEWBUS STAND OPPOSITE, ARUPPUKOTTAI </Text>
                 <View style={{ borderBottom: '1px solid black', width: '100%', marginTop: 5, marginBottom: 5 }} />
                 <Text style={[styles.centerText, { textDecoration: 'underline' }]}>உறுதிமொழி படிவ{""}ம்</Text>
               </View>

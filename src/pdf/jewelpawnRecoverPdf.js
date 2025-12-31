@@ -244,7 +244,7 @@ const Receipt = ({ data }) => {
               <View style={styles.logoContainer}>
                 <Image src="/logo192.png" style={styles.logoImage} />
               </View>
-              <Text style={styles.storename}>NITHI GOLD LOAN </Text>
+              <Text style={styles.storename}>NITIK GOLD LOAN </Text>
               <Text style={{ marginTop: 3, fontSize: 8 }}>
                               No.12-E, P.S.R. Road, Sivakasi - 626123.
                             </Text>
@@ -307,7 +307,7 @@ const Receipt = ({ data }) => {
           </View>
           <View style={styles.phone}>
             <View style={styles.termpoint}>
-              <Text style={styles.boldText}>For NITHI GOLD LOAN</Text>
+              <Text style={styles.boldText}>For NITIK GOLD LOAN</Text>
             </View>
           </View>
         </View>
@@ -331,8 +331,8 @@ const totalWeight = jewels.reduce((sum, item) => sum + parseFloat(item.weight ||
   return (
     <View style={{ padding: 40, fontFamily: "fontRegular", color: "#000" }}>
       <View style={{ textAlign: "center", marginBottom: 20 }}>
-        <Text style={{ fontSize: 22, fontFamily: "fontBold",color: "red" }}>நிதி கோல்டு லோ{""}ன்</Text>
-        <Text style={{ fontSize: 10, marginTop: 5 }}>H/O:182, இரண்டாவது மாடி, AKS தியேட்டர் ரோடு, கோவில்பட்{""}டி </Text>
+        <Text style={{ fontSize: 22, fontFamily: "fontBold",color: "red" }}>நிதிக் கோல்டு லோ{""}ன்</Text>
+        <Text style={{ fontSize: 10, marginTop: 5 }}> 190,VLS COMPLEX,NEWBUS STAND OPPOSITE, ARUPPUKOTTAI </Text>
         <View style={{ borderBottomWidth: 1, marginTop: 10, borderColor: "#000" }} />
       </View>
 
@@ -376,7 +376,7 @@ const totalWeight = jewels.reduce((sum, item) => sum + parseFloat(item.weight ||
       <View style={{ marginTop: 30, fontSize: 11, lineHeight: 1.6 }}>
         <Text>ஐயா / அம்மா ,</Text>
         <Text style={{ marginTop: 10, textIndent: 30, textAlign: "justify" }}>
-          வணக்கம், நான் நிதி கோல்டு லோ{""}ன்  மற்றும் பேரையூர் சக்தி பைனான்ஸ் என்ற
+          வணக்கம், நான் நிதிக் கோல்டு லோ{""}ன்  மற்றும் பேரையூர் சக்தி பைனான்ஸ் என்ற
           நிறுவனத்தில் எனது சொந்த நகையான {totalWeight} கிராம் நகையை {pawnDate} தேதியன்று PAWN NO 
           {data.receipt_no} ல் அடகு வைத்தேன் அதற்கு இன்று {recoveryDate} அதற்கான அசலையும்
           வட்டியையும் செலுத்தி எனது நகையை நல்ல நிலையில் பெறுகிறேன் என்பதை
