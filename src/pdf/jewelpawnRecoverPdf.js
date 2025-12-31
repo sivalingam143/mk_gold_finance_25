@@ -246,7 +246,7 @@ const Receipt = ({ data }) => {
               </View>
               <Text style={styles.storename}>NITIK GOLD LOAN </Text>
               <Text style={{ marginTop: 3, fontSize: 8 }}>
-                              No.12-E, P.S.R. Road, Sivakasi - 626123.
+                             190,VLS COMPLEX,NEWBUS STAND OPPOSITE, ARUPPUKOTTAI
                             </Text>
               <Text></Text>
               <Text></Text>
