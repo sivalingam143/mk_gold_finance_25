@@ -215,6 +215,7 @@ const styles = StyleSheet.create({
 });
 
 const OfficeCopyDocument = ({ data }) => {
+  console.log("data values", data);
   const formatDate = (dateStr) => {
     const d = new Date(dateStr);
     const day = String(d.getDate()).padStart(2, "0");
@@ -222,7 +223,9 @@ const OfficeCopyDocument = ({ data }) => {
     const year = d.getFullYear();
     return `${day}-${month}-${year}`;
   };
-  const totdays = data.Jewelry_recovery_agreed_period * 30;
+  // This extracts the number from "6 MONTH" or "6" and multiplies by 30
+  const periodValue = parseInt(data.Jewelry_recovery_agreed_period) || 0;
+  const totdays = periodValue * 30;
   let totalWeight = 0;
   let totalNet = 0;
 
@@ -366,7 +369,9 @@ const OfficeCopyDocument = ({ data }) => {
                   <View style={styles.infoItem}>
                     <Text style={styles.label}>கடன் காலம் : </Text>
                     <Text style={styles.value}>
-                      {data.Jewelry_recovery_agreed_period} MONTHS
+                      {data.Jewelry_recovery_agreed_period.includes("MONTH")
+                        ? data.Jewelry_recovery_agreed_period
+                        : `${data.Jewelry_recovery_agreed_period} MONTHS`}
                     </Text>
                   </View>
                 </View>
@@ -387,7 +392,12 @@ const OfficeCopyDocument = ({ data }) => {
         </View>
 
         <View
-          style={{ flexDirection: "row", marginTop: 4, alignItems: "stretch",marginBottom:15 }}
+          style={{
+            flexDirection: "row",
+            marginTop: 4,
+            alignItems: "stretch",
+            marginBottom: 15,
+          }}
         >
           {/* Content Box (80%) */}
           <View
@@ -397,7 +407,6 @@ const OfficeCopyDocument = ({ data }) => {
               borderColor: "black",
               padding: 6,
               borderRadius: 4,
-
             }}
           >
             <Text
@@ -415,7 +424,7 @@ const OfficeCopyDocument = ({ data }) => {
                 {Number(data.original_amount).toLocaleString("en-IN")}
               </Text>
               /- ({loanAmountInWords}) கடனாக வழங்கும்படி கேட்டுக்கொள்கிறேன்.
-              நகையில் கற்கல் பதிக்கபட்டு இருந்தால் அதற்க்கு மதிப்பு கிடையாது.{" "}
+              நகையில் கற்கல் பதிக்கபட்டு இருந்தால் அதற்க்கு மதிப்பு கிடையாது{" "}
               .இந்த கடன் தொகையை இன்றைய தேதியில் இருந்து {totdays} நாட்களுக்குள்
               அல்லது நிறுவனம் கேட்டுக்கொள்ளும் நாட்களுக்கு முன்பாக செலுத்தி
               விடுகிறேன் என உறுதி கூறுகிறேன்.
@@ -559,7 +568,7 @@ const OfficeCopyDocument = ({ data }) => {
           </Text>
           /-திரு {data.name ?? "N/A"} அவர்களுக்கு வழங்கப்பட்டது வாடிக்கையாளர்
           நேரடியாக வந்து தங்களது அடையாள மற்றும் விலாசத்திற்கான சான்றுகளை
-          கொடுத்ததை நாங்கள் ஊர்ஜிதம் செய்துள்ளோம் {" "}என்று உறுதிபட{" "} கூறுகின்றோம்.{" "}
+          கொடுத்ததை நாங்கள் ஊர்ஜிதம் செய்துள்ளோம் என்று உறுதிபட கூறுகின்றோம்.{" "}
         </Text>
 
         <View style={[styles.signatureRow, { marginTop: 4 }]}>
