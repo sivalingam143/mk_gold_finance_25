@@ -354,7 +354,7 @@ const styles = StyleSheet.create({
     textAlign: "right",
   },
   section: {
-    marginBottom: 15,
+    marginBottom: 5,
     //backgroundColor: '#FFFFFF',
     padding: 10,
     borderRadius: 5,
@@ -469,7 +469,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 8,
+    marginTop: 18,
     fontFamily: "NotoTamil-Bold",
   },
   fieldLabel: {
@@ -650,11 +650,11 @@ const LoanReceiptPDF = ({ data }) => {
           </View>
         </View>
 
-        <View
+        {/* <View
           style={{ flexDirection: "row", marginTop: 2, alignItems: "stretch" }}
-        >
-          {/* Content Box (80%) */}
-          <View
+        > */}
+        {/* Content Box (80%) */}
+        {/* <View
             style={{
               flex: 5,
               borderWidth: 1,
@@ -683,10 +683,10 @@ const LoanReceiptPDF = ({ data }) => {
               அல்லது நிறுவனம் கேட்டுக்கொள்ளும் நாட்களுக்கு முன்பாக செலுத்தி
               விடுகிறேன் என உறுதி கூறுகிறேன்.
             </Text>
-          </View>
+          </View> */}
 
-          {/* Stamp Placeholder Box (20%) */}
-          <View
+        {/* Stamp Placeholder Box (20%) */}
+        {/* <View
             style={{
               flex: 0.5,
               borderRadius: 4,
@@ -698,8 +698,8 @@ const LoanReceiptPDF = ({ data }) => {
             }}
           >
             <Text style={{ fontSize: 12, textAlign: "center" }}>Stamp</Text>
-          </View>
-        </View>
+          </View> */}
+        {/* </View> */}
 
         <View>
           <Text> </Text>
@@ -785,23 +785,23 @@ const LoanReceiptPDF = ({ data }) => {
           </Text>
         </View>
 
-        <View
+        {/* <View
           style={{
             flexDirection: "row",
             alignItems: "center",
             marginTop: 4,
             gap: 4,
           }}
-        >
-          {/* Column 1: Text */}
-          <View style={{ flex: 1 }}>
+        > */}
+        {/* Column 1: Text */}
+        {/* <View style={{ flex: 1 }}>
             <Text style={{ fontSize: 8, fontFamily: "NotoTamil" }}>
               குறிப்பிட்ட தவணை காலத்திற்குள்ளாக கட்டப்படும் வட்டி விகிதம்
             </Text>
-          </View>
+          </View> */}
 
-          {/* Column 2: Image in Sized Box */}
-          <View
+        {/* Column 2: Image in Sized Box */}
+        {/* <View
             style={{
               width: 150,
               height: 40,
@@ -811,12 +811,12 @@ const LoanReceiptPDF = ({ data }) => {
               padding: 2,
             }}
           ></View>
-        </View>
+        </View> */}
 
-        <Text> அலுவலக உபயோகத்திற்காக </Text>
+        {/* <Text> அலுவலக உபயோகத்திற்காக </Text> */}
 
-        <Text>{"  "}</Text>
-        <Text>
+        {/* <Text>{"  "}</Text> */}
+        {/* <Text>
           மேற்சொன்ன நகைகள் எங்களால் மதிப்பீடு செய்யப்பட்டு கடன்தொகை ரூ.{" "}
           <Text style={{ fontFamily: "NotoTamil-Bold" }}>
             {Number(data.original_amount).toLocaleString("en-IN")}
@@ -824,57 +824,57 @@ const LoanReceiptPDF = ({ data }) => {
           /-திரு {data.name ?? "N/A"} அவர்களுக்கு வழங்கப்பட்டது வாடிக்கையாளர்
           நேரடியாக வந்து தங்களது அடையாள மற்றும் விலாசத்திற்கான சான்றுகளை
           கொடுத்ததை நாங்கள் ஊர்ஜிதம் செய்துள்ளோம் என்று உறுதிபட கூறுகின்றோம்.{" "}
-        </Text>
+        </Text> */}
 
-        <View style={[styles.signatureRow, { marginTop: 4 }]}>
-          {/* Row 1: Titles */}
-          <View style={{ flex: 1 }}>
+        {/* <View style={[styles.signatureRow, { marginTop: 4 }]}> */}
+        {/* Row 1: Titles */}
+        {/* <View style={{ flex: 1 }}>
             <Text style={styles.signatureText}>Appraiser :</Text>
           </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.signatureText}>Office In-charge :</Text>
           </View>
-        </View>
+        </View> */}
 
-        <View style={[styles.signatureRow, { marginTop: 3 }]}>
-          {/* Row 2: Signature placeholders */}
-          <View style={{ flex: 1 }}>
+        {/* <View style={[styles.signatureRow, { marginTop: 3 }]}> */}
+        {/* Row 2: Signature placeholders */}
+        {/* <View style={{ flex: 1 }}>
             <Text style={styles.signatureText}>Signature :</Text>
           </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.signatureText}>Signature :</Text>
           </View>
-        </View>
+        </View> */}
 
-        <View
+        {/* <View
           style={{
             flexDirection: "row",
             border: "1px solid black",
             marginTop: 10,
             width: "100%",
           }}
-        >
-          {/* Left cell: Text */}
-          <View style={{ flex: 2, borderRight: "1px solid black", padding: 3 }}>
+        > */}
+        {/* Left cell: Text */}
+        {/* <View style={{ flex: 2, borderRight: "1px solid black", padding: 3 }}>
             <Text style={{ fontSize: 8, fontFamily: "NotoTamil" }}>
               அனைத்து நகைகளையும் சரியாக திரும்ப பெற்றுக் கொண்டேன் {""}
             </Text>
             <Text style={{ fontSize: 8, fontFamily: "NotoTamil" }}>தேதி</Text>
-          </View>
+          </View> */}
 
-          {/* Middle cell: Signature */}
-          {/* <View style={{ flex: 1, borderRight: '1px solid black', padding: 5, justifyContent: 'center' }}>
+        {/* Middle cell: Signature */}
+        {/* <View style={{ flex: 1, borderRight: '1px solid black', padding: 5, justifyContent: 'center' }}>
     <Text style={{ fontSize: 8, fontFamily: 'NotoTamil' }}>கையொப்பம்</Text>
   </View> */}
 
-          {/* Right cell: Date */}
-          <View style={{ flex: 1, padding: 0, justifyContent: "center" }}>
+        {/* Right cell: Date */}
+        {/* <View style={{ flex: 1, padding: 0, justifyContent: "center" }}>
             <Text style={{ fontSize: 8, fontFamily: "NotoTamil" }}></Text>
           </View>
         </View>
-        <Text style={styles.centerText}>வாரிசு நியமனம்</Text>
+        <Text style={styles.centerText}>வாரிசு நியமனம்</Text> */}
 
-        <Text style={{ marginTop: 3 }}>
+        {/* <Text style={{ marginTop: 3 }}>
           __________________________________ ஆகிய நான் மேற்கண்ட எனது நகைக்கு
           கீழே குறிப்பிட்ட நபரை வாரிசாக நியமனம் செய்கின்றேன். நான் மரணம் அடையும்
           பட்சத்தில் மேற்படி நகைகளை இறப்பு சான்றிதழ் கடன் அசல் மற்றும் வட்டியை
@@ -882,15 +882,15 @@ const LoanReceiptPDF = ({ data }) => {
           பெயர் மற்றும் விலாசம்_________________________________________________
           (வாரிசுதாரர் மைனராக இருக்க கூடாது) கடன்தாரருக்கு உறவுமுறை ஏதேனும்
           Select ______________________ வாரிசுதாரரின் வயது ________
-        </Text>
+        </Text> */}
 
-        <Text style={{ marginTop: 3 }}>
+        {/* <Text style={{ marginTop: 3 }}>
           இந்த வாரிசு நியமனத்தை வேறு எந்தவகையான நியமனமோ, உயிலோ அல்லது மரண சாசனமோ
           கட்டுபடுத்த இயலாது. மேற்குறிப்பிட்ட வாரிசுதாரர் நிர்வாகத்திற்கு
           சேரவேண்டிய நிலுவை அசல் மற்றும் வட்டியை செலுத்தி நகையை
           பெற்றுக்கொள்ளவேண்டியது. அவ்வாறு நகையை திருப்பி கொடுக்கும் பட்சத்தில்
           நிர்வாகத்தின் நடவடிக்கை சரியானதாகும் என உறுதியளிக்கிறேன்.
-        </Text>
+        </Text> */}
 
         {/* Borrower Info */}
         <View style={styles.row}>
@@ -1051,11 +1051,11 @@ const LoanReceiptPDF = ({ data }) => {
         {/* Header Section */}
         <View style={styles.header}>
           <Text style={[styles.title, { fontSize: 20, color: "red" }]}>
-           நிதிக் கோல்டு லோ{""}ன்
+            நிதிக் கோல்டு லோ{""}ன்
           </Text>
           <Text style={styles.subText}>
             {" "}
-    190,VLS COMPLEX,NEWBUS STAND OPPOSITE, ARUPPUKOTTAI
+            190,VLS COMPLEX,NEWBUS STAND OPPOSITE, ARUPPUKOTTAI
           </Text>
           <View
             style={{
@@ -1139,7 +1139,7 @@ const LoanReceiptPDF = ({ data }) => {
           </Text>
 
           <Text style={[styles.loan1Paragraph, { marginTop: 8 }]}>
-            இந்த நகை எனக்கு மட்டுமே உரிமையானது. என் குடும்பத்தினற்க்கோ அல்லது
+            இந்த நகை எனக்கு மட்டுமே உரிமையானது. என் குடும்பத்திற்க்கோ அல்லது
             என்னை சார்ந்தவர்களுக்கோ நான் இல்லாமல் {""}நகையை திருப்பவோ அல்லது
             மாற்றி வைக்கவோ இயலாது என்பதை நான் {""}அறிவேன்.
           </Text>
